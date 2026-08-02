@@ -5,6 +5,10 @@ import fs from "fs"
 
 export default defineConfig({
   base: './',
+  build: {
+    outDir: '../docs',
+    emptyOutDir: true,
+  },
   plugins: [
     react(),
     {
