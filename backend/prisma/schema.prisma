@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  roleId        Int
+  role          Role           @relation(fields: [roleId], references: [id])
+  interventions Intervention[] @relation("TechnicianInterventions")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  machines Machine[]
+}
+
+model Machine {
+  id               Int                @id @default(autoincrement())
+  reference        String             @unique
+  name             String
+  description      String?
+  inventoryNumber  String?            @unique
+  manufacturer     String?
+  model            String?
+  serialNumber     String?            @unique
+  location         String?
+  quantity         Int                @default(1)
+  purchaseDate     DateTime?
+  warrantyEndDate  DateTime?
+  status           String             @default("AVAILABLE")
+  categoryId       Int
+  category         Category           @relation(fields: [categoryId], references: [id])
+  photoUrl         String?
+  interventions    Intervention[]
+  documents        Document[]
+  preventiveMaints PreventiveMaintenance[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
+
+model PreventiveMaintenance {
+  id          Int      @id @default(autoincrement())
+  machineId   Int
+  machine     Machine  @relation(fields: [machineId], references: [id])
+  frequency   String
+  nextDueDate DateTime
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Intervention {
+  id             Int              @id @default(autoincrement())
+  machineId      Int
+  machine        Machine          @relation(fields: [machineId], references: [id])
+  technicianId   Int?
+  technician     User?            @relation("TechnicianInterventions", fields: [technicianId], references: [id])
+  type           String
+  status         String           @default("PENDING")
+  priority       String           @default("NORMAL")
+  scheduledDate  DateTime
+  duration       Int?
+  notes          String?
+  stockMovements StockMovement[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model Supplier {
+  id          Int             @id @default(autoincrement())
+  companyName String
+  code        String?         @unique
+  contactName String?
+  function    String?
+  phone       String?
+  email       String?
+  address     String?
+  city        String?
+  country     String?
+  website     String?
+  taxNumber   String?
+  description String?
+  status      String          @default("ACTIVE")
+  parts       PartSupplier[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model StockItem {
+  id           Int             @id @default(autoincrement())
+  reference    String          @unique
+  name         String
+  category     String?
+  quantity     Int             @default(0)
+  minThreshold Int             @default(5)
+  suppliers    PartSupplier[]
+  movements    StockMovement[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model PartSupplier {
+  partId     Int
+  part       StockItem @relation(fields: [partId], references: [id], onDelete: Cascade)
+  supplierId Int
+  supplier   Supplier  @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  isPrimary  Boolean   @default(false)
+  price      Float?
+  
+  @@id([partId, supplierId])
+}
+
+model StockMovement {
+  id             Int           @id @default(autoincrement())
+  partId         Int
+  part           StockItem     @relation(fields: [partId], references: [id])
+  interventionId Int?
+  intervention   Intervention? @relation(fields: [interventionId], references: [id])
+  type           String
+  quantity       Int
+  date           DateTime      @default(now())
+  notes          String?
+}
+
+model Document {
+  id        Int      @id @default(autoincrement())
+  machineId Int
+  machine   Machine  @relation(fields: [machineId], references: [id])
+  title     String
+  url       String
+  type      String
+  createdAt DateTime @default(now())
+}

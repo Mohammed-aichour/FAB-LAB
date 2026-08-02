@@ -1,0 +1,242 @@
+export interface PartUsed {
+  pieceRef: string;
+  designation: string;
+  quantity: number;
+  unitCostMAD: number;
+}
+
+export interface WorkOrder {
+  id: number;
+  otNumber: string;
+  diNumber: string; // ex: "DI-2026-003" ou "-"
+  creationDate: string;
+  maintenanceType: 'Corrective' | 'Préventive' | 'Améliorative';
+  equipmentId: string;
+  equipmentName: string;
+  atelier: string;
+  priority: 'A' | 'B' | 'C'; // Criticité
+  description: string;
+  gammeRef: string;
+  technician: string;
+  plannedDate: string;
+  startDate: string;
+  endDate: string;
+  realDurationHours: number;
+  partsUsed: PartUsed[];
+  partsCostMAD: number;
+  laborCostMAD: number;
+  totalCostMAD: number;
+  status: 'Nouveau' | 'Planifié' | 'En cours' | 'En attente pièce' | 'Terminé' | 'Clôturé';
+  supervisorVisa: string;
+  observations: string;
+}
+
+export interface InterventionRequest {
+  id: number;
+  diNumber: string;
+  date: string;
+  applicantName: string;
+  applicantRole: string;
+  atelier: string;
+  equipmentId: string;
+  equipmentName: string;
+  problemDescription: string;
+  urgency: 'Critique' | 'Élevé' | 'Moyen' | 'Faible';
+  machineStopped: 'Oui' | 'Non';
+  status: 'En attente' | 'Converti en OT' | 'Rejeté';
+}
+
+export const initialDIs: InterventionRequest[] = [
+  {
+    id: 1,
+    diNumber: 'DI-2026-001',
+    date: '2026-01-07',
+    applicantName: 'Prof. Alami',
+    applicantRole: 'Enseignant Chercheur',
+    atelier: 'Impression 3D',
+    equipmentId: 'FL-IMP-01',
+    equipmentName: 'Imprimante 3D FDM (Ultimaker S5)',
+    problemDescription: 'Buse obstruée et extrusion irrégulière constatée lors d\'un TP étudiant',
+    urgency: 'Moyen',
+    machineStopped: 'Non',
+    status: 'Converti en OT'
+  },
+  {
+    id: 2,
+    diNumber: 'DI-2026-002',
+    date: '2026-01-11',
+    applicantName: 'Dr. Bennani',
+    applicantRole: 'Responsable Atelier',
+    atelier: 'Utilités / Filtration',
+    equipmentId: 'FL-ASP-01',
+    equipmentName: 'Système d\'aspiration / extraction (AirClean)',
+    problemDescription: 'Bruit de sifflement et passage en alerte colmatage filtre charbon',
+    urgency: 'Élevé',
+    machineStopped: 'Oui',
+    status: 'Converti en OT'
+  },
+  {
+    id: 3,
+    diNumber: 'DI-2026-003',
+    date: '2026-02-10',
+    applicantName: 'Ing. Tazi',
+    applicantRole: 'Technicien FabLab',
+    atelier: 'Découpe Laser',
+    equipmentId: 'FL-LAS-01',
+    equipmentName: 'Découpe / gravure laser CO2 (Trotec Speedy 100)',
+    problemDescription: 'Perte de focalisation laser et usure visible de la lentille principale',
+    urgency: 'Critique',
+    machineStopped: 'Oui',
+    status: 'Converti en OT'
+  },
+  {
+    id: 4,
+    diNumber: 'DI-2026-004',
+    date: '2026-03-01',
+    applicantName: 'Karim Idrissi',
+    applicantRole: 'Étudiant Prototypage',
+    atelier: 'Usinage CNC',
+    equipmentId: 'FL-CNC-01',
+    equipmentName: 'Fraiseuse CNC 3 axes (Roland MDX-50)',
+    problemDescription: 'Vibration anormale sur l\'axe Z pendant le surfaçage d\'un bloc alu',
+    urgency: 'Moyen',
+    machineStopped: 'Non',
+    status: 'En attente'
+  }
+];
+
+export const initialOTs: WorkOrder[] = [
+  {
+    id: 1,
+    otNumber: 'OT-2026-014',
+    diNumber: 'DI-2026-001',
+    creationDate: '2026-01-08',
+    maintenanceType: 'Corrective',
+    equipmentId: 'FL-IMP-01',
+    equipmentName: 'Imprimante 3D FDM (Ultimaker S5)',
+    atelier: 'Impression 3D',
+    priority: 'B',
+    description: 'Remplacement de la buse laiton 0.4 mm suite au colmatage signalé',
+    gammeRef: 'G-IMP-03',
+    technician: 'Technicien Maintenance',
+    plannedDate: '2026-01-08',
+    startDate: '2026-01-08 09:00',
+    endDate: '2026-01-08 09:30',
+    realDurationHours: 0.5,
+    partsUsed: [
+      { pieceRef: 'PR-001', designation: 'Buse laiton 0.4 mm (FDM)', quantity: 2, unitCostMAD: 25 }
+    ],
+    partsCostMAD: 50,
+    laborCostMAD: 100,
+    totalCostMAD: 150,
+    status: 'Terminé',
+    supervisorVisa: 'Validé - Resp. GMAO',
+    observations: 'Buse neuve installée, test d\'impression d\'échantillon réussi à 100%'
+  },
+  {
+    id: 2,
+    otNumber: 'OT-2026-021',
+    diNumber: 'DI-2026-002',
+    creationDate: '2026-01-12',
+    maintenanceType: 'Corrective',
+    equipmentId: 'FL-ASP-01',
+    equipmentName: 'Système d\'aspiration / extraction (AirClean)',
+    atelier: 'Utilités',
+    priority: 'A',
+    description: 'Remplacement du filtre d\'extraction au charbon actif et contrôle débit',
+    gammeRef: 'G-ASP-02',
+    technician: 'Technicien Maintenance',
+    plannedDate: '2026-01-12',
+    startDate: '2026-01-12 14:00',
+    endDate: '2026-01-12 15:00',
+    realDurationHours: 1.0,
+    partsUsed: [
+      { pieceRef: 'PR-013', designation: 'Filtre d\'extraction (charbon)', quantity: 1, unitCostMAD: 480 }
+    ],
+    partsCostMAD: 480,
+    laborCostMAD: 150,
+    totalCostMAD: 630,
+    status: 'Terminé',
+    supervisorVisa: 'Validé - Resp. GMAO',
+    observations: 'Passage en alerte seuil résolu. Commande de réappro. CDE-2026-003 lancée'
+  },
+  {
+    id: 3,
+    otNumber: 'OT-2026-033',
+    diNumber: 'DI-2026-003',
+    creationDate: '2026-02-11',
+    maintenanceType: 'Préventive',
+    equipmentId: 'FL-LAS-01',
+    equipmentName: 'Découpe / gravure laser CO2 (Trotec Speedy 100)',
+    atelier: 'Découpe',
+    priority: 'A',
+    description: 'Remplacement préventif de la lentille de focalisation laser et réalignement miroirs',
+    gammeRef: 'G-LAS-05',
+    technician: 'Prestataire Spécialisé (Trotec MA)',
+    plannedDate: '2026-02-11',
+    startDate: '2026-02-11 10:00',
+    endDate: '2026-02-11 11:30',
+    realDurationHours: 1.5,
+    partsUsed: [
+      { pieceRef: 'PR-010', designation: 'Lentille focalisation laser 2.0"', quantity: 1, unitCostMAD: 1400 }
+    ],
+    partsCostMAD: 1400,
+    laborCostMAD: 450,
+    totalCostMAD: 1850,
+    status: 'Terminé',
+    supervisorVisa: 'Validé - Resp. GMAO',
+    observations: 'Lentille 2.0" installée. Contrôle de puissance laser validé à 100W'
+  },
+  {
+    id: 4,
+    otNumber: 'OT-2026-042',
+    diNumber: '-',
+    creationDate: '2026-02-15',
+    maintenanceType: 'Préventive',
+    equipmentId: 'FL-CNC-01',
+    equipmentName: 'Fraiseuse CNC 3 axes (Roland MDX-50)',
+    atelier: 'Usinage',
+    priority: 'A',
+    description: 'Graissage vis à billes X/Y/Z et contrôle jeu roulements broche',
+    gammeRef: 'G-CNC-02',
+    technician: 'Technicien Maintenance',
+    plannedDate: '2026-02-20',
+    startDate: '2026-02-20 08:30',
+    endDate: '',
+    realDurationHours: 0,
+    partsUsed: [
+      { pieceRef: 'PR-017', designation: 'Graisse guides / vis (GRS-100)', quantity: 1, unitCostMAD: 90 }
+    ],
+    partsCostMAD: 90,
+    laborCostMAD: 150,
+    totalCostMAD: 240,
+    status: 'En cours',
+    supervisorVisa: 'En attente',
+    observations: 'Nettoyage des carters effectué, application graisse EP2 en cours'
+  },
+  {
+    id: 5,
+    otNumber: 'OT-2026-050',
+    diNumber: '-',
+    creationDate: '2026-02-25',
+    maintenanceType: 'Améliorative',
+    equipmentId: 'FL-BOI-02',
+    equipmentName: 'Scie à ruban / circulaire',
+    atelier: 'Menuiserie',
+    priority: 'B',
+    description: 'Installation d\'un protecteur de lame renforcé et remplacement de la lame carbone',
+    gammeRef: 'G-BOI-04',
+    technician: 'Technicien Maintenance',
+    plannedDate: '2026-03-02',
+    startDate: '',
+    endDate: '',
+    realDurationHours: 0,
+    partsUsed: [],
+    partsCostMAD: 0,
+    laborCostMAD: 150,
+    totalCostMAD: 150,
+    status: 'Planifié',
+    supervisorVisa: 'En attente',
+    observations: 'En attente de réception du kit protecteur de sécurité'
+  }
+];

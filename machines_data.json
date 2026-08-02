@@ -1,0 +1,376 @@
+[
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": "Etape 2 du plan projet GMAO - Source: INVENTAIRE_PHYSIQUE_UNIVERSIAPOLIS.xlsx (Localisation: FAB LAB, Niveau: LES DOMES) - Date d'application : Juillet 2026"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": "N°",
+    "__EMPTY": "Code equipement",
+    "__EMPTY_1": "Designation",
+    "__EMPTY_2": "Description / Caracteristiques",
+    "__EMPTY_3": "Categorie",
+    "__EMPTY_4": "Quantite",
+    "__EMPTY_5": "Etat"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 1,
+    "__EMPTY": "FL-001",
+    "__EMPTY_1": "BUREAU",
+    "__EMPTY_2": "160*80 EN MDF",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 2,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 2,
+    "__EMPTY": "FL-002",
+    "__EMPTY_1": "TABLE DE REUNION",
+    "__EMPTY_2": "220*100 STRATY DECOR",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 3,
+    "__EMPTY": "FL-003",
+    "__EMPTY_1": "TABLE DE REUNION",
+    "__EMPTY_2": "140*140 cm EN MDF",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 4,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 4,
+    "__EMPTY": "FL-004",
+    "__EMPTY_1": "TABLE DE TRAVAIL",
+    "__EMPTY_2": "180*80 MDF ET METAL",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 3,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 5,
+    "__EMPTY": "FL-005",
+    "__EMPTY_1": "TIRIOIR",
+    "__EMPTY_2": "80*50 EN MDF 1 PORTES",
+    "__EMPTY_3": "Mobilier - Rangement",
+    "__EMPTY_4": 2,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 6,
+    "__EMPTY": "FL-006",
+    "__EMPTY_1": "TIRIOIR",
+    "__EMPTY_2": "80*50 EN MDF 1 PORTES",
+    "__EMPTY_3": "Mobilier - Rangement",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 7,
+    "__EMPTY": "FL-007",
+    "__EMPTY_1": "TIRIOIR",
+    "__EMPTY_2": "150*100 EN MDF 2 PORTES",
+    "__EMPTY_3": "Mobilier - Rangement",
+    "__EMPTY_4": 2,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 8,
+    "__EMPTY": "FL-008",
+    "__EMPTY_1": "POUF",
+    "__EMPTY_2": "POUR ROND 50*50 BOIS ET SIMILI CUIR",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 8,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 9,
+    "__EMPTY": "FL-009",
+    "__EMPTY_1": "CLIMATISSEUR",
+    "__EMPTY_2": "ARMAOIRE 60000BTU",
+    "__EMPTY_3": "Equipement CVC",
+    "__EMPTY_4": 2,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 10,
+    "__EMPTY": "FL-010",
+    "__EMPTY_1": "TELEVISION NOIRE",
+    "__EMPTY_2": "PLASMA 43\"",
+    "__EMPTY_3": "Equipement audiovisuel",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 11,
+    "__EMPTY": "FL-011",
+    "__EMPTY_1": "RECEPTEUR",
+    "__EMPTY_2": "BOITIER ANDROID",
+    "__EMPTY_3": "Equipement audiovisuel",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 12,
+    "__EMPTY": "FL-012",
+    "__EMPTY_1": "TABLEAU D'AFFICHAGE",
+    "__EMPTY_2": "100*70 BLANC",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 13,
+    "__EMPTY": "FL-013",
+    "__EMPTY_1": "SUPPORT TV",
+    "__EMPTY_2": "EN METALE",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 14,
+    "__EMPTY": "FL-014",
+    "__EMPTY_1": "CHAISE",
+    "__EMPTY_2": "GAIMING TISSU GRIS AVEC ROULTTES ET ACOUDOIR",
+    "__EMPTY_3": "Mobilier",
+    "__EMPTY_4": 20,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 15,
+    "__EMPTY": "FL-015",
+    "__EMPTY_1": "ARMOIRE ELECTRIQUE",
+    "__EMPTY_2": "COFFRET METALLIQUE",
+    "__EMPTY_3": "Equipement electrique",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 16,
+    "__EMPTY": "FL-016",
+    "__EMPTY_1": "IMPRESSION 3D",
+    "__EMPTY_2": "SCHENZHEN CREALITY 3D TECHNOLOGY",
+    "__EMPTY_3": "Machine Fablab - Impression 3D",
+    "__EMPTY_4": 2,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 17,
+    "__EMPTY": "FL-017",
+    "__EMPTY_1": "IMPRESSION 3D",
+    "__EMPTY_3": "Machine Fablab - Impression 3D",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 18,
+    "__EMPTY": "FL-018",
+    "__EMPTY_1": "DECOUPE LASER",
+    "__EMPTY_2": "PIPROD.COM",
+    "__EMPTY_3": "Machine Fablab - Decoupe laser",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 19,
+    "__EMPTY": "FL-019",
+    "__EMPTY_1": "DECOUPE CNC",
+    "__EMPTY_2": "PIPROD.COM",
+    "__EMPTY_3": "Machine Fablab - Decoupe/Usinage CNC",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 20,
+    "__EMPTY": "FL-020",
+    "__EMPTY_1": "DECOUPE CNC",
+    "__EMPTY_2": "TECHNO DRILL 3",
+    "__EMPTY_3": "Machine Fablab - Decoupe/Usinage CNC",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 21,
+    "__EMPTY": "FL-021",
+    "__EMPTY_1": "COMPRESSEUR",
+    "__EMPTY_2": "DE 8 BAR",
+    "__EMPTY_3": "Equipement atelier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 22,
+    "__EMPTY": "FL-022",
+    "__EMPTY_1": "ASPIRATEUR",
+    "__EMPTY_2": "DE POUSSIERE",
+    "__EMPTY_3": "Equipement atelier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 23,
+    "__EMPTY": "FL-023",
+    "__EMPTY_1": "PILVERISATEUR",
+    "__EMPTY_2": "ELECTIQUE",
+    "__EMPTY_3": "Equipement atelier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 24,
+    "__EMPTY": "FL-024",
+    "__EMPTY_1": "MACHINE WC 3000",
+    "__EMPTY_2": "AVEC DECOUPE LASER",
+    "__EMPTY_3": "Machine Fablab - Decoupe laser",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 25,
+    "__EMPTY": "FL-025",
+    "__EMPTY_1": "PERSEUSE",
+    "__EMPTY_3": "Outillage atelier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 26,
+    "__EMPTY": "FL-026",
+    "__EMPTY_1": "PLIEUSE",
+    "__EMPTY_2": "DE PERSEGLACE",
+    "__EMPTY_3": "Machine Fablab - Faconnage",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 27,
+    "__EMPTY": "FL-027",
+    "__EMPTY_1": "SCOPE",
+    "__EMPTY_2": "NUMERIQUE",
+    "__EMPTY_3": "Instrument de mesure",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 28,
+    "__EMPTY": "FL-028",
+    "__EMPTY_1": "SCOPE",
+    "__EMPTY_2": "ANALOGIQUE",
+    "__EMPTY_3": "Instrument de mesure",
+    "__EMPTY_4": 2,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 29,
+    "__EMPTY": "FL-029",
+    "__EMPTY_1": "SCOPE",
+    "__EMPTY_2": "ANALOGIQUE",
+    "__EMPTY_3": "Instrument de mesure",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 30,
+    "__EMPTY": "FL-030",
+    "__EMPTY_1": "BALANCE",
+    "__EMPTY_2": "AVEC AFFICHAGE",
+    "__EMPTY_3": "Instrument de mesure",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 31,
+    "__EMPTY": "FL-031",
+    "__EMPTY_1": "BALANCE",
+    "__EMPTY_3": "Instrument de mesure",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 32,
+    "__EMPTY": "FL-032",
+    "__EMPTY_1": "ADJUSTABLE DC",
+    "__EMPTY_2": "POWER SUPPLY",
+    "__EMPTY_3": "Instrument electronique",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 33,
+    "__EMPTY": "FL-033",
+    "__EMPTY_1": "RECHEAU",
+    "__EMPTY_2": "REWORK SOLDERING",
+    "__EMPTY_3": "Equipement electronique",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 34,
+    "__EMPTY": "FL-034",
+    "__EMPTY_1": "POMLE A EAU",
+    "__EMPTY_2": "KNF",
+    "__EMPTY_3": "Equipement atelier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 35,
+    "__EMPTY": "FL-035",
+    "__EMPTY_1": "PHOTOCENTRIC 3D",
+    "__EMPTY_2": "EN 3D",
+    "__EMPTY_3": "Machine Fablab - Impression 3D",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 36,
+    "__EMPTY": "FL-036",
+    "__EMPTY_1": "APPAREIL PHOTO 3D",
+    "__EMPTY_2": "EN SCAN",
+    "__EMPTY_3": "Equipement scan 3D",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 37,
+    "__EMPTY": "FL-037",
+    "__EMPTY_1": "INTERTEK",
+    "__EMPTY_3": "A identifier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 38,
+    "__EMPTY": "FL-038",
+    "__EMPTY_1": "IMPRESSION 3D",
+    "__EMPTY_3": "Machine Fablab - Impression 3D",
+    "__EMPTY_4": 2,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 39,
+    "__EMPTY": "FL-039",
+    "__EMPTY_1": "MACHINE AIR CHAUD",
+    "__EMPTY_3": "Equipement atelier",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": 40,
+    "__EMPTY": "FL-040",
+    "__EMPTY_1": "DISTRIBUTEUR MANUEL",
+    "__EMPTY_2": "DE GEL DESINFECTANT",
+    "__EMPTY_3": "Hygiene / Consommable",
+    "__EMPTY_4": 1,
+    "__EMPTY_5": "BON"
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": "TOTAL GENERAL - NOMBRE D'EQUIPEMENTS ET QUANTITE",
+    "__EMPTY_4": 78,
+    "__EMPTY_5": 40
+  },
+  {
+    "REGISTRE DES EQUIPEMENTS - FABLAB UNIVERSIAPOLIS POLYTECHNIQUE": "Note : la colonne 'Categorie' distingue le mobilier general de l'equipement technique specifique au Fablab (machines de fabrication numerique, instruments de mesure et d'electronique)."
+  }
+]

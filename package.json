@@ -1,0 +1,19 @@
+{
+  "name": "gmao-fablab-universiapolis",
+  "version": "1.0.0",
+  "description": "Application GMAO Full Stack FabLab Universiapolis - Ready for Netlify Deployment",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "dev": "cd frontend && npm run dev",
+    "preview": "cd frontend && npm run preview"
+  },
+  "keywords": [
+    "gmao",
+    "fablab",
+    "universiapolis",
+    "maintenance"
+  ],
+  "author": "FabLab Universiapolis",
+  "license": "ISC"
+}
