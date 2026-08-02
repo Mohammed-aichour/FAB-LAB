@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GmaoProvider } from './context/GmaoContext';
 import Layout from './layouts/Layout';
@@ -42,7 +42,7 @@ const IntroScreen = ({ user }: { user: any }) => {
     <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center z-50">
       <div className="relative">
         <div className="absolute inset-0 bg-fab-blue rounded-full blur-[60px] opacity-40 animate-pulse"></div>
-        <img src="/Fab.png" alt="Logo FabLab" className="relative w-32 h-32 object-contain animate-bounce" style={{ animationDuration: '2s' }} />
+        <img src="./Fab.png" alt="Logo FabLab" className="relative w-32 h-32 object-contain animate-bounce" style={{ animationDuration: '2s' }} />
       </div>
       <h1 className="mt-10 text-3xl font-bold text-white animate-fade-in-up">
         Bienvenue, <span className="text-fab-yellow">{user.name}</span>
@@ -85,7 +85,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <GmaoProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           {!user ? (
             <Route path="*" element={<Login onLogin={handleLogin} />} />
@@ -107,7 +107,7 @@ function App() {
             </Route>
           )}
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
       </GmaoProvider>
     </QueryClientProvider>
   );
