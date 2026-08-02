@@ -34,7 +34,7 @@ const Sidebar = ({ user }: { user?: any }) => {
       <div className="h-16 flex items-center px-5 border-b border-white/10 shrink-0 min-w-[16rem] justify-between bg-black/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow-lg shadow-black/20 shrink-0 border border-white/20">
-            <img src="/Fab.png" alt="Logo FabLab" className="w-full h-full object-contain" />
+            <img src="./Fab.png" alt="Logo FabLab" className="w-full h-full object-contain" />
           </div>
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
             <h1 className="text-sm font-black text-white tracking-tight leading-none">

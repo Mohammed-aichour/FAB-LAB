@@ -28,7 +28,7 @@ const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
         <div className="p-8">
           <div className="text-center mb-6 animate-fade-in-up">
             <div className="flex justify-center mb-4">
-              <img src="/Fab.png" alt="Logo FabLab" className="h-16 object-contain" />
+              <img src="./Fab.png" alt="Logo FabLab" className="h-16 object-contain" />
             </div>
             <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">GMAO FabLab</h1>
             <p className="text-zinc-500 mt-2">Connectez-vous pour accéder à votre espace</p>
