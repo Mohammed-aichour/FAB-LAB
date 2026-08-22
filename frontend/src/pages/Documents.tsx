@@ -214,7 +214,7 @@ const DEFAULT_GED_DOCS: GEDDocument[] = [
     title: "Inventaire physique annuel du FabLab",
     description: "Registre de comptage physique annuel des machines et pièces.",
     category: "Registre & Inventaire",
-    type: "Excel",
+    type: "Tableur",
     machine: "Magasin & Machines",
     supplier: "Universiapolis Agadir",
     date: "21/07/2026",
@@ -231,7 +231,7 @@ const DEFAULT_GED_DOCS: GEDDocument[] = [
     title: "Registre des équipements du FabLab",
     description: "Nomenclature générale des machines du FabLab Universiapolis.",
     category: "Registre & Inventaire",
-    type: "Excel",
+    type: "Tableur",
     machine: "FabLab Universiapolis",
     supplier: "FabLab Universiapolis",
     date: "21/07/2026",
@@ -250,7 +250,7 @@ const getFileIcon = (fileName: string, type?: string) => {
 
   if (ext === 'pdf' || t.includes('pdf')) {
     return <FileText className="w-5 h-5 text-rose-500 shrink-0" />;
-  } else if (ext === 'xlsx' || ext === 'xls' || ext === 'csv' || t.includes('excel')) {
+  } else if (ext === 'xlsx' || ext === 'xls' || ext === 'csv' || t.includes('excel') || t.includes('tableur')) {
     return <FileSpreadsheet className="w-5 h-5 text-emerald-500 shrink-0" />;
   } else if (ext === 'docx' || ext === 'doc' || t.includes('word')) {
     return <FileCheck className="w-5 h-5 text-blue-500 shrink-0" />;
@@ -376,7 +376,7 @@ const Documents = () => {
     // Accepted extensions
     const allowedExts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'webp', 'txt'];
     if (!allowedExts.includes(ext)) {
-      setUploadError(`Le format ".${ext}" n'est pas autorisé. Formats acceptés : PDF, Word, Excel, Images (JPG, PNG, WEBP), Texte (TXT).`);
+      setUploadError(`Le format ".${ext}" n'est pas autorisé. Formats acceptés : PDF, Word, Tableur, Images (JPG, PNG, WEBP), Texte (TXT).`);
       setSelectedFile(null);
       return;
     }
@@ -399,7 +399,7 @@ const Documents = () => {
     // Auto infer document type
     let inferredType = 'PDF';
     if (['doc', 'docx'].includes(ext)) inferredType = 'Word';
-    if (['xls', 'xlsx', 'csv'].includes(ext)) inferredType = 'Excel';
+    if (['xls', 'xlsx', 'csv'].includes(ext)) inferredType = 'Tableur';
     if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) inferredType = 'Image';
     if (['txt'].includes(ext)) inferredType = 'Texte';
 
@@ -555,7 +555,7 @@ BT
 (${doc.title.replace(/[()]/g, '')}) Tj
 /F1 11 Tf
 0 -30 Td
-(GMAO FabLab Universiapolis - Fiche Officielle GED) Tj
+(GMA LAB - Fiche Officielle GED) Tj
 0 -20 Td
 (Date: ${doc.date} | Machine: ${doc.machine} | Version: ${doc.version || 'v1.0'}) Tj
 0 -20 Td
@@ -596,7 +596,7 @@ startxref
 </head>
 <body>
   <div class="card">
-    <span class="badge">GMAO FABLAB UNIVERSIAPOLIS</span>
+    <span class="badge">GMA LAB</span>
     <h1>${doc.title}</h1>
     <div class="meta">
       <div><strong>Nom Fichier :</strong> ${doc.fileName}</div>
@@ -763,7 +763,7 @@ startxref
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">
-              Gestion Documentaire (GED GMAO)
+              Gestion Documentaire (GED GMA LAB)
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-fab-blue text-white shadow-xs">
               {docs.length} Documents
@@ -947,7 +947,7 @@ startxref
             <option value="ALL">Tous les types (PDF, Word...)</option>
             <option value="PDF">PDF (.pdf)</option>
             <option value="Word">Word (.docx, .doc)</option>
-            <option value="Excel">Excel (.xlsx, .xls)</option>
+            <option value="Tableur">Tableur (.xlsx, .xls)</option>
             <option value="Image">Image (.jpg, .png, .webp)</option>
             <option value="Texte">Texte (.txt)</option>
           </select>
@@ -1379,7 +1379,7 @@ startxref
 
           <div>
             <label className="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">
-              Sélectionner un fichier (PDF, Word, Excel, Images, TXT — Max 50 MB) *
+              Sélectionner un fichier (PDF, Word, Tableur, Images, TXT — Max 50 MB) *
             </label>
             <input 
               required 
@@ -1440,7 +1440,7 @@ startxref
               >
                 <option value="PDF">PDF (.pdf)</option>
                 <option value="Word">Word (.doc, .docx)</option>
-                <option value="Excel">Excel (.xls, .xlsx)</option>
+                <option value="Tableur">Tableur (.xls, .xlsx)</option>
                 <option value="Image">Image (.jpg, .png, .webp)</option>
                 <option value="Texte">Texte (.txt)</option>
               </select>

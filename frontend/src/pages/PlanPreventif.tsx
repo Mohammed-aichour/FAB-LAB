@@ -139,7 +139,7 @@ const PlanPreventif = () => {
     });
   }, [taches, searchTerm, filterFreq, filterEquip, filterResp, highlightMonth]);
 
-  // Calculate monthly totals for the Excel grid
+  // Calculate monthly totals for the schedule grid
   const monthlyTotals = useMemo(() => {
     const counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     filteredTaches.forEach(t => {
@@ -582,7 +582,7 @@ const PlanPreventif = () => {
                   </tr>
                 )}
 
-                {/* TOTAL ROW MATCHING EXCEL CAPTURE */}
+                {/* TOTAL ROW */}
                 <tr className="bg-zinc-900 text-white font-extrabold text-xs">
                   <td colSpan={8} className="px-4 py-3.5 text-right uppercase tracking-wider text-zinc-300">
                     TOTAL GÉNÉRAL FILTRÉ

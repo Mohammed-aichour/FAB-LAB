@@ -14,7 +14,7 @@ import {
 import { useGmaoStats } from "../hooks/useGmaoStats";
 import { useGmao } from "../context/GmaoContext";
 
-// KPI Excel reference data (6 months certified academic data)
+// KPI reference data (6 months certified academic data)
 const BASE_MONTHLY_KPI = [
   { month: "Janvier", mtbf: 213.3, mttr: 3.7, dispo: 98.3, preventif: 87.5, coutMAD: 2400, cibleMtbf: 300, cibleDispo: 95 },
   { month: "Fevrier", mtbf: 320.0, mttr: 3.5, dispo: 98.9, preventif: 90.9, coutMAD: 1800, cibleMtbf: 300, cibleDispo: 95 },
@@ -71,7 +71,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white">Dashboard GMAO</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white">Dashboard GMA LAB</h1>
           <p className="text-zinc-500 mt-1 text-sm flex items-center gap-2">
             Tableau de bord executif — FabLab Universiapolis
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">

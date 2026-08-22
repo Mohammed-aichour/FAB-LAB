@@ -238,7 +238,7 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
     }
   }, [formData.heureDebutIntervention, formData.heureFinIntervention]);
 
-  // Machine change handler (100% Excel Source Compliance)
+  // Machine change handler (Centralized Database Sync)
   const handleMachineChange = (mId: string) => {
     const m = machinesList.find(item => String(item.id) === mId || item.reference === mId || item.name === mId);
     if (m) {
@@ -546,7 +546,7 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
               {formData.btNumber} <span className="text-[11px] font-mono text-zinc-400">({formData.otNumber})</span>
             </h2>
             <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">
-              GMAO SAP/Maximo Work Order System
+              GMA LAB Work Order System
             </span>
           </div>
         </div>
@@ -594,9 +594,9 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
             type="button"
             onClick={() => handleFormAction('EXPORT_EXCEL')}
             className="px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-bold hover:bg-emerald-600 transition-all cursor-pointer flex items-center gap-1"
-            title="Exporter en Excel/CSV"
+            title="Exporter au format CSV"
           >
-            <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
+            <FileSpreadsheet className="w-3.5 h-3.5" /> Exporter CSV
           </button>
 
           <button
@@ -742,7 +742,7 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
             </div>
 
             <div>
-              <label className="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Machine Concernée * (Référentiel Excel)</label>
+              <label className="block font-bold mb-1 text-zinc-700 dark:text-zinc-300">Machine Concernée * (Base de Données Centralisée)</label>
               <select
                 disabled={isReadOnly}
                 value={formData.machineId}
@@ -767,7 +767,7 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
             </div>
           </div>
 
-          {/* EXCEL MACHINE DETAILS SUMMARY BANNER (100% EXCEL COMPLIANCE) */}
+          {/* CENTRALIZED DATABASE MACHINE DETAILS SUMMARY BANNER */}
           {(() => {
             const activeM = machinesList.find(m => String(m.reference) === formData.machineId || String(m.id) === formData.machineId || m.name === formData.machineName);
             if (!activeM) return null;
@@ -775,7 +775,7 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
               <div className="mt-3 p-3 bg-blue-50/80 dark:bg-blue-950/40 rounded-xl border border-blue-200/80 dark:border-blue-800 text-[11px] space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-200/60 dark:border-blue-800 pb-1.5 font-bold">
                   <span className="text-fab-blue uppercase tracking-wider flex items-center gap-1">
-                    ✓ Fiche Équipement Source Excel (Conformité 100%)
+                    ✓ Fiche Équipement Synchronisée (Données Validées)
                   </span>
                   <span className="px-2 py-0.5 rounded-md bg-fab-blue text-white font-mono text-[10px]">
                     Réf. {activeM.reference} | Criticité {activeM.criticite || 'A'}
@@ -1459,7 +1459,7 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
             </legend>
             {!isReadOnly && (
               <label className="px-3 py-1.5 rounded-xl bg-fab-blue text-white font-bold text-xs flex items-center gap-1.5 hover:bg-blue-700 transition-all cursor-pointer">
-                <Upload className="w-3.5 h-3.5" /> Joindre Fichiers (PDF, Images, Word, Excel)
+                <Upload className="w-3.5 h-3.5" /> Joindre Fichiers (PDF, Images, Documents)
                 <input type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} className="hidden" />
               </label>
             )}

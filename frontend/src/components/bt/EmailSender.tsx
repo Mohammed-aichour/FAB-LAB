@@ -17,9 +17,9 @@ export const EmailSender: React.FC<EmailSenderProps> = ({
   onSuccess
 }) => {
   const [recipientEmail, setRecipientEmail] = useState('superviseur.fablab@universiapolis.ma');
-  const [subject, setSubject] = useState(`[GMAO] Bon de Travail Validé N° ${bt.btNumber} — ${bt.machineName}`);
+  const [subject, setSubject] = useState(`[GMA LAB] Bon de Travail Validé N° ${bt.btNumber} — ${bt.machineName}`);
   const [message, setMessage] = useState(
-    `Bonjour Monsieur le Superviseur,\n\nVeuillez trouver ci-joint le Bon de Travail N° ${bt.btNumber} d'intervention sur l'équipement ${bt.machineName} (${bt.machineId}).\n\nType d'intervention: ${bt.maintenanceType}\nPriorité: ${bt.priority}\nTemps d'intervention: ${bt.tempsIntervention} h\nTechnicien: ${bt.technicienResponsable}\n\nCordialement,\nService GMAO FabLab Universiapolis`
+    `Bonjour Monsieur le Superviseur,\n\nVeuillez trouver ci-joint le Bon de Travail N° ${bt.btNumber} d'intervention sur l'équipement ${bt.machineName} (${bt.machineId}).\n\nType d'intervention: ${bt.maintenanceType}\nPriorité: ${bt.priority}\nTemps d'intervention: ${bt.tempsIntervention} h\nTechnicien: ${bt.technicienResponsable}\n\nCordialement,\nService GMA LAB`
   );
 
   const [sending, setSending] = useState(false);

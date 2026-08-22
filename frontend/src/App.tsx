@@ -48,7 +48,7 @@ const IntroScreen = ({ user }: { user: any }) => {
         Bienvenue, <span className="text-fab-yellow">{user.name}</span>
       </h1>
       <p className="mt-2 text-slate-400 animate-fade-in-up" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-        Initialisation de votre espace <strong className="text-white">{user.role}</strong>...
+        Initialisation de votre espace GMA LAB (<strong className="text-white">{user.role}</strong>)...
       </p>
       <div className="mt-10 w-64 h-1.5 bg-slate-800 rounded-full overflow-hidden shadow-inner">
         <div 

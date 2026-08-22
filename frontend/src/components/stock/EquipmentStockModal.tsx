@@ -150,7 +150,7 @@ export const EquipmentStockModal: React.FC<EquipmentStockModalProps> = ({
     files.forEach(file => {
       const ext = file.name.split('.').pop()?.toLowerCase();
       if (!['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(ext || '')) {
-        alert(`Le fichier ${file.name} n'est pas supporté. Formats acceptés : PDF, Word, Excel.`);
+        alert(`Le fichier ${file.name} n'est pas supporté. Formats acceptés : PDF, Word, Tableur.`);
         return;
       }
       const reader = new FileReader();
@@ -278,7 +278,7 @@ export const EquipmentStockModal: React.FC<EquipmentStockModalProps> = ({
                 {isEdit ? `Modifier l'Équipement — ${formData.reference}` : "➕ Ajouter un Équipement / Article au Stock"}
               </h2>
               <p className="text-[11px] text-zinc-400 font-medium">
-                GMAO FabLab Universiapolis — Fiche technique d'équipement et inventaire
+                GMA LAB — Fiche technique d'équipement et inventaire
               </p>
             </div>
           </div>
@@ -594,7 +594,7 @@ export const EquipmentStockModal: React.FC<EquipmentStockModalProps> = ({
             {/* Documents Upload Area */}
             <div className="space-y-2 pt-2 border-t border-slate-200/80 dark:border-zinc-700/80">
               <label className="block font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
-                <span>Documents & Notices Techniques (PDF, Word, Excel)</span>
+                <span>Documents & Notices Techniques (PDF, Word, Tableur)</span>
                 <span className="text-[10px] text-zinc-400">{documents.length} document(s) rattaché(s)</span>
               </label>
 

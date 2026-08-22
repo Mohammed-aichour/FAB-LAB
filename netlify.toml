@@ -1,6 +1,6 @@
 [build]
-  command = "cd frontend && npm install && npm run build"
-  publish = "frontend/dist"
+  command = "npm run build"
+  publish = "docs"
 
 [build.environment]
   NODE_VERSION = "20"
@@ -10,3 +10,4 @@
   from = "/*"
   to = "/index.html"
   status = 200
+

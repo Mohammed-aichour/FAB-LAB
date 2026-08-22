@@ -38,14 +38,11 @@ const Sidebar = ({ user }: { user?: any }) => {
           </div>
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
             <h1 className="text-sm font-black text-white tracking-tight leading-none">
-              GMAO <span className="text-[#e0a61e]">FABLAB</span>
+              GMA <span className="text-[#e0a61e]">LAB</span>
             </h1>
             <span className="text-[10px] font-medium text-white/70">Universiapolis Agadir</span>
           </div>
         </div>
-        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#e0a61e]/20 text-[#e0a61e] border border-[#e0a61e]/40">
-          PRO
-        </span>
       </div>
 
       {/* Navigation Links with Brand Palette */}

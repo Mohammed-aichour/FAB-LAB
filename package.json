@@ -1,7 +1,7 @@
 {
   "name": "gmao-fablab-universiapolis",
   "version": "1.0.0",
-  "description": "Application GMAO Full Stack FabLab Universiapolis - Ready for Netlify Deployment",
+  "description": "Application GMA LAB - Ready for Netlify Deployment",
   "main": "index.js",
   "scripts": {
     "build": "cd frontend && npm install && npm run build && node -e \"try { require('fs').copyFileSync('../docs/index.html', '../docs/404.html'); require('fs').writeFileSync('../docs/.nojekyll', ''); } catch(e){}\"",

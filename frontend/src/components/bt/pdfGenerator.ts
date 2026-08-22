@@ -24,7 +24,7 @@ export const generateBTPdf = async (bt: BTItem): Promise<string> => {
     color: primaryBlue,
   });
 
-  page.drawText("FABLAB UNIVERSIAPOLIS — GMAO SAP/MAXIMO WORK ORDER", {
+  page.drawText("GMA LAB — WORK ORDER SYSTEM", {
     x: 50,
     y: height - 55,
     size: 12,
@@ -252,7 +252,7 @@ export const generateBTPdf = async (bt: BTItem): Promise<string> => {
   }
 
   // Footer Note
-  page.drawText("FabLab Universiapolis — GMAO SAP/Maximo Work Order System.", {
+  page.drawText("GMA LAB — Work Order System.", {
     x: 150,
     y: 35,
     size: 7,

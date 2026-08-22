@@ -218,11 +218,11 @@ const Machines = () => {
               Parc Machines & Équipements du FabLab
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs">
-              Conformité Excel 100% ({machines.length} Machines)
+              Base de Données Centralisée ({machines.length} Machines)
             </span>
           </div>
           <p className="text-slate-500 dark:text-zinc-400 text-xs mt-1 font-medium">
-            Référentiel unique issu des fichiers Excel FabLab — Synchronisé en temps réel avec toutes les pages de la GMAO
+            Référentiel unique du système de gestion des équipements — Synchronisé en temps réel avec toutes les pages de la GMAO
           </p>
         </div>
 

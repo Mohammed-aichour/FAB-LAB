@@ -30,8 +30,13 @@ const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
             <div className="flex justify-center mb-4">
               <img src="./Fab.png" alt="Logo FabLab" className="h-16 object-contain" />
             </div>
-            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">GMAO FabLab</h1>
-            <p className="text-zinc-500 mt-2">Connectez-vous pour accéder à votre espace</p>
+            <div className="inline-block px-3.5 py-1 bg-[#2f3874]/10 dark:bg-blue-500/10 rounded-full border border-[#2f3874]/20 dark:border-blue-500/30 mb-2">
+              <span className="text-xs font-black text-[#2f3874] dark:text-blue-400 uppercase tracking-widest">
+                GMA <span className="text-[#e0a61e]">LAB</span>
+              </span>
+            </div>
+            <h1 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">GMA LAB</h1>
+            <p className="text-zinc-500 text-xs mt-1.5 font-medium">Système de Gestion de Maintenance — Connectez-vous à votre espace</p>
           </div>
 
           <div className="mb-6 grid grid-cols-2 gap-2">

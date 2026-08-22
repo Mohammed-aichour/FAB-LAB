@@ -310,7 +310,7 @@ const Topbar = ({ user, onLogout }: { user?: any; onLogout?: () => void }) => {
         <div className="relative" ref={notificationsRef}>
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
-            title="Centre de Notifications GMAO"
+            title="Centre de Notifications GMA LAB"
             className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-all border border-slate-200/60 dark:border-zinc-700/60 shadow-sm relative flex items-center justify-center cursor-pointer"
           >
             <Bell className="w-4 h-4 text-fab-blue" />
@@ -537,7 +537,7 @@ const Topbar = ({ user, onLogout }: { user?: any; onLogout?: () => void }) => {
                     <div className="p-8 text-center text-zinc-400 text-xs space-y-2">
                       <CheckCircle2 className="w-8 h-8 mx-auto text-emerald-500 opacity-80" />
                       <p className="font-bold text-zinc-800 dark:text-zinc-200 text-sm">Aucune notification.</p>
-                      <p className="text-[11px] text-zinc-500">Toutes les alertes GMAO ont été traitées.</p>
+                      <p className="text-[11px] text-zinc-500">Toutes les alertes GMA LAB ont été traitées.</p>
                     </div>
                   )}
                 </div>
@@ -660,7 +660,7 @@ const Topbar = ({ user, onLogout }: { user?: any; onLogout?: () => void }) => {
                   <ShieldAlert className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-base text-zinc-900 dark:text-white">Historique Complet des Notifications GMAO</h3>
+                  <h3 className="font-extrabold text-base text-zinc-900 dark:text-white">Historique Complet des Notifications GMA LAB</h3>
                   <p className="text-xs text-zinc-500 font-medium">Liste intégrale de toutes les alertes ({notifications.length})</p>
                 </div>
               </div>

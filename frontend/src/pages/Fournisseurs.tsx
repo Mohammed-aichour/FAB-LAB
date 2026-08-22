@@ -36,7 +36,7 @@ const Fournisseurs = () => {
     status: 'Actif'
   });
 
-  // Order / Re-order Modal (Formulaire Demande de Réapprovisionnement - Étape 13 Excel)
+  // Order / Re-order Modal (Formulaire Demande de Réapprovisionnement)
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [orderForm, setOrderForm] = useState({
     reapproRef: `CDE-2026-003`,
@@ -160,7 +160,7 @@ const Fournisseurs = () => {
     localStorage.setItem('gmao_fournisseurs_v6', JSON.stringify(updated));
   };
 
-  // Open Re-order Form Modal (Étape 13 Excel)
+  // Open Re-order Form Modal
   const openOrderModal = (supplier?: Supplier, stockId?: string) => {
     const supp = supplier || (fournisseurs.length > 0 ? fournisseurs[0] : null);
     const stockItem = stockId ? realStockItems.find(s => s.id === stockId) : realStockItems[0];
@@ -341,7 +341,7 @@ const Fournisseurs = () => {
         </div>
       </div>
 
-      {/* SUPPLIER TABLE (CARNET DES FOURNISSEURS EXCEL ÉTAPE 9B) */}
+      {/* SUPPLIER TABLE (CARNET DES FOURNISSEURS) */}
       <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-200/50 dark:border-zinc-800/50 rounded-xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
@@ -428,7 +428,7 @@ const Fournisseurs = () => {
         </div>
       </div>
 
-      {/* MODAL FORMULAIRE DEMANDE DE RÉAPPROVISIONNEMENT (ENRICHIE - ÉTAPE 13 EXCEL) */}
+      {/* MODAL FORMULAIRE DEMANDE DE RÉAPPROVISIONNEMENT */}
       <Modal
         isOpen={isOrderModalOpen}
         onClose={() => setIsOrderModalOpen(false)}

@@ -215,7 +215,7 @@ const Stock = () => {
               Stock & Gestion des Équipements
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs">
-              Conformité Excel 100%
+              Gestion du Stock en Temps Réel
             </span>
           </div>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs mt-1 font-medium">
