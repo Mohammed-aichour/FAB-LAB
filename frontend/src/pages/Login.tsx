@@ -3,26 +3,53 @@ import { refreshFromServer } from '../services/db';
 import { useState } from 'react';
 import { Lock, Mail, Shield, Wrench, GraduationCap, User } from 'lucide-react';
 
+const defaultProfiles = [
+  { id: 1, email: 'superviseur@fablab.com', name: 'Admin Système', role: 'Superviseur', status: 'Actif', initials: 'SU', color: 'bg-purple-600' },
+  { id: 2, email: 'ingenieur@fablab.com', name: 'Ingénieur Principal', role: 'Ingénieur', status: 'Actif', initials: 'IN', color: 'bg-blue-600' },
+  { id: 3, email: 'technicien@fablab.com', name: 'Technicien', role: 'Technicien', status: 'Actif', initials: 'TE', color: 'bg-amber-600' },
+  { id: 4, email: 'user@fablab.com', name: 'Utilisateur', role: 'Utilisateur Normal', status: 'Actif', initials: 'US', color: 'bg-zinc-600' }
+];
+
 const getProfiles = () => {
-  const stored = localStorage.getItem('gmao_users');
-  return stored ? JSON.parse(stored) : [];
+  try {
+    const stored = localStorage.getItem('gmao_users');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.warn('Error reading gmao_users:', e);
+  }
+  return defaultProfiles;
 };
 
 const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  const [busy,setBusy] = useState(false);
+  const selectProfile = (profEmail: string) => {
+    setEmail(profEmail);
+    setPassword('password123');
+    setError('');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setError(''); setBusy(true);
+    e.preventDefault();
+    setError('');
+    setBusy(true);
     try {
-      const result = await api('/auth/login',{email,password});
-      sessionStorage.setItem('gmao_token',result.token);
+      const result = await api('/auth/login', { email, password });
+      sessionStorage.setItem('gmao_token', result.token);
       await refreshFromServer();
       onLogin(result.user);
-    } catch (err) { sessionStorage.removeItem('gmao_token'); setError(err instanceof Error ? err.message : 'Connexion impossible.'); }
-    finally { setBusy(false); }
+    } catch (err) {
+      sessionStorage.removeItem('gmao_token');
+      setError(err instanceof Error ? err.message : 'Connexion impossible.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -51,7 +78,7 @@ const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
                 <button 
                   key={prof.email}
                   type="button"
-                  onClick={() => setEmail(prof.email)}
+                  onClick={() => selectProfile(prof.email)}
                   className={`flex items-center gap-2 p-2 rounded-lg border text-left text-sm transition-all duration-300 hover:-translate-y-1 ${email === prof.email ? 'border-fab-blue bg-blue-50 dark:bg-blue-900/20 text-fab-blue dark:text-blue-300 shadow-md' : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-fab-blue/50'}`}
                 >
                   <Icon className="w-4 h-4" />

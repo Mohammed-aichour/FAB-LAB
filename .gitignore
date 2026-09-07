@@ -1,19 +1,33 @@
 # Dependencies
 node_modules
+**/node_modules
 frontend/node_modules
 backend/node_modules
 
 # Build outputs
 dist
+**/dist
 frontend/dist
 
 # Logs
 *.log
 npm-debug.log*
 
-# Environment & Local files
+# Environment & Secrets (Never commit API keys or environment secrets)
 .env
+**/.env
+**/.env.*
+!**/.env.example
 .env.local
+
+# Operating System & IDE files
 .DS_Store
+Thumbs.db
 .vscode
 .idea
+
+# Local database secrets & transient stores
+data_db/credentials_db.json
+data_db/assistant_pending_actions_db.json
+data_db/*.tmp
+data_db/.transaction.json
