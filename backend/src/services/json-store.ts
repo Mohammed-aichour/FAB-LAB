@@ -2,7 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
-export const DATA_DIR = process.env.GMAO_DATA_DIR || path.resolve(__dirname, '../../../data_db');
+export const DATA_DIR = process.env.GMAO_DATA_DIR ? path.resolve(process.env.GMAO_DATA_DIR) : path.resolve(__dirname, '../../../data_db');
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
 
 export const ENTITY_FILES = {
   machines: 'machines_db.json',

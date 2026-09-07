@@ -11,6 +11,16 @@ const defaultUsers = [
   { id: 4, email: 'user@fablab.com', name: 'Utilisateur', role: 'Utilisateur Normal', status: 'Actif', initials: 'US', color: 'bg-zinc-600' }
 ];
 
+const RAW_API_URL = (import.meta.env?.VITE_API_URL as string | undefined || '').trim().replace(/\/$/, '');
+
+export function getApiUrl(path: string): string {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  if (RAW_API_URL) {
+    return `${RAW_API_URL}/api${cleanPath}`;
+  }
+  return `/api${cleanPath}`;
+}
+
 export function authHeaders(): Record<string,string> {
   const token = sessionStorage.getItem('gmao_token');
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -18,7 +28,7 @@ export function authHeaders(): Record<string,string> {
 
 export async function api<T = any>(path: string, body?: unknown): Promise<T> {
   try {
-    const response = await fetch(`/api${path}`, {
+    const response = await fetch(getApiUrl(path), {
       method: body === undefined ? 'GET' : 'POST',
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
       ...(body === undefined ? {} : { body: JSON.stringify(body) })
@@ -30,7 +40,7 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
       return data;
     }
 
-    // If server returned non-OK or non-JSON (e.g. 404 HTML on static GitHub Pages hosting)
+    // If server returned non-OK or non-JSON (e.g. 404 HTML on static GitHub Pages hosting when backend is unreachable)
     if (!response.ok || !contentType.includes('application/json')) {
       return await handleStaticFallback<T>(path, body);
     }
@@ -48,7 +58,7 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
 
 export async function apiForm<T = any>(path: string, body: FormData): Promise<T> {
   try {
-    const response = await fetch(`/api${path}`, {
+    const response = await fetch(getApiUrl(path), {
       method: 'POST',
       headers: authHeaders(),
       body,

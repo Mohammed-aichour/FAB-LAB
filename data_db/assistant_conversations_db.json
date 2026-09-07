@@ -1,5 +1,44 @@
 [
   {
+    "id": "06246d38-f9a0-43ce-93d8-f1b883317811",
+    "userId": "1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "donner une list des panne"
+      },
+      {
+        "role": "assistant",
+        "content": "Voici la liste des pannes enregistrées :\n\n1. **Imprimante 3D FDM Creality Ender-3 (N°3) - FL-005**\n   - **OT**: OT-AUTO-450\n   - **Création**: 2026-08-12\n   - **Statut**: Nouveau\n   - **Coût total**: 150 MAD\n\n2. **Imprimante 3D FDM Creality Ender-3 (N°2) - FL-004**\n   - **OT**: OT-AUTO-148\n   - **Création**: 2026-08-12\n   - **Statut**: Nouveau\n   - **Coût total**: 150 MAD\n\n3. **Imprimante 3D FDM Creality Ender-3 (N°1) - FL-003**\n   - **OT**: OT-AUTO-132\n   - **Création**: 2026-08-12\n   - **Statut**: Nouveau\n   - **Coût total**: 150 MAD\n\n4. **Machine de découpe laser CO2 (PIPROD) - FL-007**\n   - **OT**: OT-AUTO-442\n   - **Création**: 2026-08-12\n   - **Statut**: Nouveau\n   - **Coût total**: 150 MAD\n\n5. **Système d'aspiration / extraction (AirClean) - FL-ASP-01**\n   - **OT**: OT-2026-021\n   - **Création**: 2026-01-12\n   - **Statut**: Terminé\n   - **Coût total**: 630 MAD\n\n6. **Imprimante 3D FDM (Ultimaker S5) - FL-IMP-01**\n   - **OT**: OT-2026-014\n   - **Création**: 2026-01-08\n   - **Statut**: Terminé\n   - **Coût total**: 150 MAD\n\n**Remarque** : Ces informations proviennent d'interventions enregistrées et ne constituent pas un registre exhaustif de toutes les pannes."
+      },
+      {
+        "role": "user",
+        "content": "donner le temps de chage pean"
+      },
+      {
+        "role": "assistant",
+        "content": "Il n'y a aucune intervention corrective enregistrée pour l'**Imprimante 3D FDM (Ultimaker S5) - FL-IMP-01** dans la période entre le 1er janvier 2023 et le 7 septembre 2026. \n\nVeuillez noter que cela ne constitue pas un registre exhaustif des pannes, mais uniquement des interventions enregistrées."
+      },
+      {
+        "role": "user",
+        "content": "le temps de chaque panne"
+      },
+      {
+        "role": "assistant",
+        "content": "Aucune intervention corrective n'a été enregistrée pour les machines suivantes :\n\n1. **Imprimante 3D FDM Creality Ender-3 (N°3) - FL-005**\n2. **Imprimante 3D FDM Creality Ender-3 (N°2) - FL-004**\n3. **Imprimante 3D FDM Creality Ender-3 (N°1) - FL-003**\n4. **Machine de découpe laser CO2 (PIPROD) - FL-007**\n5. **Système d'aspiration / extraction (AirClean) - FL-ASP-01**\n6. **Imprimante 3D FDM (Ultimaker S5) - FL-IMP-01**\n\nCela signifie qu'il n'y a pas de données disponibles sur le temps de charge des pannes pour ces machines. Veuillez noter que les données proviennent d'interventions enregistrées et ne fournissent pas un registre exhaustif de toutes les pannes."
+      },
+      {
+        "role": "user",
+        "content": "Quelles maintenances sont prévues pour ces machines ?"
+      },
+      {
+        "role": "assistant",
+        "content": "Voici les maintenances prévues pour les machines concernées :\n\n### Imprimante 3D FDM Creality\n1. **Imprimante 3D FDM (FL-003/004/005)**\n   - **Tâche**: Diagnostic individuel\n     - **Type**: Diagnostic\n     - **Fréquence**: Ponctuelle\n     - **Durée**: 0.75 heures\n     - **Prochaine échéance**: 2026-02-15\n   - **Tâche**: Extrusion / Hotend\n     - **Type**: Nettoyage / Remplacement\n     - **Fréquence**: Selon usage\n     - **Durée**: 0.33 heures\n     - **Prochaine échéance**: 2026-02-15\n   - **Tâche**: Courroies et rails\n     - **Type**: Inspection\n     - **Fréquence**: Trimestrielle\n     - **Durée**: 0.25 heures\n     - **Prochaine échéance**: 2026-02-15\n\n### Machine de découpe laser CO2 (PIPROD)\n1. **LASER PIPROD (FL-007)**\n   - **Tâche**: Diagnostic complet\n     - **Type**: Diagnostic\n     - **Fréquence**: Ponctuelle\n     - **Durée**: 1 heure\n     - **Prochaine échéance**: 2026-02-15\n   - **Tâche**: Miroirs de renvoi\n     - **Type**: Nettoyage / Réglage\n     - **Fréquence**: Hebdomadaire\n     - **Durée**: 0.33 heures\n     - **Prochaine échéance**: 2026-02-15\n   - **Tâche**: Chiller / pompe à eau\n     - **Type**: Contrôle / Remplacement\n     - **Fréquence**: Mensuel\n     - **Durée**: 0.33 heures\n     - **Prochaine échéance**: 2026-02-15\n\n### Système d'aspiration / extraction\n1. **Aspiration / extraction (FL-ASP-01)**\n   - **Tâche**: Contrôle & nettoyage filtres\n     - **Type**: Nettoyage\n     - **Fréquence**: Mensuel\n     - **Durée**: 0.5 heures\n     - **Prochaine échéance**: 2026-02-15\n   - **Tâche**: Remplacement filtres\n     - **Type**: Remplacement\n     - **Fréquence**: Semestriel\n     - **Durée**: 0.5 heures\n     - **Prochaine échéance**: 2026-02-15\n\nCes maintenances sont planifiées et doivent être effectuées selon les échéances indiquées."
+      }
+    ],
+    "updatedAt": 1788786939454
+  },
+  {
     "id": "86463b06-6b1c-41d4-a08b-7a3fb19336a8",
     "userId": "1",
     "messages": [
