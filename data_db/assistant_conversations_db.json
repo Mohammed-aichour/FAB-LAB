@@ -1,5 +1,28 @@
 [
   {
+    "id": "86463b06-6b1c-41d4-a08b-7a3fb19336a8",
+    "userId": "1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Quelles machines sont actuellement en panne ?"
+      },
+      {
+        "role": "assistant",
+        "content": "Actuellement, quatre machines sont hors service :\n\n1. **Machine de découpe laser CO2 (PIPROD)**\n   - **Référence** : FL-007\n   - **Statut** : Hors service\n   - **Atelier** : Espace Prototypage - Découpe laser\n\n2. **Imprimante 3D FDM Creality Ender-3 (N°1)**\n   - **Référence** : FL-003\n   - **Statut** : Hors service\n   - **Atelier** : Espace Impression 3D\n\n3. **Imprimante 3D FDM Creality Ender-3 (N°2)**\n   - **Référence** : FL-004\n   - **Statut** : Hors service\n   - **Atelier** : Espace Impression 3D\n\n4. **Imprimante 3D FDM Creality Ender-3 (N°3)**\n   - **Référence** : FL-005\n   - **Statut** : Hors service\n   - **Atelier** : Espace Impression 3D\n\nSi vous avez besoin de plus d'informations sur ces machines, n'hésitez pas à demander."
+      },
+      {
+        "role": "user",
+        "content": "donner une list des panne"
+      },
+      {
+        "role": "assistant",
+        "content": "Voici la liste des pannes enregistrées pour les machines hors service :\n\n1. **Machine de découpe laser CO2 (PIPROD)**\n   - **Référence** : FL-007\n   - **Intervention** : OT-AUTO-442\n   - **Date de création** : 2026-08-12\n   - **Description** : Machine déclarée HS - Génération Automatique\n   - **Coût total** : 150 MAD\n   - **Statut** : Nouveau\n\n2. **Imprimante 3D FDM Creality Ender-3 (N°1)**\n   - **Référence** : FL-003\n   - **Intervention** : OT-AUTO-132\n   - **Date de création** : 2026-08-12\n   - **Description** : Machine déclarée HS - Génération Automatique\n   - **Coût total** : 150 MAD\n   - **Statut** : Nouveau\n\n3. **Imprimante 3D FDM Creality Ender-3 (N°2)**\n   - **Référence** : FL-004\n   - **Intervention** : OT-AUTO-148\n   - **Date de création** : 2026-08-12\n   - **Description** : Machine déclarée HS - Génération Automatique\n   - **Coût total** : 150 MAD\n   - **Statut** : Nouveau\n\n4. **Imprimante 3D FDM Creality Ender-3 (N°3)**\n   - **Référence** : FL-005\n   - **Intervention** : OT-AUTO-450\n   - **Date de création** : 2026-08-12\n   - **Description** : Machine déclarée HS - Génération Automatique\n   - **Coût total** : 150 MAD\n   - **Statut** : Nouveau\n\nCes interventions indiquent un enregistrement de pannes, mais ne constituent pas un registre exhaustif. Si vous avez besoin de plus de détails, faites-le moi savoir."
+      }
+    ],
+    "updatedAt": 1788786709306
+  },
+  {
     "id": "72be592f-f49b-4df2-9cdb-6f9a4c807536",
     "userId": "1",
     "messages": [

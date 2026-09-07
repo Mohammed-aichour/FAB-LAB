@@ -1,7 +1,8 @@
 import { REAL_MACHINES_DATA } from '../data/realMachinesData';
 import { realStockItems } from '../data/realStockData';
-import { initialOTs } from '../data/otData';
+import { initialOTs, initialDIs } from '../data/otData';
 import { preventifData } from '../data/amdecData';
+import { initialFournisseurs } from '../data/fournisseursData';
 
 const defaultUsers = [
   { id: 1, email: 'superviseur@fablab.com', name: 'Admin Système', role: 'Superviseur', status: 'Actif', initials: 'SU', color: 'bg-purple-600' },
@@ -117,6 +118,18 @@ async function handleStaticFallback<T>(path: string, body?: any): Promise<T> {
       audit_logs: 'gmao_audit_logs_v1',
       documents: 'gmao_documents_v3'
     };
+    const defaultSeedMap: Record<string, any> = {
+      machines: REAL_MACHINES_DATA,
+      stock: realStockItems,
+      interventions: initialOTs,
+      dis: initialDIs,
+      preventif: preventifData,
+      suppliers: initialFournisseurs,
+      users: defaultUsers,
+      notifications: [],
+      audit_logs: [],
+      documents: []
+    };
     const storageKey = keyMap[entity];
     if (storageKey) {
       if (body !== undefined) {
@@ -124,7 +137,15 @@ async function handleStaticFallback<T>(path: string, body?: any): Promise<T> {
         return { success: true, count: Array.isArray(body) ? body.length : 1, revision: 'static_rev' } as T;
       } else {
         const stored = localStorage.getItem(storageKey);
-        return (stored ? JSON.parse(stored) : []) as T;
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed as T;
+          } catch { /* fallthrough */ }
+        }
+        const defaultData = defaultSeedMap[entity] || [];
+        localStorage.setItem(storageKey, JSON.stringify(defaultData));
+        return defaultData as T;
       }
     }
     return [] as T;
