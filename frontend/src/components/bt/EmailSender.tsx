@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Send, X, Mail, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import type { BTItem } from './types';
 import axios from 'axios';
+import { authHeaders } from '../../services/api';
 
 interface EmailSenderProps {
   bt: BTItem;
@@ -36,11 +37,9 @@ export const EmailSender: React.FC<EmailSenderProps> = ({
         subject,
         message,
         btNumber: bt.btNumber,
-        pdfDataUrl
-      }, { timeout: 8000 }).catch(err => {
-        console.warn('Backend Nodemailer API call fallback:', err);
-        return { data: { success: true, simulated: true } };
-      });
+        pdfDataUrl,
+        confirm: true
+      }, { timeout: 15000, headers: authHeaders() });
 
       setSending(false);
       setStatusMessage({

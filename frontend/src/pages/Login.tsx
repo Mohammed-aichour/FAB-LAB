@@ -1,3 +1,5 @@
+import { api } from '../services/api';
+import { refreshFromServer } from '../services/db';
 import { useState } from 'react';
 import { Lock, Mail, Shield, Wrench, GraduationCap, User } from 'lucide-react';
 
@@ -8,18 +10,19 @@ const getProfiles = () => {
 
 const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('password123');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const user = getProfiles().find((p: any) => p.email === email);
-    
-    if (user && password === 'password123') {
-      onLogin(user);
-    } else {
-      setError("Email incorrect. (Mot de passe: password123)");
-    }
+  const [busy,setBusy] = useState(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); setError(''); setBusy(true);
+    try {
+      const result = await api('/auth/login',{email,password});
+      sessionStorage.setItem('gmao_token',result.token);
+      await refreshFromServer();
+      onLogin(result.user);
+    } catch (err) { sessionStorage.removeItem('gmao_token'); setError(err instanceof Error ? err.message : 'Connexion impossible.'); }
+    finally { setBusy(false); }
   };
 
   return (
@@ -71,7 +74,7 @@ const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
                   type="email"
                   required
                   className="w-full pl-10 pr-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-zinc-900 dark:text-white"
-                  placeholder="Selectionnez un profil au-dessus"
+                  placeholder="nom@fablab.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -95,11 +98,11 @@ const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
             </div>
 
             <button
-              type="submit"
+              type="submit" disabled={busy}
               className="btn-neu w-full px-4 py-2.5 rounded-xl animate-fade-in-up"
               style={{ animationDelay: '0.2s' }}
             >
-              Se connecter
+              {busy ? "Connexion…" : "Se connecter"}
             </button>
           </form>
         </div>

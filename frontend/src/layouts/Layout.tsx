@@ -6,6 +6,7 @@ import Modal from '../components/shared/Modal';
 import { AlertTriangle } from 'lucide-react';
 import { db } from '../services/db';
 import { NotificationPanel, type NotificationItem } from '../components/shared/NotificationPanel';
+import FloatingAssistant from '../components/assistant/FloatingAssistant';
 
 const Layout = ({ user, onLogout }: { user: any, onLogout: () => void }) => {
   const location = useLocation();
@@ -431,6 +432,7 @@ const Layout = ({ user, onLogout }: { user: any, onLogout: () => void }) => {
         onMarkAllRead={handleMarkAllRead}
         onToggleRead={handleToggleRead}
       />
+      <FloatingAssistant user={user} />
     </div>
   );
 };

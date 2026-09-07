@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "email": "superviseur@fablab.com",
+    "name": "Admin Système",
+    "role": "Superviseur",
+    "status": "Actif",
+    "initials": "SU",
+    "color": "bg-purple-600"
+  },
+  {
+    "id": 2,
+    "email": "ingenieur@fablab.com",
+    "name": "Ingénieur Principal",
+    "role": "Ingénieur",
+    "status": "Actif",
+    "initials": "IN",
+    "color": "bg-blue-600"
+  },
+  {
+    "id": 3,
+    "email": "technicien@fablab.com",
+    "name": "Technicien",
+    "role": "Technicien",
+    "status": "Actif",
+    "initials": "TE",
+    "color": "bg-amber-600"
+  },
+  {
+    "id": 4,
+    "email": "user@fablab.com",
+    "name": "Utilisateur",
+    "role": "Utilisateur Normal",
+    "status": "Actif",
+    "initials": "US",
+    "color": "bg-zinc-600"
+  }
+]

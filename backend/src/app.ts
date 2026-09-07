@@ -4,15 +4,18 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import path from 'path';
-import fs from 'fs';
+import authRoutes from './routes/auth.routes';
+import assistantRoutes from './routes/assistant.routes';
+import databaseRoutes from './routes/database.routes';
+import { authenticate, requireRoles } from './middleware/auth';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const DATA_DIR = path.join(__dirname, '../../data_db');
 
-app.use(cors());
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173').split(',').map(value => value.trim());
+app.use(cors({ origin: (origin, done) => !origin || allowedOrigins.includes(origin) ? done(null, true) : done(new Error('Origine refusée.')) }));
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' }));
@@ -29,34 +32,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'GMAO API is running' });
 });
 
-// ── Universal DB persistence route ──────────────────────────────────────────
-app.get('/api/db/:entity', (req, res) => {
-  const { entity } = req.params;
-  const filePath = path.join(DATA_DIR, `${entity}_db.json`);
-  try {
-    if (!fs.existsSync(filePath)) return res.json([]);
-    const raw = fs.readFileSync(filePath, 'utf8');
-    res.json(JSON.parse(raw));
-  } catch (err) {
-    console.error(`[DB GET] Error reading ${entity}:`, err);
-    res.status(500).json({ error: 'Read error' });
-  }
-});
-
-app.post('/api/db/:entity', (req, res) => {
-  const { entity } = req.params;
-  const filePath = path.join(DATA_DIR, `${entity}_db.json`);
-  try {
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(filePath, JSON.stringify(req.body, null, 2), 'utf8');
-    res.json({ success: true, entity, count: Array.isArray(req.body) ? req.body.length : 1 });
-  } catch (err) {
-    console.error(`[DB POST] Error writing ${entity}:`, err);
-    res.status(500).json({ error: 'Write error' });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
+app.use('/api/auth', authRoutes);
+app.use('/api/assistant', assistantRoutes);
+app.use('/api/db', databaseRoutes);
+app.use('/api', authenticate);
+app.use('/api', (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next));
 
 app.use('/api/machines', machineRoutes);
 app.use('/api/suppliers', supplierRoutes);
@@ -67,8 +47,10 @@ app.use('/api', emailRoutes);
 
 app.use('/docs', express.static(path.join(__dirname, '../../Documents_GED')));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
 export default app;

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
 import nodemailer from 'nodemailer';
+import { requireRoles } from '../middleware/auth';
 
 const router = Router();
 const docDir = path.join(__dirname, '../../../Documents_GED');
@@ -36,8 +37,8 @@ async function getTransporter() {
   });
 }
 
-router.post('/generate-invoice', async (req, res) => {
-  const { supplierName, supplierEmail, partName, category, description, quantity, unitPrice, deliveryAddress, contactPhone, urgency, orderRef, sendEmail, customEmailMessage } = req.body;
+router.post('/generate-invoice', requireRoles('Superviseur'), async (req, res) => {
+  const { supplierName, supplierEmail, partName, category, description, quantity, unitPrice, deliveryAddress, contactPhone, urgency, orderRef, sendEmail, customEmailMessage, confirmSend } = req.body;
 
   if (!supplierName || !partName || !quantity || !unitPrice) {
     return res.status(400).json({ error: 'Tous les champs obligatoires sont requis.' });
@@ -108,10 +109,11 @@ router.post('/generate-invoice', async (req, res) => {
       let previewUrl = '';
       
       // Send Email with Nodemailer ONLY IF sendEmail is true
-      if (sendEmail) {
+      if (sendEmail && confirmSend === true) {
         try {
         const transporter = await getTransporter();
-        const targetEmail = supplierEmail || 'fournisseur@example.com';
+        if (!supplierEmail) throw new Error('Email fournisseur requis.');
+        const targetEmail = supplierEmail;
         
         const htmlContent = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">

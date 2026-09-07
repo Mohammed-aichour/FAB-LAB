@@ -1,0 +1,57 @@
+[
+  {
+    "id": "72be592f-f49b-4df2-9cdb-6f9a4c807536",
+    "userId": "1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Quels composants sont en stock critique ?"
+      },
+      {
+        "role": "assistant",
+        "content": "Voici les composants en stock critique :\n\n1. **Tube PTFE (bowden)**\n   - Référence : PR-003\n   - Quantité en stock : 3\n   - Min requis : 3\n   - Équipement : FL-IMP-01/02\n   - Fournisseur : 3D Distrib. Maroc\n\n2. **Filament ABS 1.75 (1 kg)**\n   - Référence : PR-006\n   - Quantité en stock : 6\n   - Min requis : 6\n   - Équipement : FL-IMP-01/02\n   - Fournisseur : 3D Distrib. Maroc\n\n3. **Film FEP (SLA)**\n   - Référence : PR-007\n   - Quantité en stock : 2\n   - Min requis : 2\n   - Équipement : FL-IMP-03\n   - Fournisseur : Formlabs EU\n\n4. **Lentille focalisation laser**\n   - Référence : PR-010\n   - Quantité en stock : 1\n   - Min requis : 1\n   - Équipement : FL-LAS-01\n   - Fournisseur : Trotec MA\n\n5. **Miroir réfléchissant laser**\n   - Référence : PR-011\n   - Quantité en stock : 2\n   - Min requis : 2\n   - Équipement : FL-LAS-01\n   - Fournisseur : Trotec MA\n\n6. **Filtre d'extraction (charbon)**\n   - Référence : PR-013\n   - Quantité en stock : 0 (Rupture)\n   - Min requis : 2\n   - Équipement : FL-LAS-01/ASP-01\n   - Fournisseur : AirClean\n\n7. **Roulement broche CNC**\n   - Référence : PR-016\n   - Quantité en stock : 2\n   - Min requis : 2\n   - Équipement : FL-CNC-01\n   - Fournisseur : Outillage Agadir\n\n8. **Lame scie à ruban**\n   - Référence : PR-021\n   - Quantité en stock : 2\n   - Min requis : 2\n   - Équipement : FL-BOI-02\n   - Fournisseur : Outillage Agadir\n\n9. **Filtre à air compresseur**\n   - Référence : PR-025\n   - Quantité en stock : 2\n   - Min requis : 2\n   - Équipement : FL-CMP-01\n   - Fournisseur : Air Pro MA\n\n10. **Filtre aspiration (rechange)**\n    - Référence : PR-027\n    - Quantité en stock : 1\n    - Min requis : 2\n    - Équipement : FL-ASP-01\n    - Fournisseur : AirClean\n\nCela constitue les composants en stock critique. Si vous avez besoin de passer une commande pour l'un d'eux, faites-le moi savoir."
+      },
+      {
+        "role": "user",
+        "content": "donner une list de grande machine"
+      },
+      {
+        "role": "assistant",
+        "content": "Je n’ai pas cette information dans les données actuelles de la GMAO concernant les grandes machines. Si vous avez un autre critère de recherche, n'hésitez pas à me le faire savoir."
+      },
+      {
+        "role": "user",
+        "content": "Quelles interventions ont été réalisées récemment sur ces machines ?"
+      },
+      {
+        "role": "assistant",
+        "content": "Aucune intervention récente n'a été enregistrée sur les grandes machines. Si vous avez besoin d'informations supplémentaires, n'hésitez pas à demander."
+      },
+      {
+        "role": "user",
+        "content": "Quelles maintenances sont prévues pour ces machines ?"
+      },
+      {
+        "role": "assistant",
+        "content": "Aucune maintenance n'est prévue pour les grandes machines. Si vous avez d'autres questions ou besoins, faites-le moi savoir."
+      },
+      {
+        "role": "user",
+        "content": "donner tout les machine dans le gmao"
+      },
+      {
+        "role": "assistant",
+        "content": "Voici la liste de toutes les machines enregistrées dans la GMAO :\n\n1. **Machine de découpe laser CO2 (PIPROD)**\n   - Référence : FL-007\n   - Modèle : Laser CO2 100W\n   - Statut : Hors service\n   - Atelier : Espace Prototypage - Découpe laser\n   - Localisation : Espace Prototypage - Enceinte Laser\n   - Caractéristiques : Laser CO2 100W, surface de travail 900x600mm, refroidissement liquide externe\n   - Logiciel : LightBurn / RDWorks\n\n2. **Imprimante 3D FDM Creality Ender-3 (N°1)**\n   - Référence : FL-003\n   - Modèle : Ender-3 Pro\n   - Statut : Hors service\n   - Atelier : Espace Impression 3D\n   - Localisation : Atelier Impression 3D - Rangée A\n   - Caractéristiques : Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C\n   - Logiciel : Cura / OctoPrint\n\n3. **Imprimante 3D FDM Creality Ender-3 (N°2)**\n   - Référence : FL-004\n   - Modèle : Ender-3 Pro\n   - Statut : Hors service\n   - Atelier : Espace Impression 3D\n   - Localisation : Atelier Impression 3D - Rangée A\n   - Caractéristiques : Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C\n   - Logiciel : Cura / OctoPrint\n\n4. **Imprimante 3D FDM Creality Ender-3 (N°3)**\n   - Référence : FL-005\n   - Modèle : Ender-3 Pro\n   - Statut : Hors service\n   - Atelier : Espace Impression 3D\n   - Localisation : Atelier Impression 3D - Rangée A\n   - Caractéristiques : Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C\n   - Logiciel : Cura / OctoPrint\n\nSi vous avez besoin d'informations supplémentaires sur une machine en particulier, faites-le moi savoir."
+      },
+      {
+        "role": "user",
+        "content": "donner chaque panne dans cette machine"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour la machine **Machine de découpe laser CO2 (PIPROD)**, voici la panne enregistrée :\n\n- **Intervention** :\n  - **ID d'intervention** : OT-AUTO-442\n  - **Date de création** : 2026-08-12\n  - **Type** : Corrective\n  - **Atelier** : Espace Prototypage - Découpe laser\n  - **Description** : Machine déclarée hors service - Génération Automatique\n  - **Technicien** : Non assigné\n  - **Date prévue** : 2026-08-12\n  - **Statut** : Nouveau\n  - **Coût de la main-d'œuvre** : 150 MAD\n  - **Coût total** : 150 MAD\n\nCela représente une intervention et une indication de panne pour cette machine. Si vous avez besoin d'autres informations, n'hésitez pas à demander."
+      }
+    ],
+    "updatedAt": 1788784065695
+  }
+]

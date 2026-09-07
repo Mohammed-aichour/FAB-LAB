@@ -1,3 +1,5 @@
+import { api } from './services/api';
+import { refreshFromServer } from './services/db';
 import { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -16,17 +18,6 @@ import PlanPreventif from './pages/PlanPreventif';
 import { BonTravailPage } from './components/bt/BonTravailPage';
 
 const queryClient = new QueryClient();
-
-const defaultUsers = [
-  { id: 1, email: 'superviseur@fablab.com', name: 'Admin Système', role: 'Superviseur', status: 'Actif', initials: 'SU', color: 'bg-purple-600' },
-  { id: 2, email: 'ingenieur@fablab.com', name: 'Ingénieur Principal', role: 'Ingénieur', status: 'Actif', initials: 'IN', color: 'bg-blue-600' },
-  { id: 3, email: 'technicien@fablab.com', name: 'Technicien', role: 'Technicien', status: 'Actif', initials: 'TE', color: 'bg-amber-600' },
-  { id: 4, email: 'user@fablab.com', name: 'Utilisateur', role: 'Utilisateur Normal', status: 'Actif', initials: 'US', color: 'bg-zinc-600' }
-];
-
-if (!localStorage.getItem('gmao_users')) {
-  localStorage.setItem('gmao_users', JSON.stringify(defaultUsers));
-}
 
 const IntroScreen = ({ user }: { user: any }) => {
   const [progress, setProgress] = useState(0);
@@ -61,10 +52,22 @@ const IntroScreen = ({ user }: { user: any }) => {
 };
 
 function App() {
-  const [user, setUser] = useState<any>(() => {
-    const saved = localStorage.getItem('gmao_current_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState<any>(null);
+  const [ready,setReady] = useState(false);
+  const [syncError,setSyncError] = useState('');
+  useEffect(() => {
+    let active=true;
+    const restore = async () => {
+      try { if (sessionStorage.getItem('gmao_token')) { const r=await api('/auth/me'); await refreshFromServer(); if(active) setUser(r.user); } }
+      catch { sessionStorage.removeItem('gmao_token'); localStorage.removeItem('gmao_current_user'); }
+      finally { if(active) setReady(true); }
+    };
+    void restore();
+    const expired=()=>{setUser(null);sessionStorage.removeItem('gmao_token');localStorage.removeItem('gmao_current_user');};
+    const failed=(e: Event)=>setSyncError((e as CustomEvent<string>).detail);
+    window.addEventListener('gmao_session_expired',expired); window.addEventListener('gmao_sync_error',failed);
+    return ()=>{active=false;window.removeEventListener('gmao_session_expired',expired);window.removeEventListener('gmao_sync_error',failed);};
+  },[]);
   const [showIntro, setShowIntro] = useState(false);
 
   const handleLogin = (loggedInUser: any) => {
@@ -78,12 +81,16 @@ function App() {
 
   const handleLogout = () => {
     setUser(null);
+    sessionStorage.removeItem('gmao_token');
     localStorage.removeItem('gmao_current_user');
     sessionStorage.removeItem('hasSeenGlobalAlerts');
   };
 
+  if (!ready) return <div className="min-h-screen grid place-items-center text-zinc-600" role="status">Chargement de la session…</div>;
+
   return (
     <QueryClientProvider client={queryClient}>
+      {syncError && <div role="alert" className="fixed top-0 inset-x-0 z-[100] p-4 bg-red-100 text-red-900">{syncError} <button onClick={()=>{void refreshFromServer().then(()=>setSyncError('')).catch(e=>setSyncError(e.message));}}>Recharger les données serveur</button></div>}
       <GmaoProvider>
       <HashRouter>
         <Routes>
