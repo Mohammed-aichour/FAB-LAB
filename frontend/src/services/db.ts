@@ -1,4 +1,4 @@
-import { authHeaders } from './api';
+import { api, authHeaders } from './api';
 import { REAL_MACHINES_DATA } from '../data/realMachinesData';
 import { realStockItems, type StockItem } from '../data/realStockData';
 import { initialOTs, initialDIs, type WorkOrder, type InterventionRequest } from '../data/otData';
@@ -30,26 +30,35 @@ let syncQueue: Promise<void> = Promise.resolve();
 export const flushSync = () => syncQueue;
 export async function refreshFromServer() {
   await flushSync();
-  const results = await Promise.all(Object.entries(entityKeys).map(async ([entity,key]) => {
-    const response = await fetch('/api/db/'+entity, { headers: authHeaders() });
-    if (response.status === 403 && ['users','audit_logs'].includes(entity)) { localStorage.setItem(key,'[]'); return; }
-    if (!response.ok) throw new Error('Impossible de charger les données serveur. Reconnectez-vous.');
-    const data = await response.json();
-    if (!Array.isArray(data)) throw new Error('Données serveur invalides.');
-    return {entity,key,data,revision:response.headers.get('X-Data-Revision') || ''};
-  }));
-  for (const item of results) if (item) { localStorage.setItem(item.key,JSON.stringify(item.data)); revisions[item.entity]=item.revision; }
-  notifyUpdate();
+  const token = sessionStorage.getItem('gmao_token');
+  if (token?.startsWith('static_session_token')) {
+    notifyUpdate();
+    return;
+  }
+  try {
+    const results = await Promise.all(Object.entries(entityKeys).map(async ([entity,key]) => {
+      const data = await api<any[]>('/db/' + entity);
+      if (Array.isArray(data)) return { entity, key, data, revision: '' };
+      return null;
+    }));
+    for (const item of results) if (item) { localStorage.setItem(item.key, JSON.stringify(item.data)); revisions[item.entity] = item.revision; }
+    notifyUpdate();
+  } catch (e) {
+    console.warn('[GMAO Sync] Running in static mode or server unavailable:', e);
+    notifyUpdate();
+  }
 }
 const syncToDisk = (entity: string, data: unknown) => {
-  if (!sessionStorage.getItem('gmao_token')) return;
+  const token = sessionStorage.getItem('gmao_token');
+  if (!token || token.startsWith('static_session_token')) return;
   syncQueue = syncQueue.then(async () => {
     const response = await fetch('/api/db/'+entity, { method:'POST', headers:{'Content-Type':'application/json',...authHeaders(),'X-Data-Revision':revisions[entity] || ''}, body:JSON.stringify(data) });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || 'Enregistrement refusé.');
-    revisions[entity]=result.revision;
+    if (response.ok) {
+      const result = await response.json();
+      revisions[entity] = result.revision || '';
+    }
   }).catch(error => {
-    window.dispatchEvent(new CustomEvent('gmao_sync_error',{detail:error.message}));
+    console.warn('[GMAO Sync] Server sync error:', error);
   });
 };
 
