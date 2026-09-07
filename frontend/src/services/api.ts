@@ -31,7 +31,7 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
 
     // If server returned non-OK or non-JSON (e.g. 404 HTML on static GitHub Pages hosting)
     if (!response.ok || !contentType.includes('application/json')) {
-      return handleStaticFallback<T>(path, body);
+      return await handleStaticFallback<T>(path, body);
     }
     
     const data = await response.json().catch(() => ({ error: 'Réponse serveur invalide.' }));
@@ -41,7 +41,7 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
     if (err instanceof Error && err.message !== 'Réponse serveur invalide.' && !err.message.includes('serveur') && !err.message.includes('Failed to fetch')) {
       throw err;
     }
-    return handleStaticFallback<T>(path, body);
+    return await handleStaticFallback<T>(path, body);
   }
 }
 
@@ -62,7 +62,7 @@ export async function apiForm<T = any>(path: string, body: FormData): Promise<T>
   }
 }
 
-function handleStaticFallback<T>(path: string, body?: any): T {
+async function handleStaticFallback<T>(path: string, body?: any): Promise<T> {
   // 1. Auth Login Fallback for Static Hosting (GitHub Pages / Netlify static)
   if (path === '/auth/login') {
     const email = body?.email;
@@ -94,11 +94,11 @@ function handleStaticFallback<T>(path: string, body?: any): T {
   // 4. Assistant Chat Fallback for Static Hosting (GitHub Pages)
   if (path === '/assistant/chat') {
     const userPrompt = typeof body === 'object' && body !== null ? ((body as any).message || (body as any).prompt || '') : '';
-    const answer = generateLocalGMAOAssistantResponse(userPrompt);
+    const answer = await callDirectOpenAI(userPrompt);
     return {
       conversationId: (body as any)?.conversationId || ('static_conv_' + Date.now()),
       message: answer,
-      usedTools: ['gmao_local_database_fallback']
+      usedTools: ['gmao_openai_direct_fallback']
     } as T;
   }
 
@@ -131,6 +131,76 @@ function handleStaticFallback<T>(path: string, body?: any): T {
   }
 
   throw new Error('Le serveur backend Node.js est hors ligne.');
+}
+
+async function callDirectOpenAI(userPrompt: string): Promise<string> {
+  const apiKey = (import.meta.env?.VITE_OPENAI_API_KEY as string | undefined) ||
+    localStorage.getItem('gmao_openai_key') ||
+    sessionStorage.getItem('gmao_openai_key') ||
+    '';
+
+  if (!apiKey || apiKey.trim() === '') {
+    return generateLocalGMAOAssistantResponse(userPrompt);
+  }
+
+  let machines: any[] = [];
+  try {
+    const raw = localStorage.getItem('gmao_machines_v21');
+    machines = raw ? JSON.parse(raw) : REAL_MACHINES_DATA;
+  } catch { machines = REAL_MACHINES_DATA; }
+
+  let stock: any[] = [];
+  try {
+    const raw = localStorage.getItem('gmao_stock_v21');
+    stock = raw ? JSON.parse(raw) : realStockItems;
+  } catch { stock = realStockItems; }
+
+  let interventions: any[] = [];
+  try {
+    const raw = localStorage.getItem('gmao_interventions_v2');
+    interventions = raw ? JSON.parse(raw) : initialOTs;
+  } catch { interventions = initialOTs; }
+
+  const systemContext = `Tu es l'Assistant IA officiel du FabLab Universiapolis (GMAO).
+Données réelles de l'atelier :
+- Machines (${machines.length}) : ${JSON.stringify(machines.slice(0, 8).map((m: any) => ({ name: m.name, status: m.status, location: m.location })))}
+- Stock (${stock.length} articles) : ${JSON.stringify(stock.slice(0, 8).map((s: any) => ({ name: s.name, qty: s.quantity, min: s.min })))}
+- Interventions/OT (${interventions.length}) : ${JSON.stringify(interventions.slice(0, 5).map((i: any) => ({ ot: i.otNumber, status: i.status, machine: i.equipmentName, priority: i.priority })))}
+
+Réponds de manière professionnelle, utile, précise et en français avec du formatage Markdown.`;
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemContext },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 800
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const answer = data.choices?.[0]?.message?.content;
+      if (answer && answer.trim()) {
+        return answer.trim();
+      }
+    } else {
+      console.warn('[OpenAI Client Call] HTTP status:', response.status);
+    }
+  } catch (err) {
+    console.warn('[OpenAI Client Call] Network error, falling back to local GMAO engine:', err);
+  }
+
+  return generateLocalGMAOAssistantResponse(userPrompt);
 }
 
 function generateLocalGMAOAssistantResponse(userPrompt: string): string {
