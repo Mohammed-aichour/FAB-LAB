@@ -15,7 +15,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://mohammed-aichour.github.io'];
-const envOrigins = (process.env.FRONTEND_ORIGIN || '').split(',').map(value => value.trim()).filter(Boolean);
+const envOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_ORIGIN]
+  .filter(Boolean)
+  .flatMap(val => (val || '').split(','))
+  .map(value => value.trim())
+  .filter(Boolean);
 const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 app.use(cors({
