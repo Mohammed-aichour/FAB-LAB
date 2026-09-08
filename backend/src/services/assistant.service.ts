@@ -27,9 +27,7 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
   const usedTools: string[] = [];
   const selected = selectTools(messages);
   for (let turn = 0; turn < 8; turn++) {
-    const validModels = new Set(['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo', 'o1-mini', 'o3-mini']);
-    const envModel = (process.env.OPENAI_MODEL || '').trim();
-    const currentModel = validModels.has(envModel) ? envModel : 'gpt-4o-mini';
+    const currentModel = process.env.OPENAI_MODEL || 'gpt-5.4-mini';
     const request: Record<string, any> = {
       model: currentModel,
       instructions: systemInstructions(),
@@ -37,12 +35,16 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
       tools: selected.tools,
       tool_choice: turn === 0 && !selected.mutation ? 'required' : 'auto',
       parallel_tool_calls: false,
-      store: false
+      store: false,
+      max_output_tokens: 2048
     };
+    if (!/^gpt-4/i.test(currentModel)) {
+      request.reasoning = { effort: 'none' };
+    }
     let response = await model(request);
     let hasUsableOutput = (response.output || []).some((item: any) => item.type === 'function_call' || item.type === 'message');
     if (response.status === 'incomplete' && !hasUsableOutput && response.incomplete_details?.reason === 'max_output_tokens') {
-      response = await model(request);
+      response = await model({ ...request, max_output_tokens: 4096 });
       hasUsableOutput = (response.output || []).some((item: any) => item.type === 'function_call' || item.type === 'message');
     }
     if (response.status === 'incomplete' && !hasUsableOutput) {
