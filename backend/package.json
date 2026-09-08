@@ -8,7 +8,7 @@
     "start": "tsx src/app.ts",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "build": "echo 'Build OK'",
+    "build": "tsc",
     "user:password": "tsx src/scripts/set-password.ts"
   },
   "keywords": [],
