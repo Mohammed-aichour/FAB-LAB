@@ -27,7 +27,7 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
   const usedTools: string[] = [];
   const selected = selectTools(messages);
   for (let turn = 0; turn < 8; turn++) {
-    const currentModel = process.env.OPENAI_MODEL || 'gpt-5.4-mini';
+    const currentModel = process.env.OPENAI_MODEL || 'gpt-4o-mini';
     const request: Record<string, any> = {
       model: currentModel,
       instructions: systemInstructions(),
