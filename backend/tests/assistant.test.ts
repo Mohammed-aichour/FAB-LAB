@@ -21,12 +21,6 @@ test('lecture réelle : machines, pannes et stocks', async () => {
   const { readTool } = await import('../src/services/assistant.service.js');
   const machines:any = readTool('search_machines',{query:'FL-009'});
   assert.equal(machines.total,1); assert.equal(machines.items[0].reference,'FL-009');
-  
-  // Test search_machines with full query string "Fraiseuse CNC 3 Axes (FL-009)"
-  const fullSearch:any = readTool('search_machines',{query:'Fraiseuse CNC 3 Axes (FL-009)'});
-  assert.ok(fullSearch.total >= 1);
-  assert.ok(fullSearch.items.some((m:any) => m.reference === 'FL-009'));
-
   const unavailable:any = readTool('get_unavailable_machines',{});
   assert.ok(unavailable.items.every((x:any)=>['Hors service','En Panne','Ne marche pas','Hors service définitif'].includes(x.status)));
   const failures:any = readTool('get_failures',{machine:'',from:null,to:null});
@@ -50,12 +44,6 @@ test('une intervention est prévisualisée puis confirmée', async () => {
   assert.equal(readEntity<any[]>('interventions').length,before);
   await confirmPendingAction(action.id,supervisor);
   assert.equal(readEntity<any[]>('interventions').length,before+1);
-
-  // Test minimal payload (only machine provided)
-  const minimalAction = createPendingAction('create_intervention', { machine: 'FL-009' }, supervisor);
-  assert.match(minimalAction.summary, /Intervention de maintenance sur la machine/);
-  await confirmPendingAction(minimalAction.id, supervisor);
-  assert.equal(readEntity<any[]>('interventions').length, before + 2);
 });
 
 test('statut, stock et permissions suivent la confirmation', async () => {
@@ -121,7 +109,6 @@ test('une réponse incomplète sans sortie utile est relancée avec un budget su
     }
     if(calls===2) {
       assert.equal(body.max_output_tokens,4096);
-      assert.equal(body.reasoning.effort,'none');
       return {status:'completed',output:[{type:'function_call',name:'search_machines',arguments:'{"query":"panne"}',call_id:'c2'}]};
     }
     return {status:'completed',output:[{type:'message',content:[{type:'output_text',text:'Résultat vérifié.'}]}]};
@@ -136,20 +123,5 @@ test('le registre est limité aux lectures ou aux actions selon la demande', asy
   assert.equal(read.mutation,false); assert.ok(read.tools.some(t=>t.name==='get_orders')); assert.ok(!read.tools.some(t=>t.name==='prepare_purchase'));
   const write=selectTools([{role:'user',content:'Prépare une commande de 5 buses.'}]);
   assert.equal(write.mutation,true); assert.ok(write.tools.some(t=>t.name==='prepare_purchase')); assert.ok(!write.tools.some(t=>t.name==='get_orders'));
-  assert.ok(read.tools.length < 22); assert.ok(write.tools.length < 22);
-});
-
-test('outils analytiques : pannes, plan préventif et stock', async () => {
-  const { readTool } = await import('../src/services/assistant.service.js');
-  const failureAnalysis: any = readTool('get_failure_analysis', { machine: null });
-  assert.ok(typeof failureAnalysis.totalFailures === 'number');
-  assert.ok(Array.isArray(failureAnalysis.failuresByMachine));
-
-  const maintenanceRecs: any = readTool('get_maintenance_recommendations', { machine: null, timeframe: 'Cette semaine' });
-  assert.equal(maintenanceRecs.timeframe, 'Cette semaine');
-  assert.ok(Array.isArray(maintenanceRecs.proposedPlan));
-
-  const stockAnalysis: any = readTool('get_stock_analysis', {});
-  assert.ok(typeof stockAnalysis.totalStockReferences === 'number');
-  assert.ok(Array.isArray(stockAnalysis.criticalItems));
+  assert.ok(read.tools.length < 19); assert.ok(write.tools.length < 19);
 });

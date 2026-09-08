@@ -27,7 +27,9 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
   const usedTools: string[] = [];
   const selected = selectTools(messages);
   for (let turn = 0; turn < 8; turn++) {
-    const currentModel = process.env.OPENAI_MODEL || 'gpt-5.4-mini';
+    const validModels = new Set(['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo', 'o1-mini', 'o3-mini']);
+    const envModel = (process.env.OPENAI_MODEL || '').trim();
+    const currentModel = validModels.has(envModel) ? envModel : 'gpt-4o-mini';
     const request: Record<string, any> = {
       model: currentModel,
       instructions: systemInstructions(),
@@ -38,7 +40,7 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
       store: false,
       max_output_tokens: 2048
     };
-    if (!/^gpt-4/i.test(currentModel)) {
+    if (/^o1|^o3/i.test(currentModel)) {
       request.reasoning = { effort: 'none' };
     }
     let response = await model(request);
