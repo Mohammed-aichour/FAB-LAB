@@ -55,7 +55,7 @@ const email_routes_1 = __importDefault(require("./routes/email.routes"));
 app.get(['/', '/api', '/health', '/api/health'], (req, res) => {
     res.json({ status: 'ok', message: 'GMAO FabLab API Server is running', timestamp: new Date().toISOString() });
 });
-app.get(['/debug', '/api/debug'], async (req, res) => {
+app.get(['/debug', '/api/debug', '/api/debug-test'], async (req, res) => {
     try {
         const { runAssistant } = await import('./services/assistant.service.js');
         const supervisor = { id: 1, email: 'superviseur@fablab.com', name: 'Admin', role: 'Superviseur', status: 'Actif' };
