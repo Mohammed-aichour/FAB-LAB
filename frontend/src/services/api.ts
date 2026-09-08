@@ -263,7 +263,27 @@ function generateLocalGMAOAssistantResponse(userPrompt: string): string {
     preventif = raw ? JSON.parse(raw) : preventifData;
   } catch { preventif = preventifData; }
 
-  // 1. Check for machines / breakdown queries
+  // 1. Check for urgent interventions
+  if (/urgent|urgence|priorit/i.test(text) && /intervention|ot|travaux|ordre/i.test(text)) {
+    const urgentOTs = interventions.filter(i => 
+      !/terminé|clôturé|annulé/i.test(i.status || '') && (i.priority === 'A' || /haute|urgente|critique/i.test(String(i.priority || '')))
+    );
+    let reply = `**Interventions Urgentes & Prioritaires (FabLab GMAO)**\n\n`;
+    if (urgentOTs.length === 0) {
+      reply += `Aucune intervention prioritaire (Priorité A) n'est actuellement en attente.\n\nToutes les interventions urgentes ont été traitées ou planifiées.`;
+    } else {
+      reply += `Il y a **${urgentOTs.length} intervention(s) urgente(s)** nécessitant une attention immédiate :\n\n`;
+      urgentOTs.forEach((ot, idx) => {
+        reply += `${idx + 1}. **OT ${ot.otNumber || ot.id}** — ${ot.equipmentName || 'Équipement'} (Priorité ${ot.priority})\n`;
+        reply += `   * **Statut :** ${ot.status || 'Nouveau'}\n`;
+        reply += `   * **Technicien :** ${ot.technician || 'Non assigné'}\n`;
+        reply += `   * **Description :** ${ot.description || 'Intervention urgente'}\n`;
+      });
+    }
+    return reply;
+  }
+
+  // 2. Check for machines / breakdown queries
   if (/machine|panne|équipement|état|parc|hors service|indisponible/.test(text)) {
     const brokenOrMaint = machines.filter(m => 
       /panne|maintenance|hors service|critique|arrêt|inactif/i.test(m.status || '')
@@ -288,7 +308,7 @@ function generateLocalGMAOAssistantResponse(userPrompt: string): string {
     return reply;
   }
 
-  // 2. Check for stock / components queries
+  // 3. Check for stock / components queries
   if (/stock|composant|pièce|rupture|critique|fournisseur|quanti/.test(text)) {
     const criticalStock = stock.filter(s => 
       (s.quantity <= (s.min ?? 5)) || /critique|rupture|faible/i.test(s.status || '')
@@ -310,8 +330,8 @@ function generateLocalGMAOAssistantResponse(userPrompt: string): string {
     return reply;
   }
 
-  // 3. Check for planning / maintenance / OT / preventive queries
-  if (/maintenance|planning|prévis|préventif|intervention|ot|ordre/.test(text)) {
+  // 4. Check for planning / maintenance / OT / preventive queries (including weekly filter)
+  if (/maintenance|planning|prévis|préventif|intervention|ot|ordre|semaine/.test(text)) {
     const upcomingOTs = interventions.filter(i => 
       !/terminé|clôturé|annulé/i.test(i.status || '')
     );
@@ -323,7 +343,7 @@ function generateLocalGMAOAssistantResponse(userPrompt: string): string {
         reply += `${idx + 1}. **OT ${ot.otNumber || ot.id}** — ${ot.equipmentName || 'Équipement'} (${ot.maintenanceType || 'Intervention'})\n`;
         reply += `   * **Statut :** ${ot.status || 'Planifié'} (Priorité ${ot.priority || 'B'})\n`;
         reply += `   * **Technicien assigné :** ${ot.technician || 'Non assigné'}\n`;
-        reply += `   * **Date prévue :** ${ot.plannedDate || ot.creationDate || 'Prochainement'}\n`;
+        reply += `   * **Date prévue :** ${ot.plannedDate || ot.creationDate || 'Cette semaine'}\n`;
         if (ot.description) reply += `   * **Description :** ${ot.description}\n`;
       });
     } else {
@@ -331,10 +351,9 @@ function generateLocalGMAOAssistantResponse(userPrompt: string): string {
     }
 
     if (preventif && preventif.length > 0) {
-      const activePrev = preventif.slice(0, 3);
-      reply += `\n**Actions préventives AMDEC prioritaires :**\n`;
-      activePrev.forEach((p: any) => {
-        reply += `* **${p.machineName || p.title || 'Machine'}** : ${p.gamme || p.action || p.title} (${p.frequence || 'Mensuel'})\n`;
+      reply += `\n**Maintenances Préventives de la semaine :**\n`;
+      preventif.slice(0, 5).forEach((p: any) => {
+        reply += `* **${p.equipement || p.machineName || 'Machine'}** : ${p.tache || p.gamme || p.title} (Échéance: ${p.prochaineEcheance || 'Cette semaine'})\n`;
       });
     }
     return reply;
@@ -355,8 +374,15 @@ function generateLocalGMAOAssistantResponse(userPrompt: string): string {
   }
 
   // 5. Specific Machine Search (by name, reference, or category)
+  const refMatchInText = text.match(/\bFL-[A-Z0-9-]+\b/i);
   const words = text.split(/\s+/).filter(w => w.length > 2 && !/quel|quelle|les|des|dans|pour|est|sont|sur|une|un|du|de|la|le/.test(w));
   const matchedMachines = machines.filter(m => {
+    if (refMatchInText) {
+      const refTarget = refMatchInText[0].toLowerCase();
+      if ((m.reference || '').toLowerCase() === refTarget || (m.id || '').toLowerCase() === refTarget || (m.codeArborescence || '').toLowerCase().includes(refTarget)) {
+        return true;
+      }
+    }
     const fullText = `${m.name} ${m.designation} ${m.reference} ${m.category} ${m.marque} ${m.location} ${m.caracteristiques}`.toLowerCase();
     return words.some(w => fullText.includes(w));
   });

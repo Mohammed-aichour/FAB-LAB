@@ -1,4 +1,4 @@
-const app = require('../backend/dist/src/app').default || require('../backend/dist/src/app');
+import app from '../backend/src/app';
 
 export default function handler(req: any, res: any) {
   return app(req, res);

@@ -1,5 +1,28 @@
 [
   {
+    "id": "3cd5a542-6f62-4280-8bfc-8fe49adf3c75",
+    "userId": "1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "قم بصنع intervention لهاد machine"
+      },
+      {
+        "role": "assistant",
+        "content": "Pour créer une intervention pour une machine, j'ai besoin de la référence ou du nom de la machine, ainsi que des détails sur l'intervention (comme la description du problème ou des tâches à accomplir). Peux-tu me fournir ces informations ?"
+      },
+      {
+        "role": "user",
+        "content": "Confirmer"
+      },
+      {
+        "role": "assistant",
+        "content": "Il n'y a pas d'interventions ouvertes actuellement. Je vais créer une intervention par défaut pour la machine. Peux-tu m'indiquer la référence ou le nom de la machine pour laquelle je dois procéder à cette création ?"
+      }
+    ],
+    "updatedAt": 1788863480702
+  },
+  {
     "id": "06246d38-f9a0-43ce-93d8-f1b883317811",
     "userId": "1",
     "messages": [

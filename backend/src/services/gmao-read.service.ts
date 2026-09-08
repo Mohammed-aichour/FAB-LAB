@@ -1,11 +1,53 @@
 import { readEntity } from './json-store';
 type JsonRecord = Record<string, any>;
-const normalize = (value: unknown) => String(value ?? '').toLocaleLowerCase('fr');
-const matches = (record: JsonRecord, query: string, fields: string[]) => fields.some((field) => normalize(record[field]).includes(normalize(query)));
+function stripAccents(str: string): string {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function normalize(value: unknown): string {
+  return stripAccents(String(value ?? '').trim().toLowerCase()).replace(/\s+/g, ' ');
+}
+
+export function matchEntity(record: JsonRecord, query: string, fields: string[]): boolean {
+  if (!query || !query.trim()) return true;
+  const q = normalize(query);
+
+  const refMatch = query.match(/\b(FL-[A-Z0-9-]+|PR-[0-9]+|OT-[A-Z0-9-]+)\b/i);
+  if (refMatch) {
+    const targetRef = normalize(refMatch[0]);
+    if (normalize(record.reference) === targetRef ||
+        normalize(record.id) === targetRef ||
+        normalize(record.otNumber) === targetRef ||
+        normalize(record.codeArborescence).includes(targetRef)) {
+      return true;
+    }
+  }
+
+  if (fields.some(f => {
+    const val = normalize(record[f]);
+    if (!val) return false;
+    if (val.includes(q)) return true;
+    if ((f === 'reference' || f === 'id' || f === 'otNumber') && val.length >= 3 && q.includes(val)) return true;
+    return false;
+  })) {
+    return true;
+  }
+
+  const stopWords = new Set(['pour', 'cette', 'machine', 'les', 'des', 'dans', 'sur', 'une', 'avec', 'actuellement', 'donne', 'moi', 'informations', 'cree', 'fais', 'intervention', 'statut']);
+  const words = q.split(' ').filter(w => w.length > 2 && !stopWords.has(w));
+  if (words.length > 0) {
+    const fullText = normalize(fields.map(f => record[f]).join(' '));
+    return words.some(w => fullText.includes(w));
+  }
+
+  return false;
+}
+
+const matches = (record: JsonRecord, query: string, fields: string[]) => matchEntity(record, query, fields);
 
 export function legacyReadTool(name: string, args: JsonRecord): unknown {
   if (name === 'search_machines') {
-    return readEntity<JsonRecord[]>('machines').filter((record) => matches(record, args.query, ['id', 'reference', 'name', 'designation', 'atelier', 'category', 'status']));
+    return readEntity<JsonRecord[]>('machines').filter((record) => matchEntity(record, args.query, ['id', 'reference', 'name', 'designation', 'atelier', 'category', 'status', 'codeArborescence']));
   }
   if (name === 'search_stock') {
     return readEntity<JsonRecord[]>('stock').filter((record) => matches(record, args.query, ['id', 'reference', 'name', 'category', 'equipement', 'supplier']) && (!args.lowStockOnly || Number(record.quantity) <= Number(record.min)));

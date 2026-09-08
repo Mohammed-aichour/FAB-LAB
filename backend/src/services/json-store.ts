@@ -77,14 +77,39 @@ export function isEntityName(value: string): value is EntityName {
 
 export function readEntity<T = unknown[]>(entity: EntityName): T {
   if (transaction?.has(entity)) return structuredClone(transaction.get(entity)) as T;
-  const filePath = path.join(DATA_DIR, ENTITY_FILES[entity]);
-  if (fs.existsSync(filePath)) {
-    try { return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T; } catch { /* fallthrough */ }
+  const fileName = ENTITY_FILES[entity];
+  const targetPath = path.join(DATA_DIR, fileName);
+
+  if (fs.existsSync(targetPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
+      if (Array.isArray(data) || (data && typeof data === 'object')) return data as T;
+    } catch { /* fallthrough */ }
   }
-  const rootFilePath = path.resolve(__dirname, '../../../data_db', ENTITY_FILES[entity]);
-  if (fs.existsSync(rootFilePath)) {
-    try { return JSON.parse(fs.readFileSync(rootFilePath, 'utf8')) as T; } catch { /* fallthrough */ }
+
+  const seedDirs = [
+    path.resolve(process.cwd(), 'data_db'),
+    path.resolve(process.cwd(), 'backend/data_db'),
+    path.resolve(__dirname, '../../data_db'),
+    path.resolve(__dirname, '../../../data_db'),
+    path.resolve(__dirname, '../data_db'),
+  ];
+
+  for (const dir of seedDirs) {
+    const seedPath = path.join(dir, fileName);
+    if (fs.existsSync(seedPath)) {
+      try {
+        const content = fs.readFileSync(seedPath, 'utf8');
+        const parsed = JSON.parse(content) as T;
+        try {
+          if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+          fs.writeFileSync(targetPath, content, 'utf8');
+        } catch { /* ignore seed copy warning */ }
+        return parsed;
+      } catch { /* try next candidate */ }
+    }
   }
+
   return [] as T;
 }
 

@@ -18,9 +18,14 @@ export const tools = [
   functionTool('declare_failure', 'Prépare une déclaration de panne avec création d’une intervention corrective et d’une alerte.', {
     machine: { type: 'string' }, description: { type: 'string' }, priority: { type: 'string', enum: ['A', 'B', 'C'] },
   }, ['machine', 'description', 'priority']),
-  functionTool('create_intervention', 'Prépare la création d’une intervention.', {
-    machine: { type: 'string' }, description: { type: 'string' }, maintenanceType: { type: 'string', enum: ['Corrective', 'Préventive'] }, plannedDate: { type: 'string' }, priority: { type: 'string', enum: ['A', 'B', 'C'] }, technician: { type: ['string', 'null'] },
-  }, ['machine', 'description', 'maintenanceType', 'plannedDate', 'priority', 'technician']),
+  functionTool('create_intervention', 'Prépare la création d’une intervention. Seule la machine est obligatoire. Si la description est omise, une description générique appropriée est attribuée.', {
+    machine: { type: 'string', description: 'Nom ou référence de la machine dans la GMAO' },
+    description: { type: ['string', 'null'], description: 'Description des travaux (optionnel)' },
+    maintenanceType: { type: ['string', 'null'], enum: ['Corrective', 'Préventive', null] },
+    plannedDate: { type: ['string', 'null'], description: 'Date au format YYYY-MM-DD (optionnel)' },
+    priority: { type: ['string', 'null'], enum: ['A', 'B', 'C', null] },
+    technician: { type: ['string', 'null'] },
+  }, ['machine']),
   functionTool('update_intervention', 'Prépare la modification d’une intervention existante.', {
     intervention: { type: ['string', 'number'] }, status: { type: ['string', 'null'] }, plannedDate: { type: ['string', 'null'] }, description: { type: ['string', 'null'] }, priority: { type: ['string', 'null'], enum: ['A', 'B', 'C', null] }, technician: { type: ['string', 'null'] },
   }, ['intervention', 'status', 'plannedDate', 'description', 'priority', 'technician']),

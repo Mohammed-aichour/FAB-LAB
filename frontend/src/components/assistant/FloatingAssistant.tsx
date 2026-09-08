@@ -266,6 +266,16 @@ export default function FloatingAssistant({ user }: { user: { id: string | numbe
 
   async function send(valueOverride?: string) {
     const value=(valueOverride ?? text).trim(); if(!value || busy) return;
+    if (actions.length > 0 && /^(confirmer?|confirm|oui|valider?|d'accord|ok|ex[ée]cute|go)$/i.test(value)) {
+      setText('');
+      await decide(actions[actions.length - 1], true);
+      return;
+    }
+    if (actions.length > 0 && /^(annuler?|cancel|non|refuser?)$/i.test(value)) {
+      setText('');
+      await decide(actions[actions.length - 1], false);
+      return;
+    }
     setBusy(true); setResponding(false); setError(''); setText(''); setOpen(true);
     setMessages(m=>[...m,{role:'user',content:value}]);
     try {
@@ -289,7 +299,10 @@ export default function FloatingAssistant({ user }: { user: { id: string | numbe
       await api(`/assistant/actions/${action.id}/${confirm?'confirm':'cancel'}`,confirm?{confirm:true}:{});
       setActions(a=>a.filter(x=>x.id!==action.id));
       setMessages(m=>[...m,{role:'assistant',content:confirm ? `Action réalisée\n\n${action.summary}` : `Action annulée\n\n${action.summary}`}]);
-      if(confirm) await refreshFromServer();
+      if(confirm) {
+        await refreshFromServer();
+        window.dispatchEvent(new Event('gmao_data_updated'));
+      }
       markResponse();
     } catch(e) {setError(e instanceof Error ? e.message : 'L’action n’a pas pu être traitée.');}
     finally {setBusy(false);}

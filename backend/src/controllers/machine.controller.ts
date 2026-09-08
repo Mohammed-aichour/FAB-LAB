@@ -1,13 +1,9 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient({});
+import { readEntity, writeEntity } from '../services/json-store';
 
 export const getAllMachines = async (req: Request, res: Response) => {
   try {
-    const machines = await prisma.machine.findMany({
-      include: { category: true }
-    });
+    const machines = readEntity('machines');
     res.json(machines);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération des machines' });
@@ -17,10 +13,8 @@ export const getAllMachines = async (req: Request, res: Response) => {
 export const getMachineById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const machine = await prisma.machine.findUnique({
-      where: { id: Number(id) },
-      include: { category: true, interventions: true, documents: true }
-    });
+    const machines = readEntity<any[]>('machines');
+    const machine = machines.find((m: any) => String(m.id) === String(id));
     if (!machine) return res.status(404).json({ error: 'Machine introuvable' });
     res.json(machine);
   } catch (error) {
@@ -30,10 +24,11 @@ export const getMachineById = async (req: Request, res: Response) => {
 
 export const createMachine = async (req: Request, res: Response) => {
   try {
-    const machine = await prisma.machine.create({
-      data: req.body
-    });
-    res.status(201).json(machine);
+    const machines = readEntity<any[]>('machines');
+    const newMachine = { id: req.body.id || `M-${Date.now()}`, ...req.body };
+    machines.push(newMachine);
+    writeEntity('machines', machines);
+    res.status(201).json(newMachine);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la création' });
   }
@@ -42,11 +37,12 @@ export const createMachine = async (req: Request, res: Response) => {
 export const updateMachine = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const machine = await prisma.machine.update({
-      where: { id: Number(id) },
-      data: req.body
-    });
-    res.json(machine);
+    const machines = readEntity<any[]>('machines');
+    const index = machines.findIndex((m: any) => String(m.id) === String(id));
+    if (index === -1) return res.status(404).json({ error: 'Machine introuvable' });
+    machines[index] = { ...machines[index], ...req.body };
+    writeEntity('machines', machines);
+    res.json(machines[index]);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la mise à jour' });
   }
@@ -55,9 +51,9 @@ export const updateMachine = async (req: Request, res: Response) => {
 export const deleteMachine = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await prisma.machine.delete({
-      where: { id: Number(id) }
-    });
+    let machines = readEntity<any[]>('machines');
+    machines = machines.filter((m: any) => String(m.id) !== String(id));
+    writeEntity('machines', machines);
     res.json({ message: 'Machine supprimée avec succès' });
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la suppression' });

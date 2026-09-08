@@ -45,8 +45,8 @@ import documentRoutes from './routes/document.routes';
 import orderRoutes from './routes/order.routes';
 import emailRoutes from './routes/email.routes';
 
-app.get(['/health', '/api/health'], (req, res) => {
-  res.json({ status: 'ok', message: 'GMAO API is running' });
+app.get(['/', '/api', '/health', '/api/health'], (req, res) => {
+  res.json({ status: 'ok', message: 'GMAO FabLab API Server is running', timestamp: new Date().toISOString() });
 });
 
 app.use(['/auth', '/api/auth'], authRoutes);
