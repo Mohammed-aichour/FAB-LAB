@@ -21,13 +21,13 @@ const audioUpload = (0, multer_1.default)({
 });
 router.get('/debug', async (req, res) => {
     try {
-        const { tools } = await import('../agent/tools');
-        const { createResponse } = await import('../agent/model');
+        const { tools } = await import('../agent/tools.js');
+        const { createResponse } = await import('../agent/model.js');
         const testRes = await createResponse({
             model: 'gpt-4o-mini',
             instructions: 'Test',
             input: [{ role: 'user', content: 'Crée une intervention' }],
-            tools: tools.filter(t => t.name === 'create_intervention'),
+            tools: tools.filter((t) => t.name === 'create_intervention'),
             tool_choice: 'auto'
         });
         return res.json({ status: 'ok', envModel: process.env.OPENAI_MODEL, testRes });
