@@ -27,12 +27,12 @@ export const tools = [
     technician: { type: ['string', 'null'] },
   }, ['machine', 'description', 'maintenanceType', 'plannedDate', 'priority', 'technician']),
   functionTool('update_intervention', 'Prépare la modification d’une intervention existante.', {
-    intervention: { type: ['string', 'number'] }, status: { type: ['string', 'null'] }, plannedDate: { type: ['string', 'null'] }, description: { type: ['string', 'null'] }, priority: { type: ['string', 'null'], enum: ['A', 'B', 'C'] }, technician: { type: ['string', 'null'] },
+    intervention: { type: 'string' }, status: { type: ['string', 'null'] }, plannedDate: { type: ['string', 'null'] }, description: { type: ['string', 'null'] }, priority: { type: ['string', 'null'], enum: ['A', 'B', 'C'] }, technician: { type: ['string', 'null'] },
   }, ['intervention', 'status', 'plannedDate', 'description', 'priority', 'technician']),
   functionTool('schedule_maintenance', 'Prépare la planification d’une maintenance préventive.', {
     machine: { type: 'string' }, task: { type: 'string' }, frequency: { type: 'string' }, nextDueDate: { type: 'string' }, responsible: { type: ['string', 'null'] }, notes: { type: ['string', 'null'] },
   }, ['machine', 'task', 'frequency', 'nextDueDate', 'responsible', 'notes']),
-  functionTool('assign_technician', 'Prépare l’affectation d’un utilisateur actif à une intervention.', { intervention: { type: ['string', 'number'] }, technician: { type: 'string' } }, ['intervention', 'technician']),
+  functionTool('assign_technician', 'Prépare l’affectation d’un utilisateur actif à une intervention.', { intervention: { type: 'string' }, technician: { type: 'string' } }, ['intervention', 'technician']),
   functionTool('adjust_stock', 'Prépare une modification de quantité de stock.', {
     stockItem: { type: 'string' }, mode: { type: 'string', enum: ['set', 'increment', 'decrement'] }, quantity: { type: 'integer', minimum: 0 }, reason: { type: 'string' },
   }, ['stockItem', 'mode', 'quantity', 'reason']),
