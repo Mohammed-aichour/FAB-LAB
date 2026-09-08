@@ -27,18 +27,20 @@ async function callOpenAiWithKey(apiKey, body) {
     };
     if (Array.isArray(body.tools) && body.tools.length > 0) {
         chatPayload.tools = body.tools.map((t) => {
-            if (t.type === 'function' && t.name && !t.function) {
-                return {
-                    type: 'function',
-                    function: {
-                        name: t.name,
-                        description: t.description,
-                        parameters: t.parameters,
-                        strict: t.strict,
-                    }
-                };
-            }
-            return t;
+            const fn = t.function || (t.name ? t : null);
+            if (!fn)
+                return t;
+            const parameters = JSON.parse(JSON.stringify(fn.parameters || {}));
+            delete parameters.$schema;
+            delete parameters.additionalProperties;
+            return {
+                type: 'function',
+                function: {
+                    name: fn.name,
+                    description: fn.description,
+                    parameters
+                }
+            };
         });
         chatPayload.tool_choice = body.tool_choice || 'auto';
         chatPayload.parallel_tool_calls = false;
