@@ -16,7 +16,6 @@ router.post('/login', rateLimit(10), async (req, res) => {
   const users = readEntity<AuthenticatedUser[]>('users');
   const user = users.find((candidate) => candidate.email.toLowerCase() === parsed.data.email.toLowerCase());
   const credential = readEntity<{ userId: string; hash: string }[]>('credentials').find(c => c.userId === String(user?.id));
-  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) return res.status(503).json({error:'JWT_SECRET doit être configuré sur le serveur.'});
   if (!user || !credential || user.status !== 'Actif' || !(await bcrypt.compare(parsed.data.password, credential.hash))) {
     return res.status(401).json({ error: 'Email ou mot de passe incorrect.' });
   }
