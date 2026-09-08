@@ -57,6 +57,18 @@ app.get(['/', '/api', '/health', '/api/health'], (req, res) => {
   res.json({ status: 'ok', message: 'GMAO FabLab API Server is running', timestamp: new Date().toISOString() });
 });
 
+app.get(['/debug', '/api/debug'], async (req, res) => {
+  try {
+    const { runAssistant } = await import('./services/assistant.service.js');
+    const supervisor = { id: 1, email: 'superviseur@fablab.com', name: 'Admin', role: 'Superviseur' as const, status: 'Actif' as const };
+    const prompt = (req.query.prompt as string) || "Crée une intervention corrective pour FL-009 en raison d'une panne moteur";
+    const result = await runAssistant([{ role: 'user', content: prompt }], supervisor);
+    return res.json({ status: 'ok', envModel: process.env.OPENAI_MODEL, hasEnvKey: !!process.env.OPENAI_API_KEY, result });
+  } catch (err: any) {
+    return res.json({ status: 'error', error: err.message, stack: err.stack, envModel: process.env.OPENAI_MODEL, hasEnvKey: !!process.env.OPENAI_API_KEY });
+  }
+});
+
 app.use(['/auth', '/api/auth'], authRoutes);
 app.use(['/assistant', '/api/assistant'], assistantRoutes);
 app.use(['/db', '/api/db'], databaseRoutes);
