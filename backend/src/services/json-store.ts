@@ -4,9 +4,11 @@ import crypto from 'crypto';
 
 export const DATA_DIR = process.env.GMAO_DATA_DIR 
   ? path.resolve(process.env.GMAO_DATA_DIR) 
-  : process.env.VERCEL 
-    ? '/tmp/data_db' 
-    : path.resolve(__dirname, '../../../data_db');
+  : fs.existsSync(path.join(process.cwd(), 'data_db', 'machines_db.json'))
+    ? path.join(process.cwd(), 'data_db')
+    : fs.existsSync(path.resolve(__dirname, '../../../data_db/machines_db.json'))
+      ? path.resolve(__dirname, '../../../data_db')
+      : (process.env.VERCEL ? '/tmp/data_db' : path.resolve(__dirname, '../../../data_db'));
 
 try {
   if (!fs.existsSync(DATA_DIR)) {
