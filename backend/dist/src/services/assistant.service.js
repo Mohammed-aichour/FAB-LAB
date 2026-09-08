@@ -33,8 +33,9 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
     const usedTools = [];
     const selected = selectTools(messages);
     for (let turn = 0; turn < 8; turn++) {
+        const validModels = new Set(['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo', 'o1-mini', 'o3-mini']);
         const envModel = (process.env.OPENAI_MODEL || '').trim();
-        const currentModel = /^gpt-[45]/i.test(envModel) ? envModel : 'gpt-4o-mini';
+        const currentModel = validModels.has(envModel) ? envModel : 'gpt-4o-mini';
         const request = {
             model: currentModel,
             instructions: (0, instructions_1.systemInstructions)(),
@@ -44,9 +45,6 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
             parallel_tool_calls: false,
             store: false
         };
-        if (!/^gpt-4/i.test(currentModel)) {
-            request.reasoning = { effort: 'none' };
-        }
         let response = await model(request);
         let hasUsableOutput = (response.output || []).some((item) => item.type === 'function_call' || item.type === 'message');
         if (response.status === 'incomplete' && !hasUsableOutput && response.incomplete_details?.reason === 'max_output_tokens') {
