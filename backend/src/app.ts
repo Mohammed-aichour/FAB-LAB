@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://mohammed-aichour.github.io'];
-const envOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_ORIGIN]
+const envOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_ORIGIN, process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '']
   .filter(Boolean)
   .flatMap(val => (val || '').split(','))
   .map(value => value.trim())
@@ -24,7 +24,7 @@ const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 app.use(cors({
   origin: (origin, done) => {
-    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || allowedOrigins.some(allowed => origin.startsWith(allowed))) {
       done(null, true);
     } else {
       done(new Error('Origine refusée par la politique CORS.'));
