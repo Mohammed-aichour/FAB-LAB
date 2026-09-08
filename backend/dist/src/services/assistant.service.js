@@ -48,7 +48,7 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
         let response = await model(request);
         let hasUsableOutput = (response.output || []).some((item) => item.type === 'function_call' || item.type === 'message');
         if (response.status === 'incomplete' && !hasUsableOutput && response.incomplete_details?.reason === 'max_output_tokens') {
-            response = await model({ ...request, max_output_tokens: 4096 });
+            response = await model(request);
             hasUsableOutput = (response.output || []).some((item) => item.type === 'function_call' || item.type === 'message');
         }
         if (response.status === 'incomplete' && !hasUsableOutput) {
