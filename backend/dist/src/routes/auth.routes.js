@@ -18,8 +18,6 @@ router.post('/login', (0, rate_limit_1.rateLimit)(10), async (req, res) => {
     const users = (0, json_store_1.readEntity)('users');
     const user = users.find((candidate) => candidate.email.toLowerCase() === parsed.data.email.toLowerCase());
     const credential = (0, json_store_1.readEntity)('credentials').find(c => c.userId === String(user?.id));
-    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32)
-        return res.status(503).json({ error: 'JWT_SECRET doit être configuré sur le serveur.' });
     if (!user || !credential || user.status !== 'Actif' || !(await bcryptjs_1.default.compare(parsed.data.password, credential.hash))) {
         return res.status(401).json({ error: 'Email ou mot de passe incorrect.' });
     }

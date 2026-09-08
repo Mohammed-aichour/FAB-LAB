@@ -24,6 +24,10 @@ node_test_1.default.after(() => node_fs_1.default.rmSync(testData, { recursive: 
     const machines = readTool('search_machines', { query: 'FL-009' });
     strict_1.default.equal(machines.total, 1);
     strict_1.default.equal(machines.items[0].reference, 'FL-009');
+    // Test search_machines with full query string "Fraiseuse CNC 3 Axes (FL-009)"
+    const fullSearch = readTool('search_machines', { query: 'Fraiseuse CNC 3 Axes (FL-009)' });
+    strict_1.default.ok(fullSearch.total >= 1);
+    strict_1.default.ok(fullSearch.items.some((m) => m.reference === 'FL-009'));
     const unavailable = readTool('get_unavailable_machines', {});
     strict_1.default.ok(unavailable.items.every((x) => ['Hors service', 'En Panne', 'Ne marche pas', 'Hors service définitif'].includes(x.status)));
     const failures = readTool('get_failures', { machine: '', from: null, to: null });
@@ -48,6 +52,11 @@ node_test_1.default.after(() => node_fs_1.default.rmSync(testData, { recursive: 
     strict_1.default.equal(readEntity('interventions').length, before);
     await confirmPendingAction(action.id, supervisor);
     strict_1.default.equal(readEntity('interventions').length, before + 1);
+    // Test minimal payload (only machine provided)
+    const minimalAction = createPendingAction('create_intervention', { machine: 'FL-009' }, supervisor);
+    strict_1.default.match(minimalAction.summary, /Intervention de maintenance sur la machine/);
+    await confirmPendingAction(minimalAction.id, supervisor);
+    strict_1.default.equal(readEntity('interventions').length, before + 2);
 });
 (0, node_test_1.default)('statut, stock et permissions suivent la confirmation', async () => {
     const actions = await import('../src/services/assistant-actions.service.js');
@@ -133,6 +142,18 @@ node_test_1.default.after(() => node_fs_1.default.rmSync(testData, { recursive: 
     strict_1.default.equal(write.mutation, true);
     strict_1.default.ok(write.tools.some(t => t.name === 'prepare_purchase'));
     strict_1.default.ok(!write.tools.some(t => t.name === 'get_orders'));
-    strict_1.default.ok(read.tools.length < 19);
-    strict_1.default.ok(write.tools.length < 19);
+    strict_1.default.ok(read.tools.length < 22);
+    strict_1.default.ok(write.tools.length < 22);
+});
+(0, node_test_1.default)('outils analytiques : pannes, plan préventif et stock', async () => {
+    const { readTool } = await import('../src/services/assistant.service.js');
+    const failureAnalysis = readTool('get_failure_analysis', { machine: null });
+    strict_1.default.ok(typeof failureAnalysis.totalFailures === 'number');
+    strict_1.default.ok(Array.isArray(failureAnalysis.failuresByMachine));
+    const maintenanceRecs = readTool('get_maintenance_recommendations', { machine: null, timeframe: 'Cette semaine' });
+    strict_1.default.equal(maintenanceRecs.timeframe, 'Cette semaine');
+    strict_1.default.ok(Array.isArray(maintenanceRecs.proposedPlan));
+    const stockAnalysis = readTool('get_stock_analysis', {});
+    strict_1.default.ok(typeof stockAnalysis.totalStockReferences === 'number');
+    strict_1.default.ok(Array.isArray(stockAnalysis.criticalItems));
 });

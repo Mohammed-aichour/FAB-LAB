@@ -1,12 +1,52 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.matchEntity = matchEntity;
 exports.legacyReadTool = legacyReadTool;
 const json_store_1 = require("./json-store");
-const normalize = (value) => String(value ?? '').toLocaleLowerCase('fr');
-const matches = (record, query, fields) => fields.some((field) => normalize(record[field]).includes(normalize(query)));
+function stripAccents(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+function normalize(value) {
+    return stripAccents(String(value ?? '').trim().toLowerCase()).replace(/\s+/g, ' ');
+}
+function matchEntity(record, query, fields) {
+    if (!query || !query.trim())
+        return true;
+    const q = normalize(query);
+    const refMatch = query.match(/\b(FL-[A-Z0-9-]+|PR-[0-9]+|OT-[A-Z0-9-]+)\b/i);
+    if (refMatch) {
+        const targetRef = normalize(refMatch[0]);
+        if (normalize(record.reference) === targetRef ||
+            normalize(record.id) === targetRef ||
+            normalize(record.otNumber) === targetRef ||
+            normalize(record.codeArborescence).includes(targetRef)) {
+            return true;
+        }
+    }
+    if (fields.some(f => {
+        const val = normalize(record[f]);
+        if (!val)
+            return false;
+        if (val.includes(q))
+            return true;
+        if ((f === 'reference' || f === 'id' || f === 'otNumber') && val.length >= 3 && q.includes(val))
+            return true;
+        return false;
+    })) {
+        return true;
+    }
+    const stopWords = new Set(['pour', 'cette', 'machine', 'les', 'des', 'dans', 'sur', 'une', 'avec', 'actuellement', 'donne', 'moi', 'informations', 'cree', 'fais', 'intervention', 'statut']);
+    const words = q.split(' ').filter(w => w.length > 2 && !stopWords.has(w));
+    if (words.length > 0) {
+        const fullText = normalize(fields.map(f => record[f]).join(' '));
+        return words.some(w => fullText.includes(w));
+    }
+    return false;
+}
+const matches = (record, query, fields) => matchEntity(record, query, fields);
 function legacyReadTool(name, args) {
     if (name === 'search_machines') {
-        return (0, json_store_1.readEntity)('machines').filter((record) => matches(record, args.query, ['id', 'reference', 'name', 'designation', 'atelier', 'category', 'status']));
+        return (0, json_store_1.readEntity)('machines').filter((record) => matchEntity(record, args.query, ['id', 'reference', 'name', 'designation', 'atelier', 'category', 'status', 'codeArborescence']));
     }
     if (name === 'search_stock') {
         return (0, json_store_1.readEntity)('stock').filter((record) => matches(record, args.query, ['id', 'reference', 'name', 'category', 'equipement', 'supplier']) && (!args.lowStockOnly || Number(record.quantity) <= Number(record.min)));

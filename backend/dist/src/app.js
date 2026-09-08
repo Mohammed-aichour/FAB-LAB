@@ -45,8 +45,8 @@ const intervention_routes_1 = __importDefault(require("./routes/intervention.rou
 const document_routes_1 = __importDefault(require("./routes/document.routes"));
 const order_routes_1 = __importDefault(require("./routes/order.routes"));
 const email_routes_1 = __importDefault(require("./routes/email.routes"));
-app.get(['/health', '/api/health'], (req, res) => {
-    res.json({ status: 'ok', message: 'GMAO API is running' });
+app.get(['/', '/api', '/health', '/api/health'], (req, res) => {
+    res.json({ status: 'ok', message: 'GMAO FabLab API Server is running', timestamp: new Date().toISOString() });
 });
 app.use(['/auth', '/api/auth'], auth_routes_1.default);
 app.use(['/assistant', '/api/assistant'], assistant_routes_1.default);

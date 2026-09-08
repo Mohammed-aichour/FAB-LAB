@@ -11,7 +11,9 @@ const defaultUsers = [
   { id: 4, email: 'user@fablab.com', name: 'Utilisateur', role: 'Utilisateur Normal', status: 'Actif', initials: 'US', color: 'bg-zinc-600' }
 ];
 
-const RAW_API_URL = (import.meta.env?.VITE_API_URL as string | undefined || '').trim().replace(/\/$/, '');
+const DEFAULT_PROD_API_URL = 'https://fab-lab-pink.vercel.app';
+const envApiUrl = (import.meta.env?.VITE_API_URL as string | undefined || '').trim().replace(/\/$/, '');
+const RAW_API_URL = envApiUrl || (import.meta.env?.PROD ? DEFAULT_PROD_API_URL : '');
 
 export function getApiUrl(path: string): string {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

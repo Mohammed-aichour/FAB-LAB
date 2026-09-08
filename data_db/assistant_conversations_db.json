@@ -1,5 +1,20 @@
 [
   {
+    "id": "d313082a-498e-4b3f-b034-ba05993b17ad",
+    "userId": "1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Donne-moi les informations de FL-009"
+      },
+      {
+        "role": "assistant",
+        "content": "### Résumé\nVoici les informations pour la machine **FL-009**.\n\n### Données clés\n- **Nom** : Fraiseuse CNC TPROD 6060\n- **Marque** : PIPROD\n- **Modèle** : TPROD-6060\n- **Numéro de série** : SN-TPROD-6060-2022-09\n- **Atelier** : Espace Prototypage - Découpe/Usinage CNC\n- **Emplacement** : Espace Prototypage - Zone Usinage CNC\n- **Catégorie** : Usinage CNC\n- **Statut** : Opérationnel\n- **Criticité** : A\n- **Date de mise en service** : 15 mars 2022\n\n### Caractéristiques\n- **Surface XY** : 600 x 600 mm\n- **Axe Z** : 100 mm\n- **Précision** : ±0,02 mm\n- **Broche** : 1,5-2,2 kW / 0-24000 tr/min\n- **Logiciel** : MACH3 / GRBL / LinuxCNC\n\n### Points critiques\n- La machine est opérationnelle et classée avec une criticité A, indiquant son importance élevée dans le parc machine. \n\n### Recommandations\n- Assurez-vous que la maintenance préventive soit respectée pour éviter des pannes potentielles.\n- Vérifiez régulièrement l'état de la broche et la précision pour maintenir la qualité des productions."
+      }
+    ],
+    "updatedAt": 1788865080571
+  },
+  {
     "id": "3cd5a542-6f62-4280-8bfc-8fe49adf3c75",
     "userId": "1",
     "messages": [

@@ -87,19 +87,39 @@ function isEntityName(value) {
 function readEntity(entity) {
     if (transaction?.has(entity))
         return structuredClone(transaction.get(entity));
-    const filePath = path_1.default.join(exports.DATA_DIR, exports.ENTITY_FILES[entity]);
-    if (fs_1.default.existsSync(filePath)) {
+    const fileName = exports.ENTITY_FILES[entity];
+    const targetPath = path_1.default.join(exports.DATA_DIR, fileName);
+    if (fs_1.default.existsSync(targetPath)) {
         try {
-            return JSON.parse(fs_1.default.readFileSync(filePath, 'utf8'));
+            const data = JSON.parse(fs_1.default.readFileSync(targetPath, 'utf8'));
+            if (Array.isArray(data) || (data && typeof data === 'object'))
+                return data;
         }
         catch { /* fallthrough */ }
     }
-    const rootFilePath = path_1.default.resolve(__dirname, '../../../data_db', exports.ENTITY_FILES[entity]);
-    if (fs_1.default.existsSync(rootFilePath)) {
-        try {
-            return JSON.parse(fs_1.default.readFileSync(rootFilePath, 'utf8'));
+    const seedDirs = [
+        path_1.default.resolve(process.cwd(), 'data_db'),
+        path_1.default.resolve(process.cwd(), 'backend/data_db'),
+        path_1.default.resolve(__dirname, '../../data_db'),
+        path_1.default.resolve(__dirname, '../../../data_db'),
+        path_1.default.resolve(__dirname, '../data_db'),
+    ];
+    for (const dir of seedDirs) {
+        const seedPath = path_1.default.join(dir, fileName);
+        if (fs_1.default.existsSync(seedPath)) {
+            try {
+                const content = fs_1.default.readFileSync(seedPath, 'utf8');
+                const parsed = JSON.parse(content);
+                try {
+                    if (!fs_1.default.existsSync(exports.DATA_DIR))
+                        fs_1.default.mkdirSync(exports.DATA_DIR, { recursive: true });
+                    fs_1.default.writeFileSync(targetPath, content, 'utf8');
+                }
+                catch { /* ignore seed copy warning */ }
+                return parsed;
+            }
+            catch { /* try next candidate */ }
         }
-        catch { /* fallthrough */ }
     }
     return [];
 }

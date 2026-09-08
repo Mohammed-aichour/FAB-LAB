@@ -20,8 +20,12 @@ const schemas = {
     set_machine_status: zod_1.z.object({ machine: zod_1.z.string().min(1), status: machineStatusSchema, reason: zod_1.z.string().min(1) }),
     declare_failure: zod_1.z.object({ machine: zod_1.z.string().min(1), description: zod_1.z.string().min(1), priority: zod_1.z.enum(['A', 'B', 'C']).default('A') }),
     create_intervention: zod_1.z.object({
-        machine: zod_1.z.string().min(1), description: zod_1.z.string().min(1), maintenanceType: zod_1.z.enum(['Corrective', 'Préventive']),
-        plannedDate: zod_1.z.iso.date(), priority: zod_1.z.enum(['A', 'B', 'C']), technician: zod_1.z.string().optional(),
+        machine: zod_1.z.string().min(1),
+        description: zod_1.z.string().optional().transform(v => (v && v.trim() ? v.trim() : 'Intervention de maintenance sur la machine')),
+        maintenanceType: zod_1.z.enum(['Corrective', 'Préventive']).default('Corrective'),
+        plannedDate: zod_1.z.string().optional().transform(v => (v && v.trim() ? v.trim() : nowDate())),
+        priority: zod_1.z.enum(['A', 'B', 'C']).default('B'),
+        technician: zod_1.z.string().optional(),
     }),
     update_intervention: zod_1.z.object({
         intervention: zod_1.z.union([zod_1.z.string().min(1), zod_1.z.number()]), status: zod_1.z.enum(['Nouveau', 'Planifié', 'En cours', 'En attente pièce', 'Terminé', 'Clôturé']).optional(), plannedDate: zod_1.z.iso.date().optional(),
@@ -36,20 +40,70 @@ const schemas = {
     create_alert: zod_1.z.object({ title: zod_1.z.string().min(1), message: zod_1.z.string().min(1), priority: zod_1.z.enum(['Haute', 'Moyenne', 'Normale']), type: zod_1.z.enum(['machine', 'stock', 'intervention', 'preventif', 'system']) }),
 };
 exports.MUTATION_TOOL_NAMES = new Set(Object.keys(schemas));
-const normalized = (value) => String(value ?? '').trim().toLocaleLowerCase('fr');
+function stripAccents(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+const normalized = (value) => stripAccents(String(value ?? '').trim().toLowerCase()).replace(/\s+/g, ' ');
 function findUnique(records, query, fields, label) {
+    if (!query || !query.trim())
+        throw new Error(`${label} non précisé(e).`);
     const needle = normalized(query);
-    const exact = records.filter((record) => fields.some((field) => normalized(record[field]) === needle));
+    // 1. Direct reference pattern extraction (e.g. FL-009, FL-ELE-01, PR-001, OT-IA-...)
+    const refMatch = query.match(/\b(FL-[A-Z0-9-]+|PR-[0-9]+|OT-[A-Z0-9-]+)\b/i);
+    if (refMatch) {
+        const targetRef = normalized(refMatch[0]);
+        const refFound = records.find(r => normalized(r.reference) === targetRef ||
+            normalized(r.id) === targetRef ||
+            normalized(r.otNumber) === targetRef ||
+            normalized(r.codeArborescence).includes(targetRef));
+        if (refFound)
+            return refFound;
+    }
+    // 2. Exact match
+    const exact = records.filter(r => fields.some(f => normalized(r[f]) === needle));
     if (exact.length === 1)
         return exact[0];
-    const partial = records.filter((record) => fields.some((field) => normalized(record[field]).includes(needle)));
+    // 3. Partial substring match
+    const partial = records.filter(r => fields.some(f => {
+        const val = normalized(r[f]);
+        if (!val)
+            return false;
+        if (val.includes(needle))
+            return true;
+        if ((f === 'reference' || f === 'id' || f === 'otNumber') && val.length >= 3 && needle.includes(val))
+            return true;
+        return false;
+    }));
     if (partial.length === 1)
         return partial[0];
-    if (partial.length > 1 || exact.length > 1)
-        throw new Error(`${label} ambigu : précisez la référence ou l'identifiant.`);
+    if (partial.length > 1 || exact.length > 1) {
+        const pool = partial.length > 0 ? partial : exact;
+        const words = needle.split(' ').filter(w => w.length > 1 && !['pour', 'cette', 'machine', 'cree', 'fais', 'une', 'intervention', 'sur'].includes(w));
+        const scored = pool.map(r => {
+            const fullText = normalized(fields.map(f => r[f]).join(' '));
+            const score = words.reduce((acc, w) => acc + (fullText.includes(w) ? 1 : 0), 0);
+            return { record: r, score };
+        }).sort((a, b) => b.score - a.score);
+        if (scored.length > 0 && (scored.length === 1 || scored[0].score > scored[1].score)) {
+            return scored[0].record;
+        }
+        throw new Error(`${label} ambigu(e) : précisez la référence exacte (ex: ${pool.slice(0, 3).map(r => r.reference || r.name).join(', ')}).`);
+    }
+    // 4. Token-based fallback search
+    const words = needle.split(' ').filter(w => w.length > 2 && !['pour', 'cette', 'machine', 'cree', 'fais', 'une', 'intervention', 'sur', 'donne', 'moi', 'informations'].includes(w));
+    if (words.length > 0) {
+        const scored = records.map(r => {
+            const fullText = normalized(fields.map(f => r[f]).join(' '));
+            const score = words.reduce((acc, w) => acc + (fullText.includes(w) ? 1 : 0), 0);
+            return { record: r, score };
+        }).filter(x => x.score > 0).sort((a, b) => b.score - a.score);
+        if (scored.length > 0 && (scored.length === 1 || scored[0].score > scored[1].score)) {
+            return scored[0].record;
+        }
+    }
     throw new Error(`${label} introuvable dans les données réelles.`);
 }
-const findMachine = (query) => findUnique((0, json_store_1.readEntity)('machines'), query, ['id', 'reference', 'name', 'designation'], 'Machine');
+const findMachine = (query) => findUnique((0, json_store_1.readEntity)('machines'), query, ['id', 'reference', 'name', 'designation', 'codeArborescence'], 'Machine');
 const findStock = (query) => findUnique((0, json_store_1.readEntity)('stock'), query, ['id', 'reference', 'name'], 'Article de stock');
 const findIntervention = (query) => findUnique((0, json_store_1.readEntity)('interventions'), String(query), ['id', 'otNumber', 'diNumber'], 'Intervention');
 const findTechnician = (query) => {
@@ -114,7 +168,7 @@ function buildPreview(toolName, rawPayload) {
             description: payload.description, technician, plannedDate: payload.plannedDate, startDate: '', endDate: '', realDurationHours: 0,
             partsUsed: [], partsCostMAD: 0, laborCostMAD: 0, totalCostMAD: 0, status: 'Nouveau', supervisorVisa: 'En attente', observations: '',
         };
-        return { toolName, payload, summary: `Créer ${intervention.otNumber} pour ${machine.name}, planifiée le ${payload.plannedDate}${technician !== 'Non assigné' ? ` et affectée à ${technician}` : ''}.`, entity: 'interventions', entityId: id, oldValue: null, newValue: intervention };
+        return { toolName, payload, summary: `Créer ${intervention.otNumber} pour ${machine.name} (« ${intervention.description} »), planifiée le ${payload.plannedDate}${technician !== 'Non assigné' ? ` et affectée à ${technician}` : ''}.`, entity: 'interventions', entityId: id, oldValue: null, newValue: intervention };
     }
     if (toolName === 'update_intervention') {
         const intervention = findIntervention(payload.intervention);

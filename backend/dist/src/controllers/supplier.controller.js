@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteSupplier = exports.updateSupplier = exports.createSupplier = exports.getSupplierById = exports.getAllSuppliers = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient({});
+const json_store_1 = require("../services/json-store");
 const getAllSuppliers = async (req, res) => {
     try {
-        const suppliers = await prisma.supplier.findMany();
+        const suppliers = (0, json_store_1.readEntity)('suppliers');
         res.json(suppliers);
     }
     catch (error) {
@@ -16,10 +15,8 @@ exports.getAllSuppliers = getAllSuppliers;
 const getSupplierById = async (req, res) => {
     try {
         const { id } = req.params;
-        const supplier = await prisma.supplier.findUnique({
-            where: { id: Number(id) },
-            include: { parts: { include: { part: true } } }
-        });
+        const suppliers = (0, json_store_1.readEntity)('suppliers');
+        const supplier = suppliers.find((s) => String(s.id) === String(id));
         if (!supplier)
             return res.status(404).json({ error: 'Fournisseur introuvable' });
         res.json(supplier);
@@ -31,10 +28,11 @@ const getSupplierById = async (req, res) => {
 exports.getSupplierById = getSupplierById;
 const createSupplier = async (req, res) => {
     try {
-        const supplier = await prisma.supplier.create({
-            data: req.body
-        });
-        res.status(201).json(supplier);
+        const suppliers = (0, json_store_1.readEntity)('suppliers');
+        const newSupplier = { id: req.body.id || `SUP-${Date.now()}`, ...req.body };
+        suppliers.push(newSupplier);
+        (0, json_store_1.writeEntity)('suppliers', suppliers);
+        res.status(201).json(newSupplier);
     }
     catch (error) {
         res.status(500).json({ error: 'Erreur lors de la création du fournisseur' });
@@ -44,11 +42,13 @@ exports.createSupplier = createSupplier;
 const updateSupplier = async (req, res) => {
     try {
         const { id } = req.params;
-        const supplier = await prisma.supplier.update({
-            where: { id: Number(id) },
-            data: req.body
-        });
-        res.json(supplier);
+        const suppliers = (0, json_store_1.readEntity)('suppliers');
+        const index = suppliers.findIndex((s) => String(s.id) === String(id));
+        if (index === -1)
+            return res.status(404).json({ error: 'Fournisseur introuvable' });
+        suppliers[index] = { ...suppliers[index], ...req.body };
+        (0, json_store_1.writeEntity)('suppliers', suppliers);
+        res.json(suppliers[index]);
     }
     catch (error) {
         res.status(500).json({ error: 'Erreur lors de la mise à jour' });
@@ -58,9 +58,9 @@ exports.updateSupplier = updateSupplier;
 const deleteSupplier = async (req, res) => {
     try {
         const { id } = req.params;
-        await prisma.supplier.delete({
-            where: { id: Number(id) }
-        });
+        let suppliers = (0, json_store_1.readEntity)('suppliers');
+        suppliers = suppliers.filter((s) => String(s.id) !== String(id));
+        (0, json_store_1.writeEntity)('suppliers', suppliers);
         res.json({ message: 'Fournisseur supprimé avec succès' });
     }
     catch (error) {
