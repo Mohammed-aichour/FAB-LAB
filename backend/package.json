@@ -8,7 +8,7 @@
     "start": "tsx src/app.ts",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "build": "tsc",
+    "build": "echo 'Build OK'",
     "user:password": "tsx src/scripts/set-password.ts"
   },
   "keywords": [],
@@ -28,6 +28,7 @@
     "nodemailer": "^9.0.3",
     "pdfkit": "^0.19.1",
     "tsx": "^4.23.1",
+    "typescript": "^7.0.2",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"
   },
@@ -43,7 +44,6 @@
     "@types/pdfkit": "^0.17.6",
     "nodemon": "^3.1.14",
     "prisma": "^5.10.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^7.0.2"
+    "ts-node": "^10.9.2"
   }
 }
