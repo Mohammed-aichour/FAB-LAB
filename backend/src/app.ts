@@ -52,15 +52,13 @@ app.get(['/health', '/api/health'], (req, res) => {
 app.use(['/auth', '/api/auth'], authRoutes);
 app.use(['/assistant', '/api/assistant'], assistantRoutes);
 app.use(['/db', '/api/db'], databaseRoutes);
-app.use(['/', '/api'], authenticate);
-app.use(['/', '/api'], (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next));
 
-app.use(['/machines', '/api/machines'], machineRoutes);
-app.use(['/suppliers', '/api/suppliers'], supplierRoutes);
-app.use(['/interventions', '/api/interventions'], interventionRoutes);
-app.use(['/documents', '/api/documents'], documentRoutes);
-app.use(['/orders', '/api/orders'], orderRoutes);
-app.use(['/', '/api'], emailRoutes);
+app.use(['/machines', '/api/machines'], authenticate, (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next), machineRoutes);
+app.use(['/suppliers', '/api/suppliers'], authenticate, (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next), supplierRoutes);
+app.use(['/interventions', '/api/interventions'], authenticate, (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next), interventionRoutes);
+app.use(['/documents', '/api/documents'], authenticate, (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next), documentRoutes);
+app.use(['/orders', '/api/orders'], authenticate, (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next), orderRoutes);
+app.use('/api', emailRoutes);
 
 app.use('/docs', express.static(path.join(__dirname, '../../Documents_GED')));
 
