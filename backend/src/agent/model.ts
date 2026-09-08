@@ -40,6 +40,7 @@ async function callOpenAiWithKey(apiKey: string, body: ModelResponse): Promise<M
       return t;
     });
     chatPayload.tool_choice = body.tool_choice || 'auto';
+    chatPayload.parallel_tool_calls = false;
   }
 
   const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
