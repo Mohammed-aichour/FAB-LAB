@@ -6,26 +6,20 @@ import nodemailer from 'nodemailer';
 import { requireRoles } from '../middleware/auth';
 
 const router = Router();
-const docDir = path.join(__dirname, '../../../Documents_GED');
+const docDir = process.env.VERCEL ? path.join('/tmp', 'Documents_GED') : path.join(__dirname, '../../../Documents_GED');
 const metadataFile = path.join(docDir, 'metadata.json');
 
 // Reusable account
 let testAccount: any = null;
 async function getTransporter() {
-  // If real SMTP credentials are provided in .env
   if (process.env.SMTP_USER && process.env.SMTP_PASS) {
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: Number(process.env.SMTP_PORT) || 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
+      secure: true,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
     });
   }
-
-  // Fallback to Ethereal for testing
   if (!testAccount) {
     testAccount = await nodemailer.createTestAccount();
   }
@@ -39,10 +33,6 @@ async function getTransporter() {
 
 router.post('/generate-invoice', requireRoles('Superviseur'), async (req, res) => {
   const { supplierName, supplierEmail, partName, category, description, quantity, unitPrice, deliveryAddress, contactPhone, urgency, orderRef, sendEmail, customEmailMessage, confirmSend } = req.body;
-
-  if (!supplierName || !partName || !quantity || !unitPrice) {
-    return res.status(400).json({ error: 'Tous les champs obligatoires sont requis.' });
-  }
 
   const dateStr = new Date().toLocaleDateString('fr-FR').replace(/\//g, '-');
   const total = parseFloat(quantity) * parseFloat(unitPrice);

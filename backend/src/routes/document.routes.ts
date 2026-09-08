@@ -5,7 +5,7 @@ import fs from 'fs';
 
 const router = Router();
 
-const docDir = path.join(__dirname, '../../../Documents_GED');
+const docDir = process.env.VERCEL ? path.join('/tmp', 'Documents_GED') : path.join(__dirname, '../../../Documents_GED');
 const metadataPath = path.join(docDir, 'metadata.json');
 
 const getMetadata = () => {
@@ -20,20 +20,15 @@ const getMetadata = () => {
 };
 
 const saveMetadata = (data: any) => {
-  fs.writeFileSync(metadataPath, JSON.stringify(data, null, 2));
+  try {
+    if (!fs.existsSync(docDir)) fs.mkdirSync(docDir, { recursive: true });
+    fs.writeFileSync(metadataPath, JSON.stringify(data, null, 2));
+  } catch (e) {
+    console.warn('[GED Store] Could not save metadata:', e);
+  }
 };
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (!fs.existsSync(docDir)) {
-      fs.mkdirSync(docDir, { recursive: true });
-    }
-    cb(null, docDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
 
