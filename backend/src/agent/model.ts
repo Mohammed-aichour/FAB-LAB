@@ -74,11 +74,12 @@ export const createResponse: ModelClient = async body => {
   const chatData = await chatRes.json() as any;
   if (!chatRes.ok) {
     const code = String(chatData.error?.code || '');
-    console.error('[OpenAI API /v1/chat/completions error]', { status: chatRes.status, code, message: chatData.error?.message });
+    const msg = String(chatData.error?.message || '');
+    console.error('[OpenAI API /v1/chat/completions error]', { status: chatRes.status, code, message: msg });
     if (chatRes.status === 401) throw new Error('La clé OpenAI configurée est invalide ou révoquée.');
     if (chatRes.status === 429 && code === 'insufficient_quota') throw new Error('Le compte OpenAI ne dispose pas de quota API disponible.');
     if (chatRes.status === 404) throw new Error(`Le modèle « ${chatModel} » n’est pas disponible.`);
-    throw new Error(`Service IA indisponible (${chatRes.status}: ${chatData.error?.message || 'Erreur OpenAI'}).`);
+    throw new Error(`Service IA (OpenAI ${chatRes.status}): ${msg || 'Erreur inconnue'}`);
   }
 
   const msg = chatData.choices?.[0]?.message;
