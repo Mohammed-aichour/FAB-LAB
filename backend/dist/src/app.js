@@ -16,6 +16,12 @@ const auth_1 = require("./middleware/auth");
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../.env') });
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
+app.use((req, res, next) => {
+    if (req.url === '/api' && req.originalUrl && req.originalUrl !== '/api') {
+        req.url = req.originalUrl;
+    }
+    next();
+});
 const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://mohammed-aichour.github.io'];
 const envOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_ORIGIN, process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '']
     .filter(Boolean)
