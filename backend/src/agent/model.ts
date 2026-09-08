@@ -3,8 +3,7 @@ export type ModelClient = (body: ModelResponse) => Promise<ModelResponse>;
 
 const fallbackApiKey = Buffer.from('c2stcHJvai1reTZQcXRWQ2lFQUVpZklXdEdzWVpMV25aQXdwQjl4WndOLWlrYlgySElzSG54UmVDUU1XbHVjV2p5M3paOXFQUkRpZmlNcTR6NFQzQmxia0ZKeGVaWTZKbXdaWFRTVW1VVDh0MHF0dVh3QWRubWJkUDJkd3lWMTBtYjJWR2VrekhIWmM0ZXJYT19SaXg2NE9Fem1teVpZM1Q4SUE=', 'base64').toString('utf8');
 
-export const createResponse: ModelClient = async body => {
-  const apiKey = (process.env.OPENAI_API_KEY || '').trim() || fallbackApiKey;
+async function callOpenAiWithKey(apiKey: string, body: ModelResponse): Promise<ModelResponse> {
   try {
     const response = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
@@ -101,4 +100,21 @@ export const createResponse: ModelClient = async body => {
   }
 
   return { status: 'completed', output };
+}
+
+export const createResponse: ModelClient = async body => {
+  const envKey = (process.env.OPENAI_API_KEY || '').trim();
+  const keys = Array.from(new Set([envKey, fallbackApiKey].filter(Boolean)));
+  let lastError: Error | null = null;
+
+  for (const key of keys) {
+    try {
+      return await callOpenAiWithKey(key, body);
+    } catch (err: any) {
+      lastError = err;
+      console.warn(`[OpenAI Key warning] Key starting with ${key.slice(0, 7)} failed: ${err.message}`);
+    }
+  }
+
+  throw lastError || new Error("Erreur de communication avec l'assistant IA.");
 };

@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createResponse = void 0;
 const fallbackApiKey = Buffer.from('c2stcHJvai1reTZQcXRWQ2lFQUVpZklXdEdzWVpMV25aQXdwQjl4WndOLWlrYlgySElzSG54UmVDUU1XbHVjV2p5M3paOXFQUkRpZmlNcTR6NFQzQmxia0ZKeGVaWTZKbXdaWFRTVW1VVDh0MHF0dVh3QWRubWJkUDJkd3lWMTBtYjJWR2VrekhIWmM0ZXJYT19SaXg2NE9Fem1teVpZM1Q4SUE=', 'base64').toString('utf8');
-const createResponse = async (body) => {
-    const apiKey = (process.env.OPENAI_API_KEY || '').trim() || fallbackApiKey;
+async function callOpenAiWithKey(apiKey, body) {
     try {
         const response = await fetch('https://api.openai.com/v1/responses', {
             method: 'POST',
@@ -105,5 +104,20 @@ const createResponse = async (body) => {
         });
     }
     return { status: 'completed', output };
+}
+const createResponse = async (body) => {
+    const envKey = (process.env.OPENAI_API_KEY || '').trim();
+    const keys = Array.from(new Set([envKey, fallbackApiKey].filter(Boolean)));
+    let lastError = null;
+    for (const key of keys) {
+        try {
+            return await callOpenAiWithKey(key, body);
+        }
+        catch (err) {
+            lastError = err;
+            console.warn(`[OpenAI Key warning] Key starting with ${key.slice(0, 7)} failed: ${err.message}`);
+        }
+    }
+    throw lastError || new Error("Erreur de communication avec l'assistant IA.");
 };
 exports.createResponse = createResponse;
