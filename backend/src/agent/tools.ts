@@ -21,13 +21,13 @@ export const tools = [
   functionTool('create_intervention', 'Prépare la création d’une intervention. Seule la machine est obligatoire. Si la description est omise, une description générique appropriée est attribuée.', {
     machine: { type: 'string', description: 'Nom ou référence de la machine dans la GMAO' },
     description: { type: ['string', 'null'], description: 'Description des travaux (optionnel)' },
-    maintenanceType: { type: ['string', 'null'], enum: ['Corrective', 'Préventive', null] },
+    maintenanceType: { type: ['string', 'null'], enum: ['Corrective', 'Préventive'] },
     plannedDate: { type: ['string', 'null'], description: 'Date au format YYYY-MM-DD (optionnel)' },
-    priority: { type: ['string', 'null'], enum: ['A', 'B', 'C', null] },
+    priority: { type: ['string', 'null'], enum: ['A', 'B', 'C'] },
     technician: { type: ['string', 'null'] },
   }, ['machine', 'description', 'maintenanceType', 'plannedDate', 'priority', 'technician']),
   functionTool('update_intervention', 'Prépare la modification d’une intervention existante.', {
-    intervention: { type: ['string', 'number'] }, status: { type: ['string', 'null'] }, plannedDate: { type: ['string', 'null'] }, description: { type: ['string', 'null'] }, priority: { type: ['string', 'null'], enum: ['A', 'B', 'C', null] }, technician: { type: ['string', 'null'] },
+    intervention: { type: ['string', 'number'] }, status: { type: ['string', 'null'] }, plannedDate: { type: ['string', 'null'] }, description: { type: ['string', 'null'] }, priority: { type: ['string', 'null'], enum: ['A', 'B', 'C'] }, technician: { type: ['string', 'null'] },
   }, ['intervention', 'status', 'plannedDate', 'description', 'priority', 'technician']),
   functionTool('schedule_maintenance', 'Prépare la planification d’une maintenance préventive.', {
     machine: { type: 'string' }, task: { type: 'string' }, frequency: { type: 'string' }, nextDueDate: { type: 'string' }, responsible: { type: ['string', 'null'] }, notes: { type: ['string', 'null'] },
