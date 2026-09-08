@@ -43,7 +43,6 @@ async function callOpenAiWithKey(apiKey, body) {
             };
         });
         chatPayload.tool_choice = body.tool_choice || 'auto';
-        chatPayload.parallel_tool_calls = false;
     }
     const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -61,7 +60,7 @@ async function callOpenAiWithKey(apiKey, body) {
             throw new Error('Le compte OpenAI ne dispose pas de quota API disponible.');
         if (chatRes.status === 404)
             throw new Error(`Le modèle « ${chatModel} » n’est pas disponible.`);
-        throw new Error(`Service IA (OpenAI ${chatRes.status}): ${msg || 'Erreur inconnue'}`);
+        throw new Error(`OpenAI API error (${chatRes.status} / ${code || 'no_code'}): ${msg || 'Erreur inconnue'}`);
     }
     const msg = chatData.choices?.[0]?.message;
     const output = [];
