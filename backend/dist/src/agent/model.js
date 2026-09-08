@@ -52,7 +52,20 @@ const createResponse = async (body) => {
         max_tokens: body.max_output_tokens || 2048,
     };
     if (Array.isArray(body.tools) && body.tools.length > 0) {
-        chatPayload.tools = body.tools;
+        chatPayload.tools = body.tools.map((t) => {
+            if (t.type === 'function' && t.name && !t.function) {
+                return {
+                    type: 'function',
+                    function: {
+                        name: t.name,
+                        description: t.description,
+                        parameters: t.parameters,
+                        strict: t.strict,
+                    }
+                };
+            }
+            return t;
+        });
         chatPayload.tool_choice = body.tool_choice || 'auto';
     }
     const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
