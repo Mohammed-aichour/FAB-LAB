@@ -48,7 +48,7 @@ function cleanSchemaForOpenAI(obj) {
         return obj.map(cleanSchemaForOpenAI);
     const res = {};
     for (const [k, v] of Object.entries(obj)) {
-        if (['$schema', 'pattern', 'format', 'minLength', 'maxLength', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf'].includes(k)) {
+        if (['$schema', 'additionalProperties', 'pattern', 'format', 'minLength', 'maxLength', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf'].includes(k)) {
             continue;
         }
         res[k] = cleanSchemaForOpenAI(v);
