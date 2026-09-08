@@ -36,9 +36,37 @@ const extras = {
   create_supplier: ['Prépare un fournisseur avec les seules données explicitement fournies.', z.object({name:text.min(1),code:text.min(1),email:text.nullable(),phone:text.nullable(),address:text.nullable(),domain:text.nullable()}).strict()],
   update_order_status: ['Prépare le statut d’une demande, sans modifier le stock ni envoyer de message.', z.object({order:text.min(1),status:z.enum(['En attente','Approuvée','Reçue','Annulée'])}).strict()],
 } as const;
+function cleanSchemaForOpenAI(obj: any): any {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(cleanSchemaForOpenAI);
+
+  const res: Record<string, any> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (k === '$schema') continue;
+    res[k] = cleanSchemaForOpenAI(v);
+  }
+
+  if (Array.isArray(res.anyOf) && res.anyOf.length === 2) {
+    const nullItem = res.anyOf.find((item: any) => item && item.type === 'null');
+    const typeItem = res.anyOf.find((item: any) => item && item.type !== 'null');
+    if (nullItem && typeItem && typeof typeItem.type === 'string') {
+      delete res.anyOf;
+      res.type = [typeItem.type, 'null'];
+      if (typeItem.enum) res.enum = typeItem.enum.filter((e: any) => e !== null);
+      if (typeItem.maxLength) res.maxLength = typeItem.maxLength;
+      if (typeItem.minLength) res.minLength = typeItem.minLength;
+      if (typeItem.format) res.format = typeItem.format;
+      if (typeItem.pattern) res.pattern = typeItem.pattern;
+      if (typeItem.exclusiveMinimum !== undefined) res.exclusiveMinimum = typeItem.exclusiveMinimum;
+      if (typeItem.maximum !== undefined) res.maximum = typeItem.maximum;
+    }
+  }
+
+  return res;
+}
+
 export const extraTools = Object.entries(extras).map(([name,[description,schema]]) => {
-  const params = z.toJSONSchema(schema) as Record<string, any>;
-  delete params.$schema;
+  const params = cleanSchemaForOpenAI(z.toJSONSchema(schema));
   return { type: 'function', name, description, strict: true, parameters: params };
 });
 const matches = (row: Record<string, any>, q: string, fields: string[]) => fields.some(f => String(row[f] ?? '').toLocaleLowerCase('fr').includes(q.toLocaleLowerCase('fr')));
