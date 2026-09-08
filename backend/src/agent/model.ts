@@ -104,7 +104,7 @@ async function callOpenAiWithKey(apiKey: string, body: ModelResponse): Promise<M
 
 export const createResponse: ModelClient = async body => {
   const envKey = (process.env.OPENAI_API_KEY || '').trim();
-  const keys = Array.from(new Set([envKey, fallbackApiKey].filter(Boolean)));
+  const keys = Array.from(new Set([fallbackApiKey, envKey].filter(Boolean)));
   let lastError: Error | null = null;
 
   for (const key of keys) {
