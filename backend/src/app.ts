@@ -45,22 +45,22 @@ import documentRoutes from './routes/document.routes';
 import orderRoutes from './routes/order.routes';
 import emailRoutes from './routes/email.routes';
 
-app.get('/api/health', (req, res) => {
+app.get(['/health', '/api/health'], (req, res) => {
   res.json({ status: 'ok', message: 'GMAO API is running' });
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/assistant', assistantRoutes);
-app.use('/api/db', databaseRoutes);
-app.use('/api', authenticate);
-app.use('/api', (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next));
+app.use(['/auth', '/api/auth'], authRoutes);
+app.use(['/assistant', '/api/assistant'], assistantRoutes);
+app.use(['/db', '/api/db'], databaseRoutes);
+app.use(['/', '/api'], authenticate);
+app.use(['/', '/api'], (req, res, next) => req.method === 'GET' ? next() : requireRoles('Superviseur', 'Ingénieur', 'Technicien')(req, res, next));
 
-app.use('/api/machines', machineRoutes);
-app.use('/api/suppliers', supplierRoutes);
-app.use('/api/interventions', interventionRoutes);
-app.use('/api/documents', documentRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api', emailRoutes);
+app.use(['/machines', '/api/machines'], machineRoutes);
+app.use(['/suppliers', '/api/suppliers'], supplierRoutes);
+app.use(['/interventions', '/api/interventions'], interventionRoutes);
+app.use(['/documents', '/api/documents'], documentRoutes);
+app.use(['/orders', '/api/orders'], orderRoutes);
+app.use(['/', '/api'], emailRoutes);
 
 app.use('/docs', express.static(path.join(__dirname, '../../Documents_GED')));
 
