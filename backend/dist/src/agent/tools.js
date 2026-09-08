@@ -9,7 +9,7 @@ const strOrNull = (desc) => ({
 });
 const functionTool = (name, description, properties, required = []) => ({
     type: 'function', name, description,
-    parameters: { type: 'object', properties, required, additionalProperties: false },
+    parameters: { type: 'object', properties, required },
 });
 exports.tools = [
     functionTool('search_machines', 'Recherche l’état ACTUEL des machines par référence, nom, atelier, catégorie ou statut. À utiliser pour « quelles machines sont actuellement en panne ? » avec query « en panne ».', { query: { type: 'string' } }, ['query']),
