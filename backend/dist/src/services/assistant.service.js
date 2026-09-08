@@ -33,7 +33,8 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
     const usedTools = [];
     const selected = selectTools(messages);
     for (let turn = 0; turn < 8; turn++) {
-        const currentModel = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+        const envModel = (process.env.OPENAI_MODEL || '').trim();
+        const currentModel = /^gpt-[45]/i.test(envModel) ? envModel : 'gpt-4o-mini';
         const request = {
             model: currentModel,
             instructions: (0, instructions_1.systemInstructions)(),
