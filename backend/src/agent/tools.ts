@@ -25,7 +25,7 @@ export const tools = [
     plannedDate: { type: ['string', 'null'], description: 'Date au format YYYY-MM-DD (optionnel)' },
     priority: { type: ['string', 'null'], enum: ['A', 'B', 'C', null] },
     technician: { type: ['string', 'null'] },
-  }, ['machine']),
+  }, ['machine', 'description', 'maintenanceType', 'plannedDate', 'priority', 'technician']),
   functionTool('update_intervention', 'Prépare la modification d’une intervention existante.', {
     intervention: { type: ['string', 'number'] }, status: { type: ['string', 'null'] }, plannedDate: { type: ['string', 'null'] }, description: { type: ['string', 'null'] }, priority: { type: ['string', 'null'], enum: ['A', 'B', 'C', null] }, technician: { type: ['string', 'null'] },
   }, ['intervention', 'status', 'plannedDate', 'description', 'priority', 'technician']),

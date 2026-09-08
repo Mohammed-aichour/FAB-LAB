@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "toolName": "set_machine_status",
+    "payload": {
+      "machine": "FL-009",
+      "status": "En Panne",
+      "reason": "État non opérationnel"
+    },
+    "summary": "Modifier l'état de Fraiseuse CNC TPROD 6060 (FL-009) : « Opérationnel » → « En Panne ».",
+    "entity": "machines",
+    "entityId": "fl-cnc-009",
+    "oldValue": {
+      "id": "fl-cnc-009",
+      "reference": "FL-009",
+      "codeArborescence": "FL-CNC-02 / FL-009",
+      "name": "Fraiseuse CNC TPROD 6060",
+      "designation": "Fraiseuse CNC TPROD 6060 (Haute Précision)",
+      "marque": "PIPROD",
+      "modele": "TPROD-6060",
+      "serialNumber": "SN-TPROD-6060-2022-09",
+      "atelier": "Espace Prototypage - Découpe/Usinage CNC",
+      "location": "Espace Prototypage - Zone Usinage CNC",
+      "category": "Usinage CNC",
+      "status": "Opérationnel",
+      "criticite": "A",
+      "commissionDate": "2022-03-15",
+      "caracteristiques": "Surface XY 600x600 mm, axe Z 100 mm, précision +/-0,02 mm, broche 1,5-2,2 kW / 0-24000 tr/min",
+      "logiciel": "MACH3 / GRBL / LinuxCNC"
+    },
+    "newValue": {
+      "id": "fl-cnc-009",
+      "reference": "FL-009",
+      "codeArborescence": "FL-CNC-02 / FL-009",
+      "name": "Fraiseuse CNC TPROD 6060",
+      "designation": "Fraiseuse CNC TPROD 6060 (Haute Précision)",
+      "marque": "PIPROD",
+      "modele": "TPROD-6060",
+      "serialNumber": "SN-TPROD-6060-2022-09",
+      "atelier": "Espace Prototypage - Découpe/Usinage CNC",
+      "location": "Espace Prototypage - Zone Usinage CNC",
+      "category": "Usinage CNC",
+      "status": "En Panne",
+      "criticite": "A",
+      "commissionDate": "2022-03-15",
+      "caracteristiques": "Surface XY 600x600 mm, axe Z 100 mm, précision +/-0,02 mm, broche 1,5-2,2 kW / 0-24000 tr/min",
+      "logiciel": "MACH3 / GRBL / LinuxCNC",
+      "statusReason": "État non opérationnel",
+      "updatedAt": "2026-09-08T11:03:28.402Z"
+    },
+    "id": "67fb5f03-f70a-4d90-b7c3-0a63c0872fbc",
+    "userId": "1",
+    "createdAt": "2026-09-08T11:03:28.402Z",
+    "expiresAt": "2026-09-08T11:13:28.402Z",
+    "status": "pending"
+  }
+]

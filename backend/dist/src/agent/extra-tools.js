@@ -37,10 +37,14 @@ const extras = {
     get_maintenance_recommendations: ['Génère un plan et des recommandations de maintenance prioritaires basés sur le statut du parc, les retards préventifs et l’historique.', exports.readSchemas.get_maintenance_recommendations],
     get_stock_analysis: ['Analyse des ruptures de stock, des articles sous le seuil critique et des pièces à commander avec leurs fournisseurs.', exports.readSchemas.get_stock_analysis],
     prepare_purchase: ['Prépare commande, réapprovisionnement ou devis et email. Enregistrement après confirmation, aucun envoi.', purchasing_service_1.purchaseSchema],
-    create_supplier: ['Prépare un fournisseur avec les seules données explicitement fournies.', zod_1.z.object({ name: text.min(1), code: text.min(1), email: zod_1.z.email().nullable(), phone: text.nullable(), address: text.nullable(), domain: text.nullable() }).strict()],
+    create_supplier: ['Prépare un fournisseur avec les seules données explicitement fournies.', zod_1.z.object({ name: text.min(1), code: text.min(1), email: text.nullable(), phone: text.nullable(), address: text.nullable(), domain: text.nullable() }).strict()],
     update_order_status: ['Prépare le statut d’une demande, sans modifier le stock ni envoyer de message.', zod_1.z.object({ order: text.min(1), status: zod_1.z.enum(['En attente', 'Approuvée', 'Reçue', 'Annulée']) }).strict()],
 };
-exports.extraTools = Object.entries(extras).map(([name, [description, schema]]) => ({ type: 'function', name, description, strict: true, parameters: zod_1.z.toJSONSchema(schema) }));
+exports.extraTools = Object.entries(extras).map(([name, [description, schema]]) => {
+    const params = zod_1.z.toJSONSchema(schema);
+    delete params.$schema;
+    return { type: 'function', name, description, strict: true, parameters: params };
+});
 const matches = (row, q, fields) => fields.some(f => String(row[f] ?? '').toLocaleLowerCase('fr').includes(q.toLocaleLowerCase('fr')));
 function extraRead(name, args) {
     if (name === 'get_unavailable_machines') {

@@ -41,8 +41,7 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
             tools: selected.tools,
             tool_choice: turn === 0 && !selected.mutation ? 'required' : 'auto',
             parallel_tool_calls: false,
-            store: false,
-            max_output_tokens: 2048
+            store: false
         };
         if (!/^gpt-4/i.test(currentModel)) {
             request.reasoning = { effort: 'none' };
