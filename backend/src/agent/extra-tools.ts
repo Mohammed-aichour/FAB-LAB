@@ -43,7 +43,9 @@ function cleanSchemaForOpenAI(obj: any): any {
 
   const res: Record<string, any> = {};
   for (const [k, v] of Object.entries(obj)) {
-    if (k === '$schema') continue;
+    if (['$schema', 'pattern', 'format', 'minLength', 'maxLength', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf'].includes(k)) {
+      continue;
+    }
     res[k] = cleanSchemaForOpenAI(v);
   }
   return res;

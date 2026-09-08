@@ -41,7 +41,7 @@ export const tools = [
   }, ['machine', 'task', 'frequency', 'nextDueDate', 'responsible', 'notes']),
   functionTool('assign_technician', 'Prépare l’affectation d’un utilisateur actif à une intervention.', { intervention: { type: 'string' }, technician: { type: 'string' } }, ['intervention', 'technician']),
   functionTool('adjust_stock', 'Prépare une modification de quantité de stock.', {
-    stockItem: { type: 'string' }, mode: { type: 'string', enum: ['set', 'increment', 'decrement'] }, quantity: { type: 'integer', minimum: 0 }, reason: { type: 'string' },
+    stockItem: { type: 'string' }, mode: { type: 'string', enum: ['set', 'increment', 'decrement'] }, quantity: { type: 'integer' }, reason: { type: 'string' },
   }, ['stockItem', 'mode', 'quantity', 'reason']),
   functionTool('create_alert', 'Prépare la création d’une alerte GMAO.', {
     title: { type: 'string' }, message: { type: 'string' }, priority: { type: 'string', enum: ['Haute', 'Moyenne', 'Normale'] }, type: { type: 'string', enum: ['machine', 'stock', 'intervention', 'preventif', 'system'] },
