@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use((req, res, next) => {
   const vercelUri = req.headers['x-forwarded-uri'] as string | undefined;
-  if (vercelUri && typeof vercelUri === 'string' && vercelUri.startsWith('/')) {
+  if (vercelUri && typeof vercelUri === 'string' && vercelUri.startsWith('/') && !vercelUri.includes('/api/index')) {
     req.url = vercelUri;
   }
   next();
