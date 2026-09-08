@@ -52,28 +52,6 @@ function cleanSchemaForOpenAI(obj) {
             continue;
         res[k] = cleanSchemaForOpenAI(v);
     }
-    if (Array.isArray(res.anyOf) && res.anyOf.length === 2) {
-        const nullItem = res.anyOf.find((item) => item && item.type === 'null');
-        const typeItem = res.anyOf.find((item) => item && item.type !== 'null');
-        if (nullItem && typeItem && typeof typeItem.type === 'string') {
-            delete res.anyOf;
-            res.type = [typeItem.type, 'null'];
-            if (typeItem.enum)
-                res.enum = typeItem.enum.filter((e) => e !== null);
-            if (typeItem.maxLength)
-                res.maxLength = typeItem.maxLength;
-            if (typeItem.minLength)
-                res.minLength = typeItem.minLength;
-            if (typeItem.format)
-                res.format = typeItem.format;
-            if (typeItem.pattern)
-                res.pattern = typeItem.pattern;
-            if (typeItem.exclusiveMinimum !== undefined)
-                res.exclusiveMinimum = typeItem.exclusiveMinimum;
-            if (typeItem.maximum !== undefined)
-                res.maximum = typeItem.maximum;
-        }
-    }
     return res;
 }
 exports.extraTools = Object.entries(extras).map(([name, [description, schema]]) => {

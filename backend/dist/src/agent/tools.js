@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tools = void 0;
+const strOrNull = (desc, enumVals) => ({
+    anyOf: [
+        { type: 'string', ...(enumVals ? { enum: enumVals } : {}), ...(desc ? { description: desc } : {}) },
+        { type: 'null' }
+    ]
+});
 const functionTool = (name, description, properties, required = []) => ({
     type: 'function', name, description, strict: true,
     parameters: { type: 'object', properties, required, additionalProperties: false },
@@ -8,8 +14,8 @@ const functionTool = (name, description, properties, required = []) => ({
 exports.tools = [
     functionTool('search_machines', 'Recherche l’état ACTUEL des machines par référence, nom, atelier, catégorie ou statut. À utiliser pour « quelles machines sont actuellement en panne ? » avec query « en panne ».', { query: { type: 'string' } }, ['query']),
     functionTool('search_stock', 'Recherche des pièces et composants réels en stock.', { query: { type: 'string' }, lowStockOnly: { type: 'boolean' } }, ['query', 'lowStockOnly']),
-    functionTool('list_interventions', 'Liste les interventions et leur statut de traitement. Ne pas utiliser pour déterminer le statut actuel en panne d’une machine.', { machine: { type: ['string', 'null'] }, status: { type: ['string', 'null'] }, technician: { type: ['string', 'null'] } }, ['machine', 'status', 'technician']),
-    functionTool('list_maintenance', 'Liste le plan de maintenance préventive réel.', { machine: { type: ['string', 'null'] }, overdueOnly: { type: 'boolean' } }, ['machine', 'overdueOnly']),
+    functionTool('list_interventions', 'Liste les interventions et leur statut de traitement. Ne pas utiliser pour déterminer le statut actuel en panne d’une machine.', { machine: strOrNull(), status: strOrNull(), technician: strOrNull() }, ['machine', 'status', 'technician']),
+    functionTool('list_maintenance', 'Liste le plan de maintenance préventive réel.', { machine: strOrNull(), overdueOnly: { type: 'boolean' } }, ['machine', 'overdueOnly']),
     functionTool('list_technicians', 'Liste les utilisateurs actifs pouvant être affectés comme techniciens.', {}, []),
     functionTool('get_statistics', 'Calcule les statistiques GMAO à partir des données actuelles.', {}, []),
     functionTool('get_daily_summary', 'Retourne les éléments factuels du résumé d’une journée.', { date: { type: 'string', description: 'Date ISO YYYY-MM-DD' } }, ['date']),
@@ -21,17 +27,17 @@ exports.tools = [
     }, ['machine', 'description', 'priority']),
     functionTool('create_intervention', 'Prépare la création d’une intervention. Seule la machine est obligatoire. Si la description est omise, une description générique appropriée est attribuée.', {
         machine: { type: 'string', description: 'Nom ou référence de la machine dans la GMAO' },
-        description: { type: ['string', 'null'], description: 'Description des travaux (optionnel)' },
-        maintenanceType: { type: ['string', 'null'], enum: ['Corrective', 'Préventive'] },
-        plannedDate: { type: ['string', 'null'], description: 'Date au format YYYY-MM-DD (optionnel)' },
-        priority: { type: ['string', 'null'], enum: ['A', 'B', 'C'] },
-        technician: { type: ['string', 'null'] },
+        description: strOrNull('Description des travaux (optionnel)'),
+        maintenanceType: strOrNull(undefined, ['Corrective', 'Préventive']),
+        plannedDate: strOrNull('Date au format YYYY-MM-DD (optionnel)'),
+        priority: strOrNull(undefined, ['A', 'B', 'C']),
+        technician: strOrNull(),
     }, ['machine', 'description', 'maintenanceType', 'plannedDate', 'priority', 'technician']),
     functionTool('update_intervention', 'Prépare la modification d’une intervention existante.', {
-        intervention: { type: 'string' }, status: { type: ['string', 'null'] }, plannedDate: { type: ['string', 'null'] }, description: { type: ['string', 'null'] }, priority: { type: ['string', 'null'], enum: ['A', 'B', 'C'] }, technician: { type: ['string', 'null'] },
+        intervention: { type: 'string' }, status: strOrNull(), plannedDate: strOrNull(), description: strOrNull(), priority: strOrNull(undefined, ['A', 'B', 'C']), technician: strOrNull(),
     }, ['intervention', 'status', 'plannedDate', 'description', 'priority', 'technician']),
     functionTool('schedule_maintenance', 'Prépare la planification d’une maintenance préventive.', {
-        machine: { type: 'string' }, task: { type: 'string' }, frequency: { type: 'string' }, nextDueDate: { type: 'string' }, responsible: { type: ['string', 'null'] }, notes: { type: ['string', 'null'] },
+        machine: { type: 'string' }, task: { type: 'string' }, frequency: { type: 'string' }, nextDueDate: { type: 'string' }, responsible: strOrNull(), notes: strOrNull(),
     }, ['machine', 'task', 'frequency', 'nextDueDate', 'responsible', 'notes']),
     functionTool('assign_technician', 'Prépare l’affectation d’un utilisateur actif à une intervention.', { intervention: { type: 'string' }, technician: { type: 'string' } }, ['intervention', 'technician']),
     functionTool('adjust_stock', 'Prépare une modification de quantité de stock.', {
