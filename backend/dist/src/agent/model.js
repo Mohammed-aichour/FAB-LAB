@@ -29,7 +29,7 @@ const createResponse = async (body) => {
         }
     }
     // Fallback to /v1/chat/completions if /v1/responses is unsupported or returned 400/404
-    const chatModel = /^gpt-4/i.test(body.model) ? body.model : 'gpt-4o-mini';
+    const chatModel = /^gpt-4o/i.test(body.model) ? body.model : 'gpt-4o-mini';
     const chatMessages = [];
     if (body.instructions)
         chatMessages.push({ role: 'system', content: body.instructions });
