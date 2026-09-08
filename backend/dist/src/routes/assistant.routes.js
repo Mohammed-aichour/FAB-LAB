@@ -19,12 +19,23 @@ const audioUpload = (0, multer_1.default)({
     limits: { fileSize: 8 * 1024 * 1024, files: 1 },
     fileFilter: (_req, file, done) => done(null, ['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/mpeg', 'audio/wav', 'audio/x-wav'].includes(file.mimetype.split(';')[0].toLowerCase())),
 });
-router.get('/debug', (req, res) => res.json({
-    envModel: process.env.OPENAI_MODEL,
-    hasApiKey: !!process.env.OPENAI_API_KEY,
-    apiKeyLength: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.length : 0,
-    apiKeyPrefix: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.slice(0, 7) : ''
-}));
+router.get('/debug', async (req, res) => {
+    try {
+        const { tools } = await import('../agent/tools');
+        const { createResponse } = await import('../agent/model');
+        const testRes = await createResponse({
+            model: 'gpt-4o-mini',
+            instructions: 'Test',
+            input: [{ role: 'user', content: 'Crée une intervention' }],
+            tools: tools.filter(t => t.name === 'create_intervention'),
+            tool_choice: 'auto'
+        });
+        return res.json({ status: 'ok', envModel: process.env.OPENAI_MODEL, testRes });
+    }
+    catch (err) {
+        return res.json({ status: 'error', error: err.message, stack: err.stack });
+    }
+});
 router.get('/actions', (req, res) => res.json((0, json_store_1.readEntity)('assistant_pending_actions').filter(a => a.userId === String(req.user.id) && a.status === 'pending' && new Date(a.expiresAt).getTime() > Date.now())));
 const chatSchema = zod_1.z.object({ message: zod_1.z.string().trim().min(1).max(5000), conversationId: zod_1.z.uuid().optional() }).strict();
 router.post('/chat', async (req, res) => {
