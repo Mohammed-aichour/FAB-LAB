@@ -15,11 +15,9 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use((req, res, next) => {
-  const vercelPath = (req.headers['x-forwarded-uri'] || req.headers['x-matched-path']) as string | undefined;
-  if (vercelPath && typeof vercelPath === 'string' && vercelPath.startsWith('/')) {
-    req.url = vercelPath;
-  } else if (req.url === '/api' && req.originalUrl && req.originalUrl !== '/api') {
-    req.url = req.originalUrl;
+  const vercelUri = req.headers['x-forwarded-uri'] as string | undefined;
+  if (vercelUri && typeof vercelUri === 'string' && vercelUri.startsWith('/')) {
+    req.url = vercelUri;
   }
   next();
 });
