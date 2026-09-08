@@ -43,12 +43,16 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
             tools: selected.tools,
             tool_choice: turn === 0 && !selected.mutation ? 'required' : 'auto',
             parallel_tool_calls: false,
-            store: false
+            store: false,
+            max_output_tokens: 2048
         };
+        if (/^o1|^o3/i.test(currentModel)) {
+            request.reasoning = { effort: 'none' };
+        }
         let response = await model(request);
         let hasUsableOutput = (response.output || []).some((item) => item.type === 'function_call' || item.type === 'message');
         if (response.status === 'incomplete' && !hasUsableOutput && response.incomplete_details?.reason === 'max_output_tokens') {
-            response = await model(request);
+            response = await model({ ...request, max_output_tokens: 4096 });
             hasUsableOutput = (response.output || []).some((item) => item.type === 'function_call' || item.type === 'message');
         }
         if (response.status === 'incomplete' && !hasUsableOutput) {

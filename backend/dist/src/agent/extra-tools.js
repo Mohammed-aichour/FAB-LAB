@@ -5,6 +5,7 @@ exports.extraRead = extraRead;
 const zod_1 = require("zod");
 const json_store_1 = require("../services/json-store");
 const purchasing_service_1 = require("../services/purchasing.service");
+const gmao_read_service_1 = require("../services/gmao-read.service");
 const text = zod_1.z.string().max(200);
 const period = { from: zod_1.z.iso.date().nullable(), to: zod_1.z.iso.date().nullable() };
 exports.readSchemas = {
@@ -40,9 +41,43 @@ const extras = {
     create_supplier: ['Prépare un fournisseur avec les seules données explicitement fournies.', zod_1.z.object({ name: text.min(1), code: text.min(1), email: text.nullable(), phone: text.nullable(), address: text.nullable(), domain: text.nullable() }).strict()],
     update_order_status: ['Prépare le statut d’une demande, sans modifier le stock ni envoyer de message.', zod_1.z.object({ order: text.min(1), status: zod_1.z.enum(['En attente', 'Approuvée', 'Reçue', 'Annulée']) }).strict()],
 };
+function cleanSchemaForOpenAI(obj) {
+    if (!obj || typeof obj !== 'object')
+        return obj;
+    if (Array.isArray(obj))
+        return obj.map(cleanSchemaForOpenAI);
+    const res = {};
+    for (const [k, v] of Object.entries(obj)) {
+        if (k === '$schema')
+            continue;
+        res[k] = cleanSchemaForOpenAI(v);
+    }
+    if (Array.isArray(res.anyOf) && res.anyOf.length === 2) {
+        const nullItem = res.anyOf.find((item) => item && item.type === 'null');
+        const typeItem = res.anyOf.find((item) => item && item.type !== 'null');
+        if (nullItem && typeItem && typeof typeItem.type === 'string') {
+            delete res.anyOf;
+            res.type = [typeItem.type, 'null'];
+            if (typeItem.enum)
+                res.enum = typeItem.enum.filter((e) => e !== null);
+            if (typeItem.maxLength)
+                res.maxLength = typeItem.maxLength;
+            if (typeItem.minLength)
+                res.minLength = typeItem.minLength;
+            if (typeItem.format)
+                res.format = typeItem.format;
+            if (typeItem.pattern)
+                res.pattern = typeItem.pattern;
+            if (typeItem.exclusiveMinimum !== undefined)
+                res.exclusiveMinimum = typeItem.exclusiveMinimum;
+            if (typeItem.maximum !== undefined)
+                res.maximum = typeItem.maximum;
+        }
+    }
+    return res;
+}
 exports.extraTools = Object.entries(extras).map(([name, [description, schema]]) => {
-    const params = zod_1.z.toJSONSchema(schema);
-    delete params.$schema;
+    const params = cleanSchemaForOpenAI(zod_1.z.toJSONSchema(schema));
     return { type: 'function', name, description, strict: true, parameters: params };
 });
 const matches = (row, q, fields) => fields.some(f => String(row[f] ?? '').toLocaleLowerCase('fr').includes(q.toLocaleLowerCase('fr')));
@@ -60,18 +95,56 @@ function extraRead(name, args) {
         throw new Error('Période invalide.');
     if (name === 'get_orders')
         return (0, json_store_1.readEntity)('orders').filter(o => matches(o, args.query, ['id', 'reference', 'componentName', 'componentReference', 'supplierName']) && (!args.status || o.status === args.status) && within(o.createdAt)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    if (name === 'get_maintenance_period')
-        return (0, json_store_1.readEntity)('preventif').filter(m => matches(m, args.machine, ['fl_id', 'equipement']) && within(m.prochaineEcheance));
+    if (name === 'get_maintenance_period') {
+        const resolvedMachine = args.machine ? (0, gmao_read_service_1.resolveMachine)(args.machine) : null;
+        return (0, json_store_1.readEntity)('preventif').filter(m => {
+            if (args.machine) {
+                if (resolvedMachine) {
+                    if (!(0, gmao_read_service_1.matchesMachineRecord)(m, resolvedMachine))
+                        return false;
+                }
+                else {
+                    if (!matches(m, args.machine, ['fl_id', 'equipement']))
+                        return false;
+                }
+            }
+            return within(m.prochaineEcheance);
+        });
+    }
     if (name === 'get_failures' || name === 'get_interventions_period') {
-        const all = (0, json_store_1.readEntity)('interventions').filter(i => matches(i, args.machine, ['equipmentId', 'equipmentName']) && (name !== 'get_failures' || i.maintenanceType === 'Corrective'));
+        const resolvedMachine = args.machine ? (0, gmao_read_service_1.resolveMachine)(args.machine) : null;
+        const all = (0, json_store_1.readEntity)('interventions').filter(i => {
+            if (args.machine) {
+                if (resolvedMachine) {
+                    if (!(0, gmao_read_service_1.matchesMachineRecord)(i, resolvedMachine))
+                        return false;
+                }
+                else {
+                    if (!matches(i, args.machine, ['equipmentId', 'equipmentName']))
+                        return false;
+                }
+            }
+            return (name !== 'get_failures' || i.maintenanceType === 'Corrective');
+        });
         const rows = all.filter(i => within(i.creationDate)).sort((a, b) => String(b.creationDate).localeCompare(String(a.creationDate)));
         const counts = new Map();
-        rows.forEach(i => counts.set(i.equipmentId, (counts.get(i.equipmentId) || 0) + 1));
+        rows.forEach(i => counts.set(i.equipmentId || i.equipmentName, (counts.get(i.equipmentId || i.equipmentName) || 0) + 1));
         return { total: rows.length, missingDates: all.filter(i => !i.creationDate).length, basis: 'Interventions enregistrées, date de création ; pas un registre exhaustif de pannes.', ranking: [...counts].sort((a, b) => b[1] - a[1]).map(([machine, count]) => ({ machine, count })), items: rows };
     }
     if (name === 'get_failure_analysis') {
-        const machines = (0, json_store_1.readEntity)('machines');
-        const interventions = (0, json_store_1.readEntity)('interventions').filter(i => i.maintenanceType === 'Corrective');
+        const resolvedMachine = args.machine ? (0, gmao_read_service_1.resolveMachine)(args.machine) : null;
+        let machines = (0, json_store_1.readEntity)('machines');
+        let interventions = (0, json_store_1.readEntity)('interventions').filter(i => i.maintenanceType === 'Corrective');
+        if (args.machine) {
+            if (resolvedMachine) {
+                machines = machines.filter(m => m.id === resolvedMachine.id);
+                interventions = interventions.filter(i => (0, gmao_read_service_1.matchesMachineRecord)(i, resolvedMachine));
+            }
+            else {
+                machines = machines.filter(m => matches(m, args.machine, ['id', 'reference', 'name', 'designation']));
+                interventions = interventions.filter(i => matches(i, args.machine, ['equipmentId', 'equipmentName']));
+            }
+        }
         const downStatuses = new Set(['hors service', 'en panne', 'ne marche pas']);
         const unavailable = machines.filter(m => downStatuses.has(String(m.status || '').trim().toLowerCase()));
         const countByMachine = new Map();
@@ -97,9 +170,22 @@ function extraRead(name, args) {
         };
     }
     if (name === 'get_maintenance_recommendations') {
-        const machines = (0, json_store_1.readEntity)('machines');
-        const preventif = (0, json_store_1.readEntity)('preventif');
-        const interventions = (0, json_store_1.readEntity)('interventions');
+        const resolvedMachine = args.machine ? (0, gmao_read_service_1.resolveMachine)(args.machine) : null;
+        let machines = (0, json_store_1.readEntity)('machines');
+        let preventif = (0, json_store_1.readEntity)('preventif');
+        let interventions = (0, json_store_1.readEntity)('interventions');
+        if (args.machine) {
+            if (resolvedMachine) {
+                machines = machines.filter(m => m.id === resolvedMachine.id);
+                preventif = preventif.filter(p => (0, gmao_read_service_1.matchesMachineRecord)(p, resolvedMachine));
+                interventions = interventions.filter(i => (0, gmao_read_service_1.matchesMachineRecord)(i, resolvedMachine));
+            }
+            else {
+                machines = machines.filter(m => matches(m, args.machine, ['id', 'reference', 'name', 'designation']));
+                preventif = preventif.filter(p => matches(p, args.machine, ['fl_id', 'equipement']));
+                interventions = interventions.filter(i => matches(i, args.machine, ['equipmentId', 'equipmentName']));
+            }
+        }
         const today = new Date().toISOString().slice(0, 10);
         const plan = [];
         // 1. Machines currently down

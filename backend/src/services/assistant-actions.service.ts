@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { appendAudit } from './audit.service';
 import { atomic, readEntity, withWriteLock, writeEntity, type EntityName } from './json-store';
 import { buildPurchase, purchaseSchema, suppliers, unique } from './purchasing.service';
+import { resolveMachine } from './gmao-read.service';
 import type { AuthenticatedUser } from '../types/auth';
 
 type RecordValue = Record<string, any>;
@@ -124,7 +125,11 @@ function findUnique(records: RecordValue[], query: string, fields: string[], lab
   throw new Error(`${label} introuvable dans les données réelles.`);
 }
 
-const findMachine = (query: string) => findUnique(readEntity<RecordValue[]>('machines'), query, ['id', 'reference', 'name', 'designation', 'codeArborescence'], 'Machine');
+const findMachine = (query: string): RecordValue => {
+  const resolved = resolveMachine(query);
+  if (resolved) return resolved;
+  return findUnique(readEntity<RecordValue[]>('machines'), query, ['id', 'reference', 'name', 'designation', 'codeArborescence'], 'Machine');
+};
 const findStock = (query: string) => findUnique(readEntity<RecordValue[]>('stock'), query, ['id', 'reference', 'name'], 'Article de stock');
 const findIntervention = (query: string | number) => findUnique(readEntity<RecordValue[]>('interventions'), String(query), ['id', 'otNumber', 'diNumber'], 'Intervention');
 const findTechnician = (query: string) => {

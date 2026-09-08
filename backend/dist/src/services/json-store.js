@@ -15,9 +15,11 @@ const path_1 = __importDefault(require("path"));
 const crypto_1 = __importDefault(require("crypto"));
 exports.DATA_DIR = process.env.GMAO_DATA_DIR
     ? path_1.default.resolve(process.env.GMAO_DATA_DIR)
-    : process.env.VERCEL
-        ? '/tmp/data_db'
-        : path_1.default.resolve(__dirname, '../../../data_db');
+    : fs_1.default.existsSync(path_1.default.join(process.cwd(), 'data_db', 'machines_db.json'))
+        ? path_1.default.join(process.cwd(), 'data_db')
+        : fs_1.default.existsSync(path_1.default.resolve(__dirname, '../../../data_db/machines_db.json'))
+            ? path_1.default.resolve(__dirname, '../../../data_db')
+            : (process.env.VERCEL ? '/tmp/data_db' : path_1.default.resolve(__dirname, '../../../data_db'));
 try {
     if (!fs_1.default.existsSync(exports.DATA_DIR)) {
         fs_1.default.mkdirSync(exports.DATA_DIR, { recursive: true });

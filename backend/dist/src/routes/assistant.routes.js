@@ -19,8 +19,14 @@ const audioUpload = (0, multer_1.default)({
     limits: { fileSize: 8 * 1024 * 1024, files: 1 },
     fileFilter: (_req, file, done) => done(null, ['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/mpeg', 'audio/wav', 'audio/x-wav'].includes(file.mimetype.split(';')[0].toLowerCase())),
 });
-const chatSchema = zod_1.z.object({ message: zod_1.z.string().trim().min(1).max(5000), conversationId: zod_1.z.uuid().optional() }).strict();
+router.get('/debug', (req, res) => res.json({
+    envModel: process.env.OPENAI_MODEL,
+    hasApiKey: !!process.env.OPENAI_API_KEY,
+    apiKeyLength: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.length : 0,
+    apiKeyPrefix: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.slice(0, 7) : ''
+}));
 router.get('/actions', (req, res) => res.json((0, json_store_1.readEntity)('assistant_pending_actions').filter(a => a.userId === String(req.user.id) && a.status === 'pending' && new Date(a.expiresAt).getTime() > Date.now())));
+const chatSchema = zod_1.z.object({ message: zod_1.z.string().trim().min(1).max(5000), conversationId: zod_1.z.uuid().optional() }).strict();
 router.post('/chat', async (req, res) => {
     const parsed = chatSchema.safeParse(req.body);
     if (!parsed.success)

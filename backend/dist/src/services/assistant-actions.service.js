@@ -12,6 +12,7 @@ const zod_1 = require("zod");
 const audit_service_1 = require("./audit.service");
 const json_store_1 = require("./json-store");
 const purchasing_service_1 = require("./purchasing.service");
+const gmao_read_service_1 = require("./gmao-read.service");
 const machineStatusSchema = zod_1.z.enum(['Opérationnel', 'Hors service', 'En maintenance', 'En Panne', 'Ne marche pas']);
 const schemas = {
     prepare_purchase: purchasing_service_1.purchaseSchema,
@@ -103,7 +104,12 @@ function findUnique(records, query, fields, label) {
     }
     throw new Error(`${label} introuvable dans les données réelles.`);
 }
-const findMachine = (query) => findUnique((0, json_store_1.readEntity)('machines'), query, ['id', 'reference', 'name', 'designation', 'codeArborescence'], 'Machine');
+const findMachine = (query) => {
+    const resolved = (0, gmao_read_service_1.resolveMachine)(query);
+    if (resolved)
+        return resolved;
+    return findUnique((0, json_store_1.readEntity)('machines'), query, ['id', 'reference', 'name', 'designation', 'codeArborescence'], 'Machine');
+};
 const findStock = (query) => findUnique((0, json_store_1.readEntity)('stock'), query, ['id', 'reference', 'name'], 'Article de stock');
 const findIntervention = (query) => findUnique((0, json_store_1.readEntity)('interventions'), String(query), ['id', 'otNumber', 'diNumber'], 'Intervention');
 const findTechnician = (query) => {

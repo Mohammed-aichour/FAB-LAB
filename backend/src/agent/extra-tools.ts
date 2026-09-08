@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { readEntity } from '../services/json-store';
 import { componentSupplier, suppliers, purchaseSchema } from '../services/purchasing.service';
+import { resolveMachine, matchesMachineRecord } from '../services/gmao-read.service';
 const text = z.string().max(200);
 const period = { from: z.iso.date().nullable(), to: z.iso.date().nullable() };
 export const readSchemas = {
@@ -80,17 +81,51 @@ export function extraRead(name: string, args: any): unknown {
   const within = (d: string) => (!args.from || !!d && d.slice(0,10) >= args.from) && (!args.to || !!d && d.slice(0,10) <= args.to);
   if (args.from && args.to && args.from > args.to) throw new Error('Période invalide.');
   if (name === 'get_orders') return readEntity<any[]>('orders').filter(o => matches(o,args.query,['id','reference','componentName','componentReference','supplierName']) && (!args.status || o.status === args.status) && within(o.createdAt)).sort((a,b) => b.createdAt.localeCompare(a.createdAt));
-  if (name === 'get_maintenance_period') return readEntity<any[]>('preventif').filter(m => matches(m,args.machine,['fl_id','equipement']) && within(m.prochaineEcheance));
+  if (name === 'get_maintenance_period') {
+    const resolvedMachine = args.machine ? resolveMachine(args.machine) : null;
+    return readEntity<any[]>('preventif').filter(m => {
+      if (args.machine) {
+        if (resolvedMachine) {
+          if (!matchesMachineRecord(m, resolvedMachine)) return false;
+        } else {
+          if (!matches(m, args.machine, ['fl_id', 'equipement'])) return false;
+        }
+      }
+      return within(m.prochaineEcheance);
+    });
+  }
   if (name === 'get_failures' || name === 'get_interventions_period') {
-    const all = readEntity<any[]>('interventions').filter(i => matches(i,args.machine,['equipmentId','equipmentName']) && (name !== 'get_failures' || i.maintenanceType === 'Corrective'));
+    const resolvedMachine = args.machine ? resolveMachine(args.machine) : null;
+    const all = readEntity<any[]>('interventions').filter(i => {
+      if (args.machine) {
+        if (resolvedMachine) {
+          if (!matchesMachineRecord(i, resolvedMachine)) return false;
+        } else {
+          if (!matches(i, args.machine, ['equipmentId', 'equipmentName'])) return false;
+        }
+      }
+      return (name !== 'get_failures' || i.maintenanceType === 'Corrective');
+    });
     const rows = all.filter(i => within(i.creationDate)).sort((a,b) => String(b.creationDate).localeCompare(String(a.creationDate)));
     const counts = new Map<string, number>();
-    rows.forEach(i => counts.set(i.equipmentId,(counts.get(i.equipmentId)||0)+1));
+    rows.forEach(i => counts.set(i.equipmentId || i.equipmentName, (counts.get(i.equipmentId || i.equipmentName) || 0) + 1));
     return { total: rows.length, missingDates: all.filter(i => !i.creationDate).length, basis: 'Interventions enregistrées, date de création ; pas un registre exhaustif de pannes.', ranking: [...counts].sort((a,b) => b[1]-a[1]).map(([machine,count]) => ({machine,count})), items: rows };
   }
   if (name === 'get_failure_analysis') {
-    const machines = readEntity<any[]>('machines');
-    const interventions = readEntity<any[]>('interventions').filter(i => i.maintenanceType === 'Corrective');
+    const resolvedMachine = args.machine ? resolveMachine(args.machine) : null;
+    let machines = readEntity<any[]>('machines');
+    let interventions = readEntity<any[]>('interventions').filter(i => i.maintenanceType === 'Corrective');
+
+    if (args.machine) {
+      if (resolvedMachine) {
+        machines = machines.filter(m => m.id === resolvedMachine.id);
+        interventions = interventions.filter(i => matchesMachineRecord(i, resolvedMachine));
+      } else {
+        machines = machines.filter(m => matches(m, args.machine, ['id', 'reference', 'name', 'designation']));
+        interventions = interventions.filter(i => matches(i, args.machine, ['equipmentId', 'equipmentName']));
+      }
+    }
+
     const downStatuses = new Set(['hors service', 'en panne', 'ne marche pas']);
     const unavailable = machines.filter(m => downStatuses.has(String(m.status || '').trim().toLowerCase()));
     
@@ -119,9 +154,23 @@ export function extraRead(name: string, args: any): unknown {
     };
   }
   if (name === 'get_maintenance_recommendations') {
-    const machines = readEntity<any[]>('machines');
-    const preventif = readEntity<any[]>('preventif');
-    const interventions = readEntity<any[]>('interventions');
+    const resolvedMachine = args.machine ? resolveMachine(args.machine) : null;
+    let machines = readEntity<any[]>('machines');
+    let preventif = readEntity<any[]>('preventif');
+    let interventions = readEntity<any[]>('interventions');
+
+    if (args.machine) {
+      if (resolvedMachine) {
+        machines = machines.filter(m => m.id === resolvedMachine.id);
+        preventif = preventif.filter(p => matchesMachineRecord(p, resolvedMachine));
+        interventions = interventions.filter(i => matchesMachineRecord(i, resolvedMachine));
+      } else {
+        machines = machines.filter(m => matches(m, args.machine, ['id', 'reference', 'name', 'designation']));
+        preventif = preventif.filter(p => matches(p, args.machine, ['fl_id', 'equipement']));
+        interventions = interventions.filter(i => matches(i, args.machine, ['equipmentId', 'equipmentName']));
+      }
+    }
+
     const today = new Date().toISOString().slice(0, 10);
     const plan: any[] = [];
 

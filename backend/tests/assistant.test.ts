@@ -125,3 +125,62 @@ test('le registre est limité aux lectures ou aux actions selon la demande', asy
   assert.equal(write.mutation,true); assert.ok(write.tools.some(t=>t.name==='prepare_purchase')); assert.ok(!write.tools.some(t=>t.name==='get_orders'));
   assert.ok(read.tools.length < 19); assert.ok(write.tools.length < 19);
 });
+
+test('résolveur universel de machines et cohérence entre tous les outils', async () => {
+  const { resolveMachine, legacyReadTool } = await import('../src/services/gmao-read.service.js');
+  const { readTool } = await import('../src/services/assistant.service.js');
+  const { createPendingAction } = await import('../src/services/assistant-actions.service.js');
+
+  // Test 1: Resolution variations
+  const queries = [
+    'FL-009',
+    'Fraiseuse CNC TPROD 6060',
+    'fraiseuse cnc tprod',
+    'FRAISEUSE CNC TPROD 6060',
+    'Fraiseuse CNC 3 Axes (FL-009)',
+    'Quelle est la maintenance préventive de FL-009 ?',
+  ];
+  for (const q of queries) {
+    const m = resolveMachine(q);
+    assert.ok(m, `Doit résoudre la machine pour '${q}'`);
+    assert.equal(m.reference, 'FL-009');
+  }
+
+  // Non-existent machine
+  assert.equal(resolveMachine('FL-999'), null);
+  assert.equal(resolveMachine('Machine Inexistante FL-999'), null);
+
+  // Test 2: Tools using resolved machine
+  const m1: any = readTool('search_machines', { query: 'FL-009' });
+  assert.equal(m1.items[0].reference, 'FL-009');
+
+  const prev: any = readTool('get_maintenance_period', { machine: 'FL-009', from: null, to: null });
+  assert.ok(prev.items.length > 0, 'Maintenance préventive pour FL-009 doit retourner des tâches');
+
+  const fail: any = readTool('get_failures', { machine: 'FL-009', from: null, to: null });
+  assert.ok(fail.total >= 0);
+
+  const inter: any = readTool('list_interventions', { machine: 'FL-009', status: null, technician: null });
+  assert.ok(Array.isArray(inter.items));
+
+  const fa: any = readTool('get_failure_analysis', { machine: 'FL-009' });
+  assert.ok(fa);
+
+  const rec: any = readTool('get_maintenance_recommendations', { machine: 'FL-009', timeframe: null });
+  assert.ok(rec);
+
+  // Non-existent machine queries return clean empty/no results
+  const emptyPrev: any = readTool('get_maintenance_period', { machine: 'FL-999', from: null, to: null });
+  assert.equal(emptyPrev.items.length, 0);
+
+  // Test 3: Action tool with resolved machine and pending action
+  const action = createPendingAction('create_intervention', { machine: 'Fraiseuse CNC 3 Axes (FL-009)', description: 'Panne moteur' }, supervisor);
+  assert.equal(action.status, 'pending');
+  const val: any = action.newValue;
+  assert.equal(val.equipmentId, 'FL-009');
+  assert.equal(val.equipmentName, 'Fraiseuse CNC TPROD 6060');
+
+  // Action tool with non-existent machine throws error
+  assert.throws(() => createPendingAction('create_intervention', { machine: 'FL-999', description: 'Test' }, supervisor), /introuvable/);
+});
+

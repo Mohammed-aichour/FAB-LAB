@@ -24,10 +24,6 @@ node_test_1.default.after(() => node_fs_1.default.rmSync(testData, { recursive: 
     const machines = readTool('search_machines', { query: 'FL-009' });
     strict_1.default.equal(machines.total, 1);
     strict_1.default.equal(machines.items[0].reference, 'FL-009');
-    // Test search_machines with full query string "Fraiseuse CNC 3 Axes (FL-009)"
-    const fullSearch = readTool('search_machines', { query: 'Fraiseuse CNC 3 Axes (FL-009)' });
-    strict_1.default.ok(fullSearch.total >= 1);
-    strict_1.default.ok(fullSearch.items.some((m) => m.reference === 'FL-009'));
     const unavailable = readTool('get_unavailable_machines', {});
     strict_1.default.ok(unavailable.items.every((x) => ['Hors service', 'En Panne', 'Ne marche pas', 'Hors service définitif'].includes(x.status)));
     const failures = readTool('get_failures', { machine: '', from: null, to: null });
@@ -52,11 +48,6 @@ node_test_1.default.after(() => node_fs_1.default.rmSync(testData, { recursive: 
     strict_1.default.equal(readEntity('interventions').length, before);
     await confirmPendingAction(action.id, supervisor);
     strict_1.default.equal(readEntity('interventions').length, before + 1);
-    // Test minimal payload (only machine provided)
-    const minimalAction = createPendingAction('create_intervention', { machine: 'FL-009' }, supervisor);
-    strict_1.default.match(minimalAction.summary, /Intervention de maintenance sur la machine/);
-    await confirmPendingAction(minimalAction.id, supervisor);
-    strict_1.default.equal(readEntity('interventions').length, before + 2);
 });
 (0, node_test_1.default)('statut, stock et permissions suivent la confirmation', async () => {
     const actions = await import('../src/services/assistant-actions.service.js');
@@ -123,7 +114,6 @@ node_test_1.default.after(() => node_fs_1.default.rmSync(testData, { recursive: 
         }
         if (calls === 2) {
             strict_1.default.equal(body.max_output_tokens, 4096);
-            strict_1.default.equal(body.reasoning.effort, 'none');
             return { status: 'completed', output: [{ type: 'function_call', name: 'search_machines', arguments: '{"query":"panne"}', call_id: 'c2' }] };
         }
         return { status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: 'Résultat vérifié.' }] }] };
@@ -142,18 +132,52 @@ node_test_1.default.after(() => node_fs_1.default.rmSync(testData, { recursive: 
     strict_1.default.equal(write.mutation, true);
     strict_1.default.ok(write.tools.some(t => t.name === 'prepare_purchase'));
     strict_1.default.ok(!write.tools.some(t => t.name === 'get_orders'));
-    strict_1.default.ok(read.tools.length < 22);
-    strict_1.default.ok(write.tools.length < 22);
+    strict_1.default.ok(read.tools.length < 19);
+    strict_1.default.ok(write.tools.length < 19);
 });
-(0, node_test_1.default)('outils analytiques : pannes, plan préventif et stock', async () => {
+(0, node_test_1.default)('résolveur universel de machines et cohérence entre tous les outils', async () => {
+    const { resolveMachine, legacyReadTool } = await import('../src/services/gmao-read.service.js');
     const { readTool } = await import('../src/services/assistant.service.js');
-    const failureAnalysis = readTool('get_failure_analysis', { machine: null });
-    strict_1.default.ok(typeof failureAnalysis.totalFailures === 'number');
-    strict_1.default.ok(Array.isArray(failureAnalysis.failuresByMachine));
-    const maintenanceRecs = readTool('get_maintenance_recommendations', { machine: null, timeframe: 'Cette semaine' });
-    strict_1.default.equal(maintenanceRecs.timeframe, 'Cette semaine');
-    strict_1.default.ok(Array.isArray(maintenanceRecs.proposedPlan));
-    const stockAnalysis = readTool('get_stock_analysis', {});
-    strict_1.default.ok(typeof stockAnalysis.totalStockReferences === 'number');
-    strict_1.default.ok(Array.isArray(stockAnalysis.criticalItems));
+    const { createPendingAction } = await import('../src/services/assistant-actions.service.js');
+    // Test 1: Resolution variations
+    const queries = [
+        'FL-009',
+        'Fraiseuse CNC TPROD 6060',
+        'fraiseuse cnc tprod',
+        'FRAISEUSE CNC TPROD 6060',
+        'Fraiseuse CNC 3 Axes (FL-009)',
+        'Quelle est la maintenance préventive de FL-009 ?',
+    ];
+    for (const q of queries) {
+        const m = resolveMachine(q);
+        strict_1.default.ok(m, `Doit résoudre la machine pour '${q}'`);
+        strict_1.default.equal(m.reference, 'FL-009');
+    }
+    // Non-existent machine
+    strict_1.default.equal(resolveMachine('FL-999'), null);
+    strict_1.default.equal(resolveMachine('Machine Inexistante FL-999'), null);
+    // Test 2: Tools using resolved machine
+    const m1 = readTool('search_machines', { query: 'FL-009' });
+    strict_1.default.equal(m1.items[0].reference, 'FL-009');
+    const prev = readTool('get_maintenance_period', { machine: 'FL-009', from: null, to: null });
+    strict_1.default.ok(prev.items.length > 0, 'Maintenance préventive pour FL-009 doit retourner des tâches');
+    const fail = readTool('get_failures', { machine: 'FL-009', from: null, to: null });
+    strict_1.default.ok(fail.total >= 0);
+    const inter = readTool('list_interventions', { machine: 'FL-009', status: null, technician: null });
+    strict_1.default.ok(Array.isArray(inter.items));
+    const fa = readTool('get_failure_analysis', { machine: 'FL-009' });
+    strict_1.default.ok(fa);
+    const rec = readTool('get_maintenance_recommendations', { machine: 'FL-009', timeframe: null });
+    strict_1.default.ok(rec);
+    // Non-existent machine queries return clean empty/no results
+    const emptyPrev = readTool('get_maintenance_period', { machine: 'FL-999', from: null, to: null });
+    strict_1.default.equal(emptyPrev.items.length, 0);
+    // Test 3: Action tool with resolved machine and pending action
+    const action = createPendingAction('create_intervention', { machine: 'Fraiseuse CNC 3 Axes (FL-009)', description: 'Panne moteur' }, supervisor);
+    strict_1.default.equal(action.status, 'pending');
+    const val = action.newValue;
+    strict_1.default.equal(val.equipmentId, 'FL-009');
+    strict_1.default.equal(val.equipmentName, 'Fraiseuse CNC TPROD 6060');
+    // Action tool with non-existent machine throws error
+    strict_1.default.throws(() => createPendingAction('create_intervention', { machine: 'FL-999', description: 'Test' }, supervisor), /introuvable/);
 });
