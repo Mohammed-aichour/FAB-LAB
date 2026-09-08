@@ -143,7 +143,11 @@ function nextNumericId(records: RecordValue[]): number {
 }
 
 function nowDate(): string {
-  return new Intl.DateTimeFormat('fr-CA', { timeZone: 'Africa/Casablanca' }).format(new Date());
+  try {
+    return new Intl.DateTimeFormat('fr-CA', { timeZone: 'Africa/Casablanca' }).format(new Date());
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
 }
 
 function buildPreview(toolName: MutationToolName, rawPayload: RecordValue): Omit<PendingAction, 'id' | 'userId' | 'createdAt' | 'expiresAt' | 'status'> {
