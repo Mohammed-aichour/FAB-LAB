@@ -122,7 +122,12 @@ function nextNumericId(records) {
     return records.reduce((max, record) => Math.max(max, Number(record.id) || 0), 0) + 1;
 }
 function nowDate() {
-    return new Intl.DateTimeFormat('fr-CA', { timeZone: 'Africa/Casablanca' }).format(new Date());
+    try {
+        return new Intl.DateTimeFormat('fr-CA', { timeZone: 'Africa/Casablanca' }).format(new Date());
+    }
+    catch {
+        return new Date().toISOString().slice(0, 10);
+    }
 }
 function buildPreview(toolName, rawPayload) {
     const payload = schemas[toolName].parse(rawPayload);

@@ -33,15 +33,13 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
     const usedTools = [];
     const selected = selectTools(messages);
     for (let turn = 0; turn < 8; turn++) {
-        const validModels = new Set(['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo']);
-        const envModel = (process.env.OPENAI_MODEL || '').trim();
-        const currentModel = validModels.has(envModel) ? envModel : 'gpt-4o-mini';
+        const currentModel = 'gpt-4o-mini';
         const request = {
             model: currentModel,
             instructions: (0, instructions_1.systemInstructions)(),
             input,
             tools: selected.tools,
-            tool_choice: turn === 0 && !selected.mutation ? 'required' : 'auto',
+            tool_choice: 'auto',
             parallel_tool_calls: false,
             store: false,
             max_output_tokens: 2048

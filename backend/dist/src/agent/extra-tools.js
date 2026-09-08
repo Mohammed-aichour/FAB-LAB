@@ -48,15 +48,16 @@ function cleanSchemaForOpenAI(obj) {
         return obj.map(cleanSchemaForOpenAI);
     const res = {};
     for (const [k, v] of Object.entries(obj)) {
-        if (k === '$schema')
+        if (['$schema', 'pattern', 'format', 'minLength', 'maxLength', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf'].includes(k)) {
             continue;
+        }
         res[k] = cleanSchemaForOpenAI(v);
     }
     return res;
 }
 exports.extraTools = Object.entries(extras).map(([name, [description, schema]]) => {
     const params = cleanSchemaForOpenAI(zod_1.z.toJSONSchema(schema));
-    return { type: 'function', name, description, strict: true, parameters: params };
+    return { type: 'function', name, description, parameters: params };
 });
 const matches = (row, q, fields) => fields.some(f => String(row[f] ?? '').toLocaleLowerCase('fr').includes(q.toLocaleLowerCase('fr')));
 function extraRead(name, args) {

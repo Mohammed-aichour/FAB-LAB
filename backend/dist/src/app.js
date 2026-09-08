@@ -18,7 +18,7 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 app.use((req, res, next) => {
     const vercelUri = req.headers['x-forwarded-uri'];
-    if (vercelUri && typeof vercelUri === 'string' && vercelUri.startsWith('/')) {
+    if (vercelUri && typeof vercelUri === 'string' && vercelUri.startsWith('/') && !vercelUri.includes('/api/index')) {
         req.url = vercelUri;
     }
     next();
@@ -54,6 +54,18 @@ const order_routes_1 = __importDefault(require("./routes/order.routes"));
 const email_routes_1 = __importDefault(require("./routes/email.routes"));
 app.get(['/', '/api', '/health', '/api/health'], (req, res) => {
     res.json({ status: 'ok', message: 'GMAO FabLab API Server is running', timestamp: new Date().toISOString() });
+});
+app.get(['/debug', '/api/debug'], async (req, res) => {
+    try {
+        const { runAssistant } = await import('./services/assistant.service.js');
+        const supervisor = { id: 1, email: 'superviseur@fablab.com', name: 'Admin', role: 'Superviseur', status: 'Actif' };
+        const prompt = req.query.prompt || "Crée une intervention corrective pour FL-009 en raison d'une panne moteur";
+        const result = await runAssistant([{ role: 'user', content: prompt }], supervisor);
+        return res.json({ status: 'ok', envModel: process.env.OPENAI_MODEL, hasEnvKey: !!process.env.OPENAI_API_KEY, result });
+    }
+    catch (err) {
+        return res.json({ status: 'error', error: err.message, stack: err.stack, envModel: process.env.OPENAI_MODEL, hasEnvKey: !!process.env.OPENAI_API_KEY });
+    }
 });
 app.use(['/auth', '/api/auth'], auth_routes_1.default);
 app.use(['/assistant', '/api/assistant'], assistant_routes_1.default);

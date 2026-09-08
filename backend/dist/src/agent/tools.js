@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tools = void 0;
-const strOrNull = (desc, enumVals) => ({
+const strOrNull = (desc) => ({
     anyOf: [
-        { type: 'string', ...(enumVals ? { enum: enumVals } : {}), ...(desc ? { description: desc } : {}) },
+        { type: 'string', ...(desc ? { description: desc } : {}) },
         { type: 'null' }
     ]
 });
 const functionTool = (name, description, properties, required = []) => ({
-    type: 'function', name, description, strict: true,
+    type: 'function', name, description,
     parameters: { type: 'object', properties, required, additionalProperties: false },
 });
 exports.tools = [
@@ -28,20 +28,20 @@ exports.tools = [
     functionTool('create_intervention', 'Prépare la création d’une intervention. Seule la machine est obligatoire. Si la description est omise, une description générique appropriée est attribuée.', {
         machine: { type: 'string', description: 'Nom ou référence de la machine dans la GMAO' },
         description: strOrNull('Description des travaux (optionnel)'),
-        maintenanceType: strOrNull(undefined, ['Corrective', 'Préventive']),
+        maintenanceType: strOrNull('Type de maintenance (Corrective ou Préventive)'),
         plannedDate: strOrNull('Date au format YYYY-MM-DD (optionnel)'),
-        priority: strOrNull(undefined, ['A', 'B', 'C']),
+        priority: strOrNull('Priorité (A, B ou C)'),
         technician: strOrNull(),
     }, ['machine', 'description', 'maintenanceType', 'plannedDate', 'priority', 'technician']),
     functionTool('update_intervention', 'Prépare la modification d’une intervention existante.', {
-        intervention: { type: 'string' }, status: strOrNull(), plannedDate: strOrNull(), description: strOrNull(), priority: strOrNull(undefined, ['A', 'B', 'C']), technician: strOrNull(),
+        intervention: { type: 'string' }, status: strOrNull(), plannedDate: strOrNull(), description: strOrNull(), priority: strOrNull('Priorité (A, B ou C)'), technician: strOrNull(),
     }, ['intervention', 'status', 'plannedDate', 'description', 'priority', 'technician']),
     functionTool('schedule_maintenance', 'Prépare la planification d’une maintenance préventive.', {
         machine: { type: 'string' }, task: { type: 'string' }, frequency: { type: 'string' }, nextDueDate: { type: 'string' }, responsible: strOrNull(), notes: strOrNull(),
     }, ['machine', 'task', 'frequency', 'nextDueDate', 'responsible', 'notes']),
     functionTool('assign_technician', 'Prépare l’affectation d’un utilisateur actif à une intervention.', { intervention: { type: 'string' }, technician: { type: 'string' } }, ['intervention', 'technician']),
     functionTool('adjust_stock', 'Prépare une modification de quantité de stock.', {
-        stockItem: { type: 'string' }, mode: { type: 'string', enum: ['set', 'increment', 'decrement'] }, quantity: { type: 'integer', minimum: 0 }, reason: { type: 'string' },
+        stockItem: { type: 'string' }, mode: { type: 'string', enum: ['set', 'increment', 'decrement'] }, quantity: { type: 'integer' }, reason: { type: 'string' },
     }, ['stockItem', 'mode', 'quantity', 'reason']),
     functionTool('create_alert', 'Prépare la création d’une alerte GMAO.', {
         title: { type: 'string' }, message: { type: 'string' }, priority: { type: 'string', enum: ['Haute', 'Moyenne', 'Normale'] }, type: { type: 'string', enum: ['machine', 'stock', 'intervention', 'preventif', 'system'] },

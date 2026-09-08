@@ -33,7 +33,7 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
       instructions: systemInstructions(),
       input,
       tools: selected.tools,
-      tool_choice: turn === 0 ? 'required' : 'auto',
+      tool_choice: 'auto',
       parallel_tool_calls: false,
       store: false,
       max_output_tokens: 2048

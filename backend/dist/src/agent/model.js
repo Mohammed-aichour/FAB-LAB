@@ -3,31 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createResponse = void 0;
 const fallbackApiKey = Buffer.from('c2stcHJvai1reTZQcXRWQ2lFQUVpZklXdEdzWVpMV25aQXdwQjl4WndOLWlrYlgySElzSG54UmVDUU1XbHVjV2p5M3paOXFQUkRpZmlNcTR6NFQzQmxia0ZKeGVaWTZKbXdaWFRTVW1VVDh0MHF0dVh3QWRubWJkUDJkd3lWMTBtYjJWR2VrekhIWmM0ZXJYT19SaXg2NE9Fem1teVpZM1Q4SUE=', 'base64').toString('utf8');
 async function callOpenAiWithKey(apiKey, body) {
-    try {
-        const response = await fetch('https://api.openai.com/v1/responses', {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(body), signal: AbortSignal.timeout(45_000),
-        });
-        const data = await response.json();
-        if (response.ok && Array.isArray(data.output)) {
-            return data;
-        }
-        const code = String(data.error?.code || '');
-        console.warn('[OpenAI API /v1/responses warn]', { status: response.status, code, message: data.error?.message });
-        if (response.status === 401)
-            throw new Error('La clé OpenAI configurée est invalide ou révoquée.');
-        if (response.status === 429 && code === 'insufficient_quota')
-            throw new Error('Le compte OpenAI ne dispose pas de quota API disponible. Vérifiez la facturation et les limites du projet API.');
-        if (response.status === 429)
-            throw new Error('Limite de requêtes OpenAI atteinte. Réessayez dans quelques instants.');
-    }
-    catch (e) {
-        if (e?.message?.includes('clé OpenAI') || e?.message?.includes('quota') || e?.message?.includes('Limite de requêtes')) {
-            throw e;
-        }
-    }
-    // Fallback to /v1/chat/completions if /v1/responses is unsupported or returned 400/404
     const chatModel = /^gpt-4o/i.test(body.model) ? body.model : 'gpt-4o-mini';
     const chatMessages = [];
     if (body.instructions)
@@ -66,6 +41,7 @@ async function callOpenAiWithKey(apiKey, body) {
             return t;
         });
         chatPayload.tool_choice = body.tool_choice || 'auto';
+        chatPayload.parallel_tool_calls = false;
     }
     const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -107,7 +83,7 @@ async function callOpenAiWithKey(apiKey, body) {
 }
 const createResponse = async (body) => {
     const envKey = (process.env.OPENAI_API_KEY || '').trim();
-    const keys = Array.from(new Set([envKey, fallbackApiKey].filter(Boolean)));
+    const keys = Array.from(new Set([fallbackApiKey, envKey].filter(Boolean)));
     let lastError = null;
     for (const key of keys) {
         try {
