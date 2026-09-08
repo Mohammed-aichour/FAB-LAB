@@ -1,7 +1,7 @@
 type JsonRecord = Record<string, any>;
-const strOrNull = (desc?: string, enumVals?: string[]) => ({
+const strOrNull = (desc?: string) => ({
   anyOf: [
-    { type: 'string', ...(enumVals ? { enum: enumVals } : {}), ...(desc ? { description: desc } : {}) },
+    { type: 'string', ...(desc ? { description: desc } : {}) },
     { type: 'null' }
   ]
 });
@@ -28,13 +28,13 @@ export const tools = [
   functionTool('create_intervention', 'Prépare la création d’une intervention. Seule la machine est obligatoire. Si la description est omise, une description générique appropriée est attribuée.', {
     machine: { type: 'string', description: 'Nom ou référence de la machine dans la GMAO' },
     description: strOrNull('Description des travaux (optionnel)'),
-    maintenanceType: strOrNull(undefined, ['Corrective', 'Préventive']),
+    maintenanceType: strOrNull('Type de maintenance (Corrective ou Préventive)'),
     plannedDate: strOrNull('Date au format YYYY-MM-DD (optionnel)'),
-    priority: strOrNull(undefined, ['A', 'B', 'C']),
+    priority: strOrNull('Priorité (A, B ou C)'),
     technician: strOrNull(),
   }, ['machine', 'description', 'maintenanceType', 'plannedDate', 'priority', 'technician']),
   functionTool('update_intervention', 'Prépare la modification d’une intervention existante.', {
-    intervention: { type: 'string' }, status: strOrNull(), plannedDate: strOrNull(), description: strOrNull(), priority: strOrNull(undefined, ['A', 'B', 'C']), technician: strOrNull(),
+    intervention: { type: 'string' }, status: strOrNull(), plannedDate: strOrNull(), description: strOrNull(), priority: strOrNull('Priorité (A, B ou C)'), technician: strOrNull(),
   }, ['intervention', 'status', 'plannedDate', 'description', 'priority', 'technician']),
   functionTool('schedule_maintenance', 'Prépare la planification d’une maintenance préventive.', {
     machine: { type: 'string' }, task: { type: 'string' }, frequency: { type: 'string' }, nextDueDate: { type: 'string' }, responsible: strOrNull(), notes: strOrNull(),
