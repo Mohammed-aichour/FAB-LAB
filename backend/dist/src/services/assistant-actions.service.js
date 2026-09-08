@@ -113,10 +113,15 @@ const findMachine = (query) => {
 const findStock = (query) => findUnique((0, json_store_1.readEntity)('stock'), query, ['id', 'reference', 'name'], 'Article de stock');
 const findIntervention = (query) => findUnique((0, json_store_1.readEntity)('interventions'), String(query), ['id', 'otNumber', 'diNumber'], 'Intervention');
 const findTechnician = (query) => {
-    const user = findUnique((0, json_store_1.readEntity)('users'), query, ['id', 'email', 'name'], 'Technicien');
-    if (!['Technicien', 'Ingénieur', 'Superviseur'].includes(user.role) || user.status !== 'Actif')
-        throw new Error("Cet utilisateur ne peut pas être affecté à une intervention.");
-    return user;
+    try {
+        const user = findUnique((0, json_store_1.readEntity)('users'), query, ['id', 'email', 'name'], 'Technicien');
+        if (!['Technicien', 'Ingénieur', 'Superviseur'].includes(user.role) || user.status !== 'Actif')
+            return null;
+        return user;
+    }
+    catch {
+        return null;
+    }
 };
 function nextNumericId(records) {
     return records.reduce((max, record) => Math.max(max, Number(record.id) || 0), 0) + 1;
@@ -172,7 +177,7 @@ function buildPreview(toolName, rawPayload) {
         const id = nextNumericId(interventions);
         let technician = 'Non assigné';
         if (payload.technician)
-            technician = findTechnician(payload.technician).name;
+            technician = findTechnician(payload.technician)?.name || 'Non assigné';
         const intervention = {
             id, otNumber: `OT-IA-${nowDate().replaceAll('-', '')}-${id}`, diNumber: '-', creationDate: nowDate(), maintenanceType: payload.maintenanceType,
             equipmentId: machine.reference || machine.id, equipmentName: machine.name, atelier: machine.atelier || machine.location || 'FabLab', priority: payload.priority,
@@ -184,11 +189,8 @@ function buildPreview(toolName, rawPayload) {
     if (toolName === 'update_intervention') {
         const intervention = findIntervention(payload.intervention);
         const patch = {};
-        for (const field of ['status', 'plannedDate', 'description', 'priority'])
-            if (payload[field] !== undefined)
-                patch[field] = payload[field];
         if (payload.technician)
-            patch.technician = findTechnician(payload.technician).name;
+            patch.technician = findTechnician(payload.technician)?.name || payload.technician;
         const updated = { ...intervention, ...patch, updatedAt: new Date().toISOString() };
         return { toolName, payload, summary: `Modifier l'intervention ${intervention.otNumber || intervention.id}.`, entity: 'interventions', entityId: intervention.id, oldValue: intervention, newValue: updated };
     }
@@ -202,6 +204,8 @@ function buildPreview(toolName, rawPayload) {
     if (toolName === 'assign_technician') {
         const intervention = findIntervention(payload.intervention);
         const technician = findTechnician(payload.technician);
+        if (!technician)
+            throw new Error("Technicien introuvable dans les données réelles.");
         const updated = { ...intervention, technician: technician.name, updatedAt: new Date().toISOString() };
         return { toolName, payload, summary: `Affecter ${technician.name} à l'intervention ${intervention.otNumber || intervention.id}.`, entity: 'interventions', entityId: intervention.id, oldValue: intervention, newValue: updated };
     }

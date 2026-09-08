@@ -3,12 +3,12 @@
     "toolName": "create_intervention",
     "payload": {
       "machine": "FL-009",
-      "description": "Panne moteur",
+      "description": "panne moteur",
       "maintenanceType": "Corrective",
       "plannedDate": "2026-09-08",
       "priority": "A"
     },
-    "summary": "Créer OT-IA-20260908-1786625300142.8452 pour Fraiseuse CNC TPROD 6060 (« Panne moteur »), planifiée le 2026-09-08.",
+    "summary": "Créer OT-IA-20260908-1786625300142.8452 pour Fraiseuse CNC TPROD 6060 (« panne moteur »), planifiée le 2026-09-08.",
     "entity": "interventions",
     "entityId": 1786625300142.8452,
     "oldValue": null,
@@ -22,7 +22,7 @@
       "equipmentName": "Fraiseuse CNC TPROD 6060",
       "atelier": "Espace Prototypage - Découpe/Usinage CNC",
       "priority": "A",
-      "description": "Panne moteur",
+      "description": "panne moteur",
       "technician": "Non assigné",
       "plannedDate": "2026-09-08",
       "startDate": "",
@@ -36,10 +36,10 @@
       "supervisorVisa": "En attente",
       "observations": ""
     },
-    "id": "e9437131-a4b3-4e3f-82ec-03ad74ad1fb2",
+    "id": "4fe0b6eb-c69e-400d-8f54-c7fea3dfc4e4",
     "userId": "1",
-    "createdAt": "2026-09-08T14:20:23.979Z",
-    "expiresAt": "2026-09-08T14:30:23.979Z",
+    "createdAt": "2026-09-08T16:48:20.656Z",
+    "expiresAt": "2026-09-08T16:58:20.656Z",
     "status": "pending"
   }
 ]

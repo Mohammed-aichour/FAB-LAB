@@ -79,6 +79,9 @@ async function runAssistant(messages, user, model = model_1.createResponse) {
                 usedTools.push(call.name);
             }
             catch (error) {
+                if (assistant_actions_service_1.MUTATION_TOOL_NAMES.has(call.name)) {
+                    return { message: error instanceof Error ? error.message : 'Action impossible sur cette entité.', usedTools: [...usedTools, call.name] };
+                }
                 result = { error: error instanceof Error ? error.message : 'Données invalides.' };
             }
             input.push({ type: 'function_call_output', call_id: call.call_id, output: JSON.stringify(result) });

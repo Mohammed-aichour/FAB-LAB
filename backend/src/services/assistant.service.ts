@@ -71,6 +71,9 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
         result = readTool(call.name,args);
         usedTools.push(call.name);
       } catch (error) {
+        if (MUTATION_TOOL_NAMES.has(call.name)) {
+          return { message: error instanceof Error ? error.message : 'Action impossible sur cette entité.', usedTools: [...usedTools, call.name] };
+        }
         result = { error: error instanceof Error ? error.message : 'Données invalides.' };
       }
       input.push({ type: 'function_call_output', call_id: call.call_id, output: JSON.stringify(result) });
