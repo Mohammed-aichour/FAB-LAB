@@ -7,7 +7,7 @@ const strOrNull = (desc?: string) => ({
 });
 
 const functionTool = (name: string, description: string, properties: JsonRecord, required: string[] = []) => ({
-  type: 'function', name, description, strict: true,
+  type: 'function', name, description,
   parameters: { type: 'object', properties, required, additionalProperties: false },
 });
 

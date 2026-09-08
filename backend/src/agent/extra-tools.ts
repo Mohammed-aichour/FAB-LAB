@@ -53,7 +53,7 @@ function cleanSchemaForOpenAI(obj: any): any {
 
 export const extraTools = Object.entries(extras).map(([name,[description,schema]]) => {
   const params = cleanSchemaForOpenAI(z.toJSONSchema(schema));
-  return { type: 'function', name, description, strict: true, parameters: params };
+  return { type: 'function', name, description, parameters: params };
 });
 const matches = (row: Record<string, any>, q: string, fields: string[]) => fields.some(f => String(row[f] ?? '').toLocaleLowerCase('fr').includes(q.toLocaleLowerCase('fr')));
 export function extraRead(name: string, args: any): unknown {
