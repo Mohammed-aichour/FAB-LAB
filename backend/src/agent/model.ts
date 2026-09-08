@@ -16,7 +16,7 @@ export const createResponse: ModelClient = async body => {
     if (response.status === 429 && code === 'insufficient_quota') throw new Error('Le compte OpenAI ne dispose pas de quota API disponible. Vérifiez la facturation et les limites du projet API.');
     if (response.status === 429) throw new Error('Limite de requêtes OpenAI atteinte. Réessayez dans quelques instants.');
     if (response.status === 404) throw new Error(`Le modèle « ${body.model} » n’est pas disponible pour ce projet OpenAI.`);
-    if (response.status === 400) throw new Error('La configuration du modèle OpenAI est incompatible avec cette demande.');
+    if (response.status === 400) throw new Error(`La configuration du modèle OpenAI est incompatible avec cette demande (${data.error?.message || 'bad request'}).`);
     throw new Error(`Service IA indisponible (${response.status}). Réessayez plus tard.`);
   }
   if (!Array.isArray(data.output)) throw new Error('Réponse OpenAI invalide. Réessayez.');

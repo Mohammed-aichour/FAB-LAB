@@ -22,7 +22,7 @@ const createResponse = async (body) => {
         if (response.status === 404)
             throw new Error(`Le modèle « ${body.model} » n’est pas disponible pour ce projet OpenAI.`);
         if (response.status === 400)
-            throw new Error('La configuration du modèle OpenAI est incompatible avec cette demande.');
+            throw new Error(`La configuration du modèle OpenAI est incompatible avec cette demande (${data.error?.message || 'bad request'}).`);
         throw new Error(`Service IA indisponible (${response.status}). Réessayez plus tard.`);
     }
     if (!Array.isArray(data.output))
