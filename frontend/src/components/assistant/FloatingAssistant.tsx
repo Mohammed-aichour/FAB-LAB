@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { CalendarClock, Check, ChevronDown, CircuitBoard, Copy, Maximize2, Mic, MicOff, Minimize2, PackageSearch, RotateCcw, Send, Sparkles, Wrench, X } from 'lucide-react';
 import { api, apiForm } from '../../services/api';
 import { flushSync, refreshFromServer } from '../../services/db';
+import { getPublicUrl } from '../../lib/utils';
 
 type Action = { id:string; summary:string; expiresAt:string; status:string; oldValue:unknown; newValue:any };
 type Message = { role:'user'|'assistant'; content:string; tools?:string[] };
@@ -316,7 +317,7 @@ export default function FloatingAssistant({ user }: { user: { id: string | numbe
         <div className="assistant-header-ambient" aria-hidden="true"><span/><span/><span/></div>
         <div className="relative z-10 flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="assistant-header-logo"><img src="./Fab.png" alt="" /></div>
+            <div className="assistant-header-logo"><img src={getPublicUrl('Fab.png')} alt="" /></div>
             <div className="min-w-0">
               <h2 className="truncate text-[15px] font-extrabold tracking-[-0.02em] text-white">Assistant FabLab</h2>
               <p className="assistant-connection"><span/>Connecté aux données GMAO</p>
@@ -344,7 +345,7 @@ export default function FloatingAssistant({ user }: { user: { id: string | numbe
           </button>)}</div>
         </div>}
         {messages.map((message,index)=><article key={index} className={`assistant-message-row ${message.role}`}>
-          {message.role==='assistant' && <div className="assistant-mini-logo"><img src="./Fab.png" alt="" /></div>}
+          {message.role==='assistant' && <div className="assistant-mini-logo"><img src={getPublicUrl('Fab.png')} alt="" /></div>}
           <div className="assistant-message">
             <p className="assistant-message-label">{message.role==='user'?'Vous':'Assistant'}</p>
             <div>{message.role==='assistant' ? formatAssistantText(message.content) : message.content}</div>

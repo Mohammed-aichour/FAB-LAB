@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import Modal from '../components/shared/Modal';
 import { db } from '../services/db';
+import { getPublicUrl } from '../lib/utils';
 import { QrCode, Printer, CheckCircle, XCircle, Search, Server, Star, Layers, Camera, ImageOff } from 'lucide-react';
 
 const Machines = () => {
@@ -218,7 +219,7 @@ const Machines = () => {
     }
 
     candidates.push('/images/machines/default-machine.jpg');
-    return Array.from(new Set(candidates.filter(Boolean)));
+    return Array.from(new Set(candidates.filter(Boolean).map(getPublicUrl)));
   };
 
   const openPhotoModal = (machine: any) => {

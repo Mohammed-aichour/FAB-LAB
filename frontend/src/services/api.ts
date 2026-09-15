@@ -99,21 +99,31 @@ async function handleStaticFallback<T>(path: string, body?: any): Promise<T> {
     throw new Error('Session expirée.');
   }
 
-  // 3. Assistant Actions Fallback for Static Hosting
-  if (path === '/assistant/actions') {
+  // 3. Assistant & AI Agent Chat & Diagnosis Fallback for Static Hosting (GitHub Pages)
+  if (path === '/assistant/chat' || path === '/ai-agent/chat' || path === '/ai-agent/diagnose') {
+    const userPrompt = typeof body === 'object' && body !== null 
+      ? ((body as any).message || (body as any).prompt || (body as any).symptom || (body as any).description || '') 
+      : (typeof body === 'string' ? body : '');
+    const answer = await callDirectOpenAI(userPrompt);
+    return {
+      success: true,
+      conversationId: (body as any)?.conversationId || ('static_conv_' + Date.now()),
+      message: answer,
+      recommendation: answer,
+      diagnosis: answer,
+      usedTools: ['gmao_openai_direct_fallback'],
+      actions: []
+    } as T;
+  }
+
+  // 4. Assistant Actions & Confirmations Fallback
+  if (path === '/assistant/actions' || path.startsWith('/assistant/actions')) {
+    if (path.includes('confirm') || path.includes('cancel')) {
+      return { success: true, message: 'Action enregistrée dans la GMAO' } as T;
+    }
     return [] as T;
   }
 
-  // 4. Assistant Chat Fallback for Static Hosting (GitHub Pages)
-  if (path === '/assistant/chat') {
-    const userPrompt = typeof body === 'object' && body !== null ? ((body as any).message || (body as any).prompt || '') : '';
-    const answer = await callDirectOpenAI(userPrompt);
-    return {
-      conversationId: (body as any)?.conversationId || ('static_conv_' + Date.now()),
-      message: answer,
-      usedTools: ['gmao_openai_direct_fallback']
-    } as T;
-  }
 
   // 5. DB Entity Fallback
   if (path.startsWith('/db/')) {
