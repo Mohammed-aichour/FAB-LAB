@@ -8,58 +8,58 @@
   },
   {
     "machine_id": "fl-cnc-010",
-    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image2.jpg",
-    "public_url": "/images/machines/fl-cnc-010.jpg",
-    "size_bytes": 191029,
-    "status": "OK"
-  },
-  {
-    "machine_id": "fl-imp-068",
     "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image3.jpg",
-    "public_url": "/images/machines/fl-imp-068.jpg",
+    "public_url": "/images/machines/fl-cnc-010.jpg",
     "size_bytes": 182592,
     "status": "OK"
   },
   {
-    "machine_id": "fl-las-007",
-    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image4.jpg",
-    "public_url": "/images/machines/fl-las-007.jpg",
-    "size_bytes": 124283,
-    "status": "OK"
-  },
-  {
-    "machine_id": "fl-las-008",
+    "machine_id": "fl-imp-068",
     "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image5.jpg",
-    "public_url": "/images/machines/fl-las-008.jpg",
+    "public_url": "/images/machines/fl-imp-068.jpg",
     "size_bytes": 180991,
     "status": "OK"
   },
   {
-    "machine_id": "fl-imp-069",
-    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image6.jpg",
-    "public_url": "/images/machines/fl-imp-069.jpg",
-    "size_bytes": 50966,
+    "machine_id": "fl-las-007",
+    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image2.jpg",
+    "public_url": "/images/machines/fl-las-007.jpg",
+    "size_bytes": 191029,
+    "status": "OK"
+  },
+  {
+    "machine_id": "fl-las-008",
+    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\docs\\IMG-FAB\\EQ4a.jpg",
+    "public_url": "/images/machines/fl-las-008.jpg",
+    "size_bytes": 146173,
     "status": "OK"
   },
   {
     "machine_id": "fl-imp-006",
-    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image7.jpg",
+    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image4.jpg",
     "public_url": "/images/machines/fl-imp-006.jpg",
-    "size_bytes": 53359,
+    "size_bytes": 124283,
+    "status": "OK"
+  },
+  {
+    "machine_id": "fl-imp-069",
+    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\docs\\IMG-FAB\\EQ5.jpg",
+    "public_url": "/images/machines/fl-imp-069.jpg",
+    "size_bytes": 146173,
     "status": "OK"
   },
   {
     "machine_id": "fl-imp-003",
-    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image8.jpg",
+    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\rapport\\extracted_images\\image5.jpeg",
     "public_url": "/images/machines/fl-imp-003.jpg",
-    "size_bytes": 53820,
+    "size_bytes": 60675,
     "status": "OK"
   },
   {
     "machine_id": "fl-imp-004",
-    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\Image machine\\Image9.jpg",
+    "source_file": "d:\\Apps\\Desktop\\Downloads\\mmmm\\rapport\\extracted_images\\image6.jpeg",
     "public_url": "/images/machines/fl-imp-004.jpg",
-    "size_bytes": 50966,
+    "size_bytes": 58835,
     "status": "OK"
   },
   {
