@@ -281,7 +281,7 @@ export default function FloatingAssistant({ user }: { user: { id: string | numbe
     setMessages(m=>[...m,{role:'user',content:value}]);
     try {
       await flushSync();
-      const result=await api('/assistant/chat',{message:value,...(conversationId ? {conversationId} : {})});
+      const result=await api('/assistant/chat',{message:value,history:messages,...(conversationId ? {conversationId} : {})});
       setConversationId(result.conversationId);
       setMessages(m=>[...m,{role:'assistant',content:formatAssistantText(result.message),tools:result.usedTools}]);
       if(result.pendingAction) setActions(a=>[...a,result.pendingAction]);

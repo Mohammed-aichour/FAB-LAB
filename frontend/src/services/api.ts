@@ -104,7 +104,7 @@ async function handleStaticFallback<T>(path: string, body?: any): Promise<T> {
     const userPrompt = typeof body === 'object' && body !== null 
       ? ((body as any).message || (body as any).prompt || (body as any).symptom || (body as any).description || '') 
       : (typeof body === 'string' ? body : '');
-    const answer = await callDirectOpenAI(userPrompt);
+    const answer = await callDirectOpenAI(userPrompt, (body as any)?.history);
     return {
       success: true,
       conversationId: (body as any)?.conversationId || ('static_conv_' + Date.now()),
@@ -176,17 +176,13 @@ async function handleStaticFallback<T>(path: string, body?: any): Promise<T> {
   throw new Error('Le serveur backend Node.js est hors ligne.');
 }
 
-async function callDirectOpenAI(userPrompt: string): Promise<string> {
+async function callDirectOpenAI(userPrompt: string, history: any[] = []): Promise<string> {
   const fallbackKey = typeof atob === 'function' ? atob('c2stcHJvai1reTZQcXRWQ2lFQUVpZklXdEdzWVpMV25aQXdwQjl4WndOLWlrYlgySElzSG54UmVDUU1XbHVjV2p5M3paOXFQUkRpZmlNcTR6NFQzQmxia0ZKeGVaWTZKbXdaWFRTVW1VVDh0MHF0dVh3QWRubWJkUDJkd3lWMTBtYjJWR2VrekhIWmM0ZXJYT19SaXg2NE9Fem1teVpZM1Q4SUE=') : '';
 
   const apiKey = (import.meta.env?.VITE_OPENAI_API_KEY as string | undefined) ||
     localStorage.getItem('gmao_openai_key') ||
     sessionStorage.getItem('gmao_openai_key') ||
     fallbackKey;
-
-  if (!apiKey || apiKey.trim() === '') {
-    return generateLocalGMAOAssistantResponse(userPrompt);
-  }
 
   let machines: any[] = [];
   try {
@@ -206,43 +202,54 @@ async function callDirectOpenAI(userPrompt: string): Promise<string> {
     interventions = raw ? JSON.parse(raw) : initialOTs;
   } catch { interventions = initialOTs; }
 
-  const systemContext = `Tu es l'Assistant IA officiel du FabLab Universiapolis (GMAO).
+  if (apiKey && apiKey.trim() !== '') {
+    const systemContext = `Tu es l'Agent IA Expert de Maintenance du FabLab Universiapolis (Solution GMAO GMA LAB).
+Tu agis comme un ingénieur de maintenance senior et expert technique de classe mondiale.
+
 Données réelles de l'atelier :
-- Machines (${machines.length}) : ${JSON.stringify(machines.slice(0, 8).map((m: any) => ({ name: m.name, status: m.status, location: m.location })))}
-- Stock (${stock.length} articles) : ${JSON.stringify(stock.slice(0, 8).map((s: any) => ({ name: s.name, qty: s.quantity, min: s.min })))}
+- Machines (${machines.length}) : ${JSON.stringify(machines.map((m: any) => ({ id: m.id, ref: m.reference, name: m.name, status: m.status, location: m.location })))}
+- Stock (${stock.length} articles) : ${JSON.stringify(stock.map((s: any) => ({ ref: s.reference || s.id, name: s.name, qty: s.quantity, min: s.min, supplier: s.supplier })))}
 - Interventions/OT (${interventions.length}) : ${JSON.stringify(interventions.slice(0, 5).map((i: any) => ({ ot: i.otNumber, status: i.status, machine: i.equipmentName, priority: i.priority })))}
 
-Réponds de manière professionnelle, utile, précise et en français avec du formatage Markdown.`;
+Directives de réponse :
+1. Réponds avec la même intelligence, profondeur et élégance que ChatGPT (GPT-4o).
+2. Structure tes réponses en Markdown clair avec des titres, des listes à puces, du gras et des étapes numérotées.
+3. Pour les diagnostics de panne : donne les causes racines (analyse AMDEC), les consignes de sécurité, la procédure pas-à-pas de résolution, les pièces de rechange nécessaires depuis le stock, et propose la création d'un Bon de Travail (OT).
+4. Sois courtois, concis mais très complet et technique.`;
 
-  try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemContext },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 800
-      })
-    });
+    try {
+      const formattedHistory = Array.isArray(history) 
+        ? history.slice(-6).map((h: any) => ({ role: h.role === 'user' ? 'user' : 'assistant', content: h.content }))
+        : [];
 
-    if (response.ok) {
-      const data = await response.json();
-      const answer = data.choices?.[0]?.message?.content;
-      if (answer && answer.trim()) {
-        return answer.trim();
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemContext },
+            ...formattedHistory,
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const answer = data.choices?.[0]?.message?.content;
+        if (answer && answer.trim()) {
+          return answer.trim();
+        }
       }
-    } else {
-      console.warn('[OpenAI Client Call] HTTP status:', response.status);
+    } catch (err) {
+      console.warn('[OpenAI Client Call] Network error, using local expert engine:', err);
     }
-  } catch (err) {
-    console.warn('[OpenAI Client Call] Network error, falling back to local GMAO engine:', err);
   }
 
   return generateLocalGMAOAssistantResponse(userPrompt);
