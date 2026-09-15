@@ -6,10 +6,10 @@
     "brand": "PIPROD",
     "model": "TPROD-6060",
     "imageFile": "/images/machines/fraiseuse-cnc-tprod-6060.jpg",
-    "source": "Wikimedia Commons (File:Double side horizontal cnc milling machine 4.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Double_side_horizontal_cnc_milling_machine_4.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 4.0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (IMG-FAB / WhatsApp Image 9.41.33 AM)",
+    "sourceUrl": "Local Project File (WhatsApp Image 2026-07-31 at 9.41.33 AM.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-010",
@@ -18,10 +18,10 @@
     "brand": "C.I.F - Circuit Imprimé Français",
     "model": "Technodrill 3",
     "imageFile": "/images/machines/cif-technodrill-3-cnc.jpg",
-    "source": "Wikimedia Commons (File:CNC PCB Milling Machine.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/CNC_PCB_Milling_Machine.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY 2.0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (IMG-FAB / WhatsApp Image 9.40.56 AM)",
+    "sourceUrl": "Local Project File (WhatsApp Image 2026-07-31 at 9.40.56 AM.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-068",
@@ -30,9 +30,9 @@
     "brand": "Raise3D Technologies",
     "model": "E2CF",
     "imageFile": "/images/machines/raise3d-e2cf-composite.jpg",
-    "source": "Wikimedia Commons (File:Imprimante 3D Raise3D Pro 2 dans une mdiathque de Bourg-en-Bresse (novembre 2023).jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/70/Imprimante_3D_Raise3D_Pro_2_dans_une_m%C3%A9diath%C3%A8que_de_Bourg-en-Bresse_%28novembre_2023%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC0",
+    "source": "Photo réelle atelier FabLab (IMG-FAB / WhatsApp Image 9.42.07 AM)",
+    "sourceUrl": "Local Project File (WhatsApp Image 2026-07-31 at 9.42.07 AM.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -42,9 +42,9 @@
     "brand": "PIPROD",
     "model": "Laser CO2 100W",
     "imageFile": "/images/machines/decoupeuse-laser-co2-piprod.jpg",
-    "source": "Wikimedia Commons (File:GLAMhack2022 hosted by SUPSI - FabLab SUPSI laser cutter n2.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d9/GLAMhack2022_hosted_by_SUPSI_-_FabLab_SUPSI_laser_cutter_n2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY 4.0",
+    "source": "Photo réelle atelier FabLab (IMG-FAB / WhatsApp Image 9.43.21 AM)",
+    "sourceUrl": "Local Project File (WhatsApp Image 2026-07-31 at 9.43.21 AM.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -54,10 +54,10 @@
     "brand": "Trotec / WC",
     "model": "WC 3000",
     "imageFile": "/images/machines/trotec-wc3000-laser.jpg",
-    "source": "Wikimedia Commons (File:Industrial 4kW laser with flying optics system.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Industrial_4kW_laser_with_flying_optics_system.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 3.0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (IMG-FAB / WhatsApp Image 9.43.21 AM)",
+    "sourceUrl": "Local Project File (WhatsApp Image 2026-07-31 at 9.43.21 AM.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-069",
@@ -66,9 +66,9 @@
     "brand": "NATO SPS / Stratasys / Universiapolis",
     "model": "IMP3D-FDF-2024 / Dimension 1200",
     "imageFile": "/images/machines/dimension-bst-1200-3d.jpg",
-    "source": "Wikimedia Commons (File:3-D Printing at FDA (8205) (9561244733).jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/46/3-D_Printing_at_FDA_%288205%29_%289561244733%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "Public domain",
+    "source": "Photo réelle atelier FabLab (IMG-FAB / WhatsApp Image 9.43.21 AM)",
+    "sourceUrl": "Local Project File (WhatsApp Image 2026-07-31 at 9.43.21 AM.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -78,10 +78,10 @@
     "brand": "Photocentric",
     "model": "Liquid Crystal Precision",
     "imageFile": "/images/machines/photocentric-liquid-crystal.jpg",
-    "source": "Wikimedia Commons (File:3D Printshow 2014 London - Roland DG monoFab Desktop SLA 3D printer (inside) (14964193219).jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/3D_Printshow_2014_London_-_Roland_DG_monoFab_Desktop_SLA_3D_printer_%28inside%29_%2814964193219%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY 2.0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_2.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_2.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-003",
@@ -90,9 +90,9 @@
     "brand": "Shenzhen Creality 3D Technology",
     "model": "Ender-3 Pro",
     "imageFile": "/images/machines/creality-ender-3-pro-n1.jpg",
-    "source": "Wikimedia Commons (File:Dobot Magician with 3D printer as end-effector.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Dobot_Magician_with_3D_printer_as_end-effector.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 4.0",
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_2.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_2.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -102,10 +102,10 @@
     "brand": "Shenzhen Creality 3D Technology",
     "model": "Ender-3 Pro",
     "imageFile": "/images/machines/creality-ender-3-pro-n2.jpg",
-    "source": "Wikimedia Commons (Default Machine Fallback)",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:CNC_Milling.png",
-    "license": "CC BY-SA 4.0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_2.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_2.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-005",
@@ -114,9 +114,9 @@
     "brand": "Shenzhen Creality 3D Technology",
     "model": "Ender-3 Pro",
     "imageFile": "/images/machines/creality-ender-3-pro-n3.jpg",
-    "source": "Wikimedia Commons (File:Creality Ender 3 V4 ile ok Renkli Bask Artk Bir Lks Deil.png)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Creality_Ender_3_V4_ile_%C3%87ok_Renkli_Bask%C4%B1_Art%C4%B1k_Bir_L%C3%BCks_De%C4%9Fil.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 4.0",
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_2.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_2.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -126,10 +126,10 @@
     "brand": "Roland DG",
     "model": "CAMM-1 GS-24",
     "imageFile": "/images/machines/roland-camm-1-gs24.jpg",
-    "source": "Wikimedia Commons (File:Maker Faire 2008 San Mateo 107.JPG)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/74/Maker_Faire_2008_San_Mateo_107.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY 3.0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_9_1.jpeg)",
+    "sourceUrl": "Local Project File (img_page_9_1.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-ELE-01",
@@ -138,9 +138,9 @@
     "brand": "Weller",
     "model": "WT 1010H / Rework",
     "imageFile": "/images/machines/weller-wt1010h-station.jpg",
-    "source": "Wikimedia Commons (File:Helsinki, Oodi, soldering station (Weller).jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/48/Helsinki%2C_Oodi%2C_soldering_station_%28Weller%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 2.0",
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_3.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_3.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -150,9 +150,9 @@
     "brand": "Rigol",
     "model": "DS1054Z / DS1000",
     "imageFile": "/images/machines/rigol-ds1054z-oscilloscope.jpg",
-    "source": "Wikimedia Commons (File:RIGOL DS1054Z Digital Storage Oscilloscope.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/RIGOL_DS1054Z_Digital_Storage_Oscilloscope.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 4.0",
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_3.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_3.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -162,10 +162,10 @@
     "brand": "Bosch Professional",
     "model": "PBD 40",
     "imageFile": "/images/machines/bosch-pbd40-perceuse.jpg",
-    "source": "Wikimedia Commons (File:Drillpress.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Drillpress.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 2.5",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_4.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_4.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-BOI-02",
@@ -174,10 +174,10 @@
     "brand": "Makita",
     "model": "LB1200F",
     "imageFile": "/images/machines/makita-lb1200f-scie-ruban.jpg",
-    "source": "Wikimedia Commons (File:Crafting precision in woodworking at a workshop with a bandsaw during daylight hours.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/80/Crafting_precision_in_woodworking_at_a_workshop_with_a_bandsaw_during_daylight_hours.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY 2.0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_8_4.jpeg)",
+    "sourceUrl": "Local Project File (img_page_8_4.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-TEX-01",
@@ -186,9 +186,9 @@
     "brand": "Brother",
     "model": "PR670E / PR Series",
     "imageFile": "/images/machines/brother-pr670e-brodeuse.jpg",
-    "source": "Wikimedia Commons (File:Embroidery produced by brother machine.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Embroidery_produced_by_brother_machine.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY 4.0",
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_9_1.jpeg)",
+    "sourceUrl": "Local Project File (img_page_9_1.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   },
   {
@@ -198,10 +198,10 @@
     "brand": "Mecafer / PIPROD",
     "model": "500L / 8 BARS",
     "imageFile": "/images/machines/mecafer-compresseur-500l.jpg",
-    "source": "Wikimedia Commons (File:Why ELGi Air Compressors Are a Smart Choice for Modern Industrial Operations?.webp)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Why_ELGi_Air_Compressors_Are_a_Smart_Choice_for_Modern_Industrial_Operations%3F.webp?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC0",
-    "confidence": "medium"
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_6_3.jpeg)",
+    "sourceUrl": "Local Project File (img_page_6_3.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
+    "confidence": "high"
   },
   {
     "machineId": "FL-ASP-01",
@@ -210,9 +210,9 @@
     "brand": "FESTOOL / PIPROD",
     "model": "CLEANTEC CTM",
     "imageFile": "/images/machines/festool-cleantec-aspiration.jpg",
-    "source": "Wikimedia Commons (File:Festool saw, systainer, and dust extractor.jpg)",
-    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/17/Festool_saw%2C_systainer%2C_and_dust_extractor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-    "license": "CC BY-SA 2.0",
+    "source": "Photo réelle atelier FabLab (extracted_images / img_page_6_3.jpeg)",
+    "sourceUrl": "Local Project File (img_page_6_3.jpeg)",
+    "license": "Projet FabLab Universiapolis (Photos Réelles Atelier)",
     "confidence": "high"
   }
 ]
