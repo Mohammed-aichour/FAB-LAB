@@ -17,7 +17,8 @@
     "caracteristiques": "Surface XY 600x600 mm, axe Z 100 mm, précision +/-0,02 mm, broche 1,5-2,2 kW / 0-24000 tr/min",
     "logiciel": "MACH3 / GRBL / LinuxCNC",
     "photo": "/images/machines/fraiseuse-cnc-tprod-6060.jpg",
-    "image": "/images/machines/fraiseuse-cnc-tprod-6060.jpg"
+    "image": "/images/machines/fraiseuse-cnc-tprod-6060.jpg",
+    "imageUrl": "/images/machines/fl-cnc-009.jpg"
   },
   {
     "id": "fl-cnc-010",
@@ -37,7 +38,8 @@
     "caracteristiques": "Broche 900 W, 8 000-26 000 tr/min, masse 64 kg, précision prototypage circuits imprimés",
     "logiciel": "GALAAD 3",
     "photo": "/images/machines/cif-technodrill-3-cnc.jpg",
-    "image": "/images/machines/cif-technodrill-3-cnc.jpg"
+    "image": "/images/machines/cif-technodrill-3-cnc.jpg",
+    "imageUrl": "/images/machines/fl-cnc-010.jpg"
   },
   {
     "id": "fl-imp-068",
@@ -57,7 +59,8 @@
     "caracteristiques": "Volume 330x240x240 mm (mono) / 295x240x240 mm (dual), buse SiC, matériaux composites fibres carbone, T buse 300°C",
     "logiciel": "ideaMaker / RaiseCloud",
     "photo": "/images/machines/raise3d-e2cf-composite.jpg",
-    "image": "/images/machines/raise3d-e2cf-composite.jpg"
+    "image": "/images/machines/raise3d-e2cf-composite.jpg",
+    "imageUrl": "/images/machines/fl-imp-068.jpg"
   },
   {
     "id": "fl-las-007",
@@ -77,7 +80,8 @@
     "caracteristiques": "Laser CO2 100W, surface d utra travail 900x600mm, refroidissement liquide externe",
     "logiciel": "LightBurn / RDWorks",
     "photo": "/images/machines/decoupeuse-laser-co2-piprod.jpg",
-    "image": "/images/machines/decoupeuse-laser-co2-piprod.jpg"
+    "image": "/images/machines/decoupeuse-laser-co2-piprod.jpg",
+    "imageUrl": "/images/machines/fl-las-007.jpg"
   },
   {
     "id": "fl-las-008",
@@ -97,7 +101,8 @@
     "caracteristiques": "Laser CO2 haute fréquence, extraction d air intégrée",
     "logiciel": "Trotec JobControl",
     "photo": "/images/machines/trotec-wc3000-laser.jpg",
-    "image": "/images/machines/trotec-wc3000-laser.jpg"
+    "image": "/images/machines/trotec-wc3000-laser.jpg",
+    "imageUrl": "/images/machines/fl-las-008.jpg"
   },
   {
     "id": "fl-imp-069",
@@ -117,7 +122,8 @@
     "caracteristiques": "T buse max 300°C, T plateau max 110°C, précision +/-0,05 mm, enceinte fermée régulée",
     "logiciel": "Firmware Marlin / Klipper",
     "photo": "/images/machines/dimension-bst-1200-3d.jpg",
-    "image": "/images/machines/dimension-bst-1200-3d.jpg"
+    "image": "/images/machines/dimension-bst-1200-3d.jpg",
+    "imageUrl": "/images/machines/fl-imp-069.jpg"
   },
   {
     "id": "fl-imp-006",
@@ -137,7 +143,8 @@
     "caracteristiques": "Technologie photopolymérisation résine LCD/DLP, cuve téflon, polymérisation UV",
     "logiciel": "Photocentric Studio",
     "photo": "/images/machines/photocentric-liquid-crystal.jpg",
-    "image": "/images/machines/photocentric-liquid-crystal.jpg"
+    "image": "/images/machines/photocentric-liquid-crystal.jpg",
+    "imageUrl": "/images/machines/fl-imp-006.jpg"
   },
   {
     "id": "fl-imp-003",
@@ -157,7 +164,8 @@
     "caracteristiques": "Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C",
     "logiciel": "Cura / OctoPrint",
     "photo": "/images/machines/creality-ender-3-pro-n1.jpg",
-    "image": "/images/machines/creality-ender-3-pro-n1.jpg"
+    "image": "/images/machines/creality-ender-3-pro-n1.jpg",
+    "imageUrl": "/images/machines/fl-imp-003.jpg"
   },
   {
     "id": "fl-imp-004",
@@ -177,7 +185,8 @@
     "caracteristiques": "Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C",
     "logiciel": "Cura / OctoPrint",
     "photo": "/images/machines/creality-ender-3-pro-n2.jpg",
-    "image": "/images/machines/creality-ender-3-pro-n2.jpg"
+    "image": "/images/machines/creality-ender-3-pro-n2.jpg",
+    "imageUrl": "/images/machines/fl-imp-004.jpg"
   },
   {
     "id": "fl-imp-005",
@@ -197,7 +206,8 @@
     "caracteristiques": "Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C",
     "logiciel": "Cura / OctoPrint",
     "photo": "/images/machines/creality-ender-3-pro-n3.jpg",
-    "image": "/images/machines/creality-ender-3-pro-n3.jpg"
+    "image": "/images/machines/creality-ender-3-pro-n3.jpg",
+    "imageUrl": "/images/machines/fl-imp-005.jpg"
   },
   {
     "id": "fl-vin-001",
@@ -217,7 +227,8 @@
     "caracteristiques": "Largeur de découpe 584 mm, vitesse 500 mm/s, pression de lame 350g",
     "logiciel": "Roland CutStudio",
     "photo": "/images/machines/roland-camm-1-gs24.jpg",
-    "image": "/images/machines/roland-camm-1-gs24.jpg"
+    "image": "/images/machines/roland-camm-1-gs24.jpg",
+    "imageUrl": "/images/machines/fl-vin-001.jpg"
   },
   {
     "id": "fl-ele-001",
@@ -237,7 +248,8 @@
     "caracteristiques": "Puissance 150W, température 50-550°C, débit d air chaud réglable",
     "logiciel": "Contrôle tactile intégré",
     "photo": "/images/machines/weller-wt1010h-station.jpg",
-    "image": "/images/machines/weller-wt1010h-station.jpg"
+    "image": "/images/machines/weller-wt1010h-station.jpg",
+    "imageUrl": "/images/machines/fl-ele-001.jpg"
   },
   {
     "id": "fl-ele-002",
@@ -257,7 +269,8 @@
     "caracteristiques": "Bande passante 50 MHz, 4 voies analogiques, échantillonnage 1 Géch/s",
     "logiciel": "Rigol UltraScope",
     "photo": "/images/machines/rigol-ds1054z-oscilloscope.jpg",
-    "image": "/images/machines/rigol-ds1054z-oscilloscope.jpg"
+    "image": "/images/machines/rigol-ds1054z-oscilloscope.jpg",
+    "imageUrl": "/images/machines/fl-ele-002.jpg"
   },
   {
     "id": "fl-boi-001",
@@ -277,7 +290,8 @@
     "caracteristiques": "Moteur 750W, variateur électronique de vitesse, affichage numérique de la profondeur",
     "logiciel": "Manuel / Mécanique",
     "photo": "/images/machines/bosch-pbd40-perceuse.jpg",
-    "image": "/images/machines/bosch-pbd40-perceuse.jpg"
+    "image": "/images/machines/bosch-pbd40-perceuse.jpg",
+    "imageUrl": "/images/machines/fl-boi-001.jpg"
   },
   {
     "id": "fl-boi-002",
@@ -297,7 +311,8 @@
     "caracteristiques": "Puissance 900W, hauteur de coupe max 165mm, 2 vitesses de ruban",
     "logiciel": "Manuel / Mécanique",
     "photo": "/images/machines/makita-lb1200f-scie-ruban.jpg",
-    "image": "/images/machines/makita-lb1200f-scie-ruban.jpg"
+    "image": "/images/machines/makita-lb1200f-scie-ruban.jpg",
+    "imageUrl": "/images/machines/fl-boi-002.jpg"
   },
   {
     "id": "fl-tex-001",
@@ -317,7 +332,8 @@
     "caracteristiques": "6 aiguilles, champ de broderie 300x200 mm, écran tactile HD 10.1 pouces",
     "logiciel": "PE-Design 11 / Brother Embroidery",
     "photo": "/images/machines/brother-pr670e-brodeuse.jpg",
-    "image": "/images/machines/brother-pr670e-brodeuse.jpg"
+    "image": "/images/machines/brother-pr670e-brodeuse.jpg",
+    "imageUrl": "/images/machines/fl-tex-001.jpg"
   },
   {
     "id": "fl-cmp-001",
@@ -337,7 +353,8 @@
     "caracteristiques": "Pression max 10 bars, cuve 500L, débit 40 m3/h, lubrifié à l huile",
     "logiciel": "Automate de régulation pneumatique",
     "photo": "/images/machines/mecafer-compresseur-500l.jpg",
-    "image": "/images/machines/mecafer-compresseur-500l.jpg"
+    "image": "/images/machines/mecafer-compresseur-500l.jpg",
+    "imageUrl": "/images/machines/fl-cmp-001.jpg"
   },
   {
     "id": "fl-asp-001",
@@ -357,6 +374,7 @@
     "caracteristiques": "Débit d air 3900 L/min, filtration classe M, décolmatage automatique",
     "logiciel": "Asservissement synchrone avec machines CNC",
     "photo": "/images/machines/festool-cleantec-aspiration.jpg",
-    "image": "/images/machines/festool-cleantec-aspiration.jpg"
+    "image": "/images/machines/festool-cleantec-aspiration.jpg",
+    "imageUrl": "/images/machines/fl-asp-001.jpg"
   }
 ]

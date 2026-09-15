@@ -17,6 +17,7 @@ export interface MachineRecord {
   logiciel: string;
   photo?: string;
   image?: string;
+  imageUrl?: string;
 }
 
 export const REAL_MACHINES_DATA: MachineRecord[] = [
@@ -37,8 +38,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2022-03-15",
     "caracteristiques": "Surface XY 600x600 mm, axe Z 100 mm, précision +/-0,02 mm, broche 1,5-2,2 kW / 0-24000 tr/min",
     "logiciel": "MACH3 / GRBL / LinuxCNC",
-    "photo": "/images/machines/fraiseuse-cnc-tprod-6060.jpg",
-    "image": "/images/machines/fraiseuse-cnc-tprod-6060.jpg"
+    "photo": "/images/machines/fl-cnc-009.jpg",
+    "image": "/images/machines/fl-cnc-009.jpg",
+    "imageUrl": "/images/machines/fl-cnc-009.jpg"
   },
   {
     "id": "fl-cnc-010",
@@ -57,8 +59,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2021-06-10",
     "caracteristiques": "Broche 900 W, 8 000-26 000 tr/min, masse 64 kg, précision prototypage circuits imprimés",
     "logiciel": "GALAAD 3",
-    "photo": "/images/machines/cif-technodrill-3-cnc.jpg",
-    "image": "/images/machines/cif-technodrill-3-cnc.jpg"
+    "photo": "/images/machines/fl-cnc-010.jpg",
+    "image": "/images/machines/fl-cnc-010.jpg",
+    "imageUrl": "/images/machines/fl-cnc-010.jpg"
   },
   {
     "id": "fl-imp-068",
@@ -77,8 +80,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2023-09-01",
     "caracteristiques": "Volume 330x240x240 mm (mono) / 295x240x240 mm (dual), buse SiC, matériaux composites fibres carbone, T buse 300°C",
     "logiciel": "ideaMaker / RaiseCloud",
-    "photo": "/images/machines/raise3d-e2cf-composite.jpg",
-    "image": "/images/machines/raise3d-e2cf-composite.jpg"
+    "photo": "/images/machines/fl-imp-068.jpg",
+    "image": "/images/machines/fl-imp-068.jpg",
+    "imageUrl": "/images/machines/fl-imp-068.jpg"
   },
   {
     "id": "fl-las-007",
@@ -97,8 +101,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2020-01-20",
     "caracteristiques": "Laser CO2 100W, surface d utra travail 900x600mm, refroidissement liquide externe",
     "logiciel": "LightBurn / RDWorks",
-    "photo": "/images/machines/decoupeuse-laser-co2-piprod.jpg",
-    "image": "/images/machines/decoupeuse-laser-co2-piprod.jpg"
+    "photo": "/images/machines/fl-las-007.jpg",
+    "image": "/images/machines/fl-las-007.jpg",
+    "imageUrl": "/images/machines/fl-las-007.jpg"
   },
   {
     "id": "fl-las-008",
@@ -117,8 +122,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2019-11-15",
     "caracteristiques": "Laser CO2 haute fréquence, extraction d air intégrée",
     "logiciel": "Trotec JobControl",
-    "photo": "/images/machines/trotec-wc3000-laser.jpg",
-    "image": "/images/machines/trotec-wc3000-laser.jpg"
+    "photo": "/images/machines/fl-las-008.jpg",
+    "image": "/images/machines/fl-las-008.jpg",
+    "imageUrl": "/images/machines/fl-las-008.jpg"
   },
   {
     "id": "fl-imp-069",
@@ -137,8 +143,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2024-02-10",
     "caracteristiques": "T buse max 300°C, T plateau max 110°C, précision +/-0,05 mm, enceinte fermée régulée",
     "logiciel": "Firmware Marlin / Klipper",
-    "photo": "/images/machines/dimension-bst-1200-3d.jpg",
-    "image": "/images/machines/dimension-bst-1200-3d.jpg"
+    "photo": "/images/machines/fl-imp-069.jpg",
+    "image": "/images/machines/fl-imp-069.jpg",
+    "imageUrl": "/images/machines/fl-imp-069.jpg"
   },
   {
     "id": "fl-imp-006",
@@ -157,8 +164,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2021-04-18",
     "caracteristiques": "Technologie photopolymérisation résine LCD/DLP, cuve téflon, polymérisation UV",
     "logiciel": "Photocentric Studio",
-    "photo": "/images/machines/photocentric-liquid-crystal.jpg",
-    "image": "/images/machines/photocentric-liquid-crystal.jpg"
+    "photo": "/images/machines/fl-imp-006.jpg",
+    "image": "/images/machines/fl-imp-006.jpg",
+    "imageUrl": "/images/machines/fl-imp-006.jpg"
   },
   {
     "id": "fl-imp-003",
@@ -177,8 +185,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2020-05-12",
     "caracteristiques": "Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C",
     "logiciel": "Cura / OctoPrint",
-    "photo": "/images/machines/creality-ender-3-pro-n1.jpg",
-    "image": "/images/machines/creality-ender-3-pro-n1.jpg"
+    "photo": "/images/machines/fl-imp-003.jpg",
+    "image": "/images/machines/fl-imp-003.jpg",
+    "imageUrl": "/images/machines/fl-imp-003.jpg"
   },
   {
     "id": "fl-imp-004",
@@ -197,8 +206,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2020-05-12",
     "caracteristiques": "Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C",
     "logiciel": "Cura / OctoPrint",
-    "photo": "/images/machines/creality-ender-3-pro-n2.jpg",
-    "image": "/images/machines/creality-ender-3-pro-n2.jpg"
+    "photo": "/images/machines/fl-imp-004.jpg",
+    "image": "/images/machines/fl-imp-004.jpg",
+    "imageUrl": "/images/machines/fl-imp-004.jpg"
   },
   {
     "id": "fl-imp-005",
@@ -217,8 +227,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2020-05-12",
     "caracteristiques": "Volume 220x220x250 mm, buse 0,4 mm, plateau chauffant 110°C",
     "logiciel": "Cura / OctoPrint",
-    "photo": "/images/machines/creality-ender-3-pro-n3.jpg",
-    "image": "/images/machines/creality-ender-3-pro-n3.jpg"
+    "photo": "/images/machines/fl-imp-005.jpg",
+    "image": "/images/machines/fl-imp-005.jpg",
+    "imageUrl": "/images/machines/fl-imp-005.jpg"
   },
   {
     "id": "fl-vin-001",
@@ -237,8 +248,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2021-08-20",
     "caracteristiques": "Largeur de découpe 584 mm, vitesse 500 mm/s, pression de lame 350g",
     "logiciel": "Roland CutStudio",
-    "photo": "/images/machines/roland-camm-1-gs24.jpg",
-    "image": "/images/machines/roland-camm-1-gs24.jpg"
+    "photo": "/images/machines/fl-vin-001.jpg",
+    "image": "/images/machines/fl-vin-001.jpg",
+    "imageUrl": "/images/machines/fl-vin-001.jpg"
   },
   {
     "id": "fl-ele-001",
@@ -257,8 +269,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2022-01-14",
     "caracteristiques": "Puissance 150W, température 50-550°C, débit d air chaud réglable",
     "logiciel": "Contrôle tactile intégré",
-    "photo": "/images/machines/weller-wt1010h-station.jpg",
-    "image": "/images/machines/weller-wt1010h-station.jpg"
+    "photo": "/images/machines/fl-ele-001.jpg",
+    "image": "/images/machines/fl-ele-001.jpg",
+    "imageUrl": "/images/machines/fl-ele-001.jpg"
   },
   {
     "id": "fl-ele-002",
@@ -277,8 +290,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2021-03-30",
     "caracteristiques": "Bande passante 50 MHz, 4 voies analogiques, échantillonnage 1 Géch/s",
     "logiciel": "Rigol UltraScope",
-    "photo": "/images/machines/rigol-ds1054z-oscilloscope.jpg",
-    "image": "/images/machines/rigol-ds1054z-oscilloscope.jpg"
+    "photo": "/images/machines/fl-ele-002.jpg",
+    "image": "/images/machines/fl-ele-002.jpg",
+    "imageUrl": "/images/machines/fl-ele-002.jpg"
   },
   {
     "id": "fl-boi-001",
@@ -297,8 +311,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2019-06-15",
     "caracteristiques": "Moteur 750W, variateur électronique de vitesse, affichage numérique de la profondeur",
     "logiciel": "Manuel / Mécanique",
-    "photo": "/images/machines/bosch-pbd40-perceuse.jpg",
-    "image": "/images/machines/bosch-pbd40-perceuse.jpg"
+    "photo": "/images/machines/fl-boi-001.jpg",
+    "image": "/images/machines/fl-boi-001.jpg",
+    "imageUrl": "/images/machines/fl-boi-001.jpg"
   },
   {
     "id": "fl-boi-002",
@@ -317,8 +332,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2020-02-18",
     "caracteristiques": "Puissance 900W, hauteur de coupe max 165mm, 2 vitesses de ruban",
     "logiciel": "Manuel / Mécanique",
-    "photo": "/images/machines/makita-lb1200f-scie-ruban.jpg",
-    "image": "/images/machines/makita-lb1200f-scie-ruban.jpg"
+    "photo": "/images/machines/fl-boi-002.jpg",
+    "image": "/images/machines/fl-boi-002.jpg",
+    "imageUrl": "/images/machines/fl-boi-002.jpg"
   },
   {
     "id": "fl-tex-001",
@@ -337,8 +353,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2022-07-22",
     "caracteristiques": "6 aiguilles, champ de broderie 300x200 mm, écran tactile HD 10.1 pouces",
     "logiciel": "PE-Design 11 / Brother Embroidery",
-    "photo": "/images/machines/brother-pr670e-brodeuse.jpg",
-    "image": "/images/machines/brother-pr670e-brodeuse.jpg"
+    "photo": "/images/machines/fl-tex-001.jpg",
+    "image": "/images/machines/fl-tex-001.jpg",
+    "imageUrl": "/images/machines/fl-tex-001.jpg"
   },
   {
     "id": "fl-cmp-001",
@@ -357,8 +374,9 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2018-09-10",
     "caracteristiques": "Pression max 10 bars, cuve 500L, débit 40 m3/h, lubrifié à l huile",
     "logiciel": "Automate de régulation pneumatique",
-    "photo": "/images/machines/mecafer-compresseur-500l.jpg",
-    "image": "/images/machines/mecafer-compresseur-500l.jpg"
+    "photo": "/images/machines/fl-cmp-001.jpg",
+    "image": "/images/machines/fl-cmp-001.jpg",
+    "imageUrl": "/images/machines/fl-cmp-001.jpg"
   },
   {
     "id": "fl-asp-001",
@@ -377,7 +395,8 @@ export const REAL_MACHINES_DATA: MachineRecord[] = [
     "commissionDate": "2019-04-12",
     "caracteristiques": "Débit d air 3900 L/min, filtration classe M, décolmatage automatique",
     "logiciel": "Asservissement synchrone avec machines CNC",
-    "photo": "/images/machines/festool-cleantec-aspiration.jpg",
-    "image": "/images/machines/festool-cleantec-aspiration.jpg"
+    "photo": "/images/machines/fl-asp-001.jpg",
+    "image": "/images/machines/fl-asp-001.jpg",
+    "imageUrl": "/images/machines/fl-asp-001.jpg"
   }
 ];

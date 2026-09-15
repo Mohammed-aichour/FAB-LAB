@@ -148,6 +148,9 @@ const Machines = () => {
 
     const candidates: string[] = [];
 
+    if (m.id) {
+      candidates.push(`/images/machines/${m.id.toLowerCase()}.jpg`);
+    }
     if (photo) {
       candidates.push(photo);
     }
