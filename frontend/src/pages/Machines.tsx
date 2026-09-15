@@ -138,44 +138,84 @@ const Machines = () => {
     setIsQrModalOpen(true);
   };
 
-  // Helper pour trouver les candidats d'image dans IMG-FAB
+  // Helper pour trouver les candidats d'image dans /images/machines/ et /IMG-FAB/
   const getPhotoCandidates = (m: any) => {
-    if (!m) return [];
-    const ref = m.reference || m.id || '';
-    const code = m.codeEq || '';
-    const name = (m.name || '').toLowerCase();
+    if (!m) return ['/images/machines/default-machine.jpg'];
+    const ref = (m.reference || m.id || '').toUpperCase();
+    const code = (m.codeEq || '').toUpperCase();
+    const name = (m.name || m.designation || '').toLowerCase();
+    const photo = m.photo || m.image || '';
 
     const candidates: string[] = [];
+
+    if (photo) {
+      candidates.push(photo);
+    }
+
+    // Mapping spécifique pour les images réelles téléchargées
+    if (ref === 'FL-009' || code === 'EQ2' || name.includes('tprod') || name.includes('6060')) {
+      candidates.push('/images/machines/fraiseuse-cnc-tprod-6060.jpg');
+    }
+    if (ref === 'FL-010' || code === 'EQ1' || name.includes('technodrill') || name.includes('cif')) {
+      candidates.push('/images/machines/cif-technodrill-3-cnc.jpg');
+    }
+    if (ref === 'FL-068' || code === 'EQ3' || name.includes('raise3d') || name.includes('e2cf')) {
+      candidates.push('/images/machines/raise3d-e2cf-composite.jpg');
+    }
+    if (ref === 'FL-007' || name.includes('piprod') || (name.includes('laser') && name.includes('100w'))) {
+      candidates.push('/images/machines/decoupeuse-laser-co2-piprod.jpg');
+    }
+    if (ref === 'FL-008' || name.includes('wc 3000') || name.includes('trotec')) {
+      candidates.push('/images/machines/trotec-wc3000-laser.jpg');
+    }
+    if (ref === 'FL-069' || code === 'EQ5' || name.includes('3d industrielle') || name.includes('dimension')) {
+      candidates.push('/images/machines/dimension-bst-1200-3d.jpg');
+    }
+    if (ref === 'FL-006' || name.includes('photocentric') || name.includes('résine')) {
+      candidates.push('/images/machines/photocentric-liquid-crystal.jpg');
+    }
+    if (ref === 'FL-003' || name.includes('n°1') || name.includes('n1')) {
+      candidates.push('/images/machines/creality-ender-3-pro-n1.jpg');
+    }
+    if (ref === 'FL-004' || name.includes('n°2') || name.includes('n2')) {
+      candidates.push('/images/machines/creality-ender-3-pro-n2.jpg');
+    }
+    if (ref === 'FL-005' || name.includes('n°3') || name.includes('n3') || name.includes('ender')) {
+      candidates.push('/images/machines/creality-ender-3-pro-n3.jpg');
+    }
+    if (ref === 'FL-VIN-01' || name.includes('vinyle') || name.includes('roland')) {
+      candidates.push('/images/machines/roland-camm-1-gs24.jpg');
+    }
+    if (ref === 'FL-ELE-01' || name.includes('weller') || name.includes('soudure')) {
+      candidates.push('/images/machines/weller-wt1010h-station.jpg');
+    }
+    if (ref === 'FL-ELE-02' || name.includes('rigol') || name.includes('oscilloscope')) {
+      candidates.push('/images/machines/rigol-ds1054z-oscilloscope.jpg');
+    }
+    if (ref === 'FL-BOI-01' || name.includes('perceuse') || name.includes('bosch')) {
+      candidates.push('/images/machines/bosch-pbd40-perceuse.jpg');
+    }
+    if (ref === 'FL-BOI-02' || name.includes('scie') || name.includes('makita')) {
+      candidates.push('/images/machines/makita-lb1200f-scie-ruban.jpg');
+    }
+    if (ref === 'FL-TEX-01' || name.includes('brodeuse') || name.includes('brother')) {
+      candidates.push('/images/machines/brother-pr670e-brodeuse.jpg');
+    }
+    if (ref === 'FL-CMP-01' || name.includes('compresseur') || name.includes('mecafer')) {
+      candidates.push('/images/machines/mecafer-compresseur-500l.jpg');
+    }
+    if (ref === 'FL-ASP-01' || name.includes('aspiration') || name.includes('festool')) {
+      candidates.push('/images/machines/festool-cleantec-aspiration.jpg');
+    }
 
     if (ref) {
       candidates.push(`/IMG-FAB/${ref}.jpg`);
       candidates.push(`/IMG-FAB/${ref}.jpeg`);
       candidates.push(`/IMG-FAB/${ref}.png`);
     }
-    if (code) {
-      candidates.push(`/IMG-FAB/${code}.jpg`);
-      candidates.push(`/IMG-FAB/${code}.jpeg`);
-      candidates.push(`/IMG-FAB/${code}.png`);
-    }
 
-    // Mapping spécifique pour les images de l'atelier
-    if (ref === 'FL-010' || code === 'EQ1' || name.includes('technodrill')) {
-      candidates.push('/IMG-FAB/WhatsApp Image 2026-07-31 at 9.40.56 AM.jpeg');
-    }
-    if (ref === 'FL-009' || code === 'EQ2' || name.includes('tprod')) {
-      candidates.push('/IMG-FAB/WhatsApp Image 2026-07-31 at 9.41.33 AM.jpeg');
-    }
-    if (ref === 'FL-068' || code === 'EQ3' || name.includes('raise3d')) {
-      candidates.push('/IMG-FAB/WhatsApp Image 2026-07-31 at 9.42.07 AM.jpeg');
-    }
-    if (ref === 'FL-007' || ref === 'FL-008' || code.includes('EQ4') || name.includes('laser')) {
-      candidates.push('/IMG-FAB/WhatsApp Image 2026-07-31 at 9.43.21 AM.jpeg');
-    }
-    if (ref === 'FL-069' || code === 'EQ5' || name.includes('3d industrielle')) {
-      candidates.push('/IMG-FAB/WhatsApp Image 2026-07-31 at 9.43.21 AM.jpeg');
-    }
-
-    return candidates;
+    candidates.push('/images/machines/default-machine.jpg');
+    return Array.from(new Set(candidates.filter(Boolean)));
   };
 
   const openPhotoModal = (machine: any) => {
