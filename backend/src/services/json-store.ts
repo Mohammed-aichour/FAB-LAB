@@ -112,6 +112,14 @@ export function readEntity<T = unknown[]>(entity: EntityName): T {
     }
   }
 
+  const defaultCredentials = [
+    { userId: '1', hash: '$2b$12$aY/pLcXeVgxufiMxI7fnAOI2n58sAQWgk4IN2lgWNpnu.PHMZRB2i' },
+    { userId: '2', hash: '$2b$12$aY/pLcXeVgxufiMxI7fnAOI2n58sAQWgk4IN2lgWNpnu.PHMZRB2i' },
+    { userId: '3', hash: '$2b$12$aY/pLcXeVgxufiMxI7fnAOI2n58sAQWgk4IN2lgWNpnu.PHMZRB2i' },
+    { userId: '4', hash: '$2b$12$aY/pLcXeVgxufiMxI7fnAOI2n58sAQWgk4IN2lgWNpnu.PHMZRB2i' }
+  ];
+
+  if (entity === 'credentials') return defaultCredentials as T;
   return [] as T;
 }
 

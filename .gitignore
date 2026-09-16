@@ -27,7 +27,6 @@ Thumbs.db
 .idea
 
 # Local database secrets & transient stores
-data_db/credentials_db.json
 data_db/assistant_pending_actions_db.json
 data_db/*.tmp
 data_db/.transaction.json
