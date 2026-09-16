@@ -28,6 +28,13 @@ export function authHeaders(): Record<string,string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+export class BackendApiError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'BackendApiError';
+  }
+}
+
 export async function api<T = any>(path: string, body?: unknown): Promise<T> {
   try {
     const response = await fetch(getApiUrl(path), {
@@ -41,12 +48,12 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
       const data = await response.json();
       if (response.ok) return data;
       if (response.status === 401) window.dispatchEvent(new Event('gmao_session_expired'));
-      throw new Error(data.error || 'Erreur serveur.');
+      throw new BackendApiError(data.error || 'Erreur du serveur backend.');
     }
 
     return await handleStaticFallback<T>(path, body);
   } catch (err) {
-    if (err instanceof Error && err.message && !err.message.includes('fetch') && !err.message.includes('URL') && !err.message.includes('serveur')) {
+    if (err instanceof BackendApiError) {
       throw err;
     }
     return await handleStaticFallback<T>(path, body);
