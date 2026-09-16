@@ -55,28 +55,6 @@ const email_routes_1 = __importDefault(require("./routes/email.routes"));
 app.get(['/', '/api', '/health', '/api/health'], (req, res) => {
     res.json({ status: 'ok', message: 'GMAO FabLab API Server is running', timestamp: new Date().toISOString() });
 });
-app.get(['/test-openai', '/api/test-openai'], async (req, res) => {
-    try {
-        const key = (process.env.OPENAI_API_KEY || '').trim();
-        if (!key)
-            return res.json({ ok: false, error: 'No OPENAI_API_KEY set on server' });
-        const maskedKey = key.substring(0, 7) + '...' + key.substring(key.length - 4);
-        const chatRes = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: [{ role: 'user', content: 'Ping' }],
-                max_tokens: 10
-            })
-        });
-        const data = await chatRes.json();
-        return res.json({ ok: chatRes.ok, status: chatRes.status, maskedKey, data });
-    }
-    catch (err) {
-        return res.json({ ok: false, error: err.message });
-    }
-});
 app.get(['/debug', '/api/debug', '/api/debug-test'], async (req, res) => {
     try {
         const { runAssistant } = await import('./services/assistant.service.js');
