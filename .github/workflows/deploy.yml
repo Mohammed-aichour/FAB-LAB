@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/selection@v4
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
@@ -48,7 +48,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'frontend/dist'
+          path: 'docs'
 
       - name: Deploy to GitHub Pages
         id: deployment
