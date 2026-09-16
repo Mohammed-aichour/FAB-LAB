@@ -23,6 +23,7 @@ export function readTool(name: string, raw: unknown) {
 }
 export async function runAssistant(messages: ChatMessage[], user: AuthenticatedUser, model: ModelClient = createResponse) {
   if (user.role !== 'Superviseur' || user.status !== 'Actif') throw new Error('Accès réservé au superviseur.');
+  console.log(`[AI] Request received from user: ${user.email} (Role: ${user.role})`);
   const input: any[] = messages.slice(-24);
   const usedTools: string[] = [];
   const selected = selectTools(messages);
@@ -54,6 +55,7 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
     const calls = (response.output || []).filter((item: any) => item.type === 'function_call');
     if (!calls.length) {
       const message = (response.output || []).filter((item: any) => item.type === 'message').flatMap((item: any) => item.content || []).filter((part: any) => part.type === 'output_text').map((part: any) => part.text).join('\n').trim();
+      console.log(`[AI] Response generated successfully. Used tools: ${usedTools.length ? usedTools.join(', ') : 'none'}`);
       return { message: message || 'Je n’ai pas cette information dans les données actuelles de la GMAO.', usedTools };
     }
     // Replay full output items for stateless Responses, including reasoning.
@@ -63,13 +65,16 @@ export async function runAssistant(messages: ChatMessage[], user: AuthenticatedU
       try {
         if (!selected.tools.some(t => t.name === call.name)) throw new Error('Outil non autorisé pour cette demande.');
         const args = JSON.parse(call.arguments || '{}');
+        console.log(`[AI] Tool selected: ${call.name}`);
         if (MUTATION_TOOL_NAMES.has(call.name)) {
           const clean = Object.fromEntries(Object.entries(args).filter(([,v]) => v !== null));
           const pendingAction = createPendingAction(call.name as MutationToolName, clean, user);
+          console.log(`[AI] Pending action created: ${call.name} (Requires user confirmation)`);
           return { message: 'Vérifiez les détails. Cette action nécessite votre confirmation et n’a pas encore été exécutée.', pendingAction, usedTools: [...usedTools,call.name] };
         }
         result = readTool(call.name,args);
         usedTools.push(call.name);
+        console.log(`[AI] Tool execution completed: ${call.name} (Data source: json-store)`);
       } catch (error) {
         if (MUTATION_TOOL_NAMES.has(call.name)) {
           return { message: error instanceof Error ? error.message : 'Action impossible sur cette entité.', usedTools: [...usedTools, call.name] };
