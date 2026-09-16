@@ -1,8 +1,6 @@
 export type ModelResponse = Record<string, any>;
 export type ModelClient = (body: ModelResponse) => Promise<ModelResponse>;
 
-const fallbackApiKey = Buffer.from('c2stcHJvai1reTZQcXRWQ2lFQUVpZklXdEdzWVpMV25aQXdwQjl4WndOLWlrYlgySElzSG54UmVDUU1XbHVjV2p5M3paOXFQUkRpZmlNcTR6NFQzQmxia0ZKeGVaWTZKbXdaWFRTVW1VVDh0MHF0dVh3QWRubWJkUDJkd3lWMTBtYjJWR2VrekhIWmM0ZXJYT19SaXg2NE9Fem1teVpZM1Q4SUE=', 'base64').toString('utf8');
-
 async function callOpenAiWithKey(apiKey: string, body: ModelResponse): Promise<ModelResponse> {
   const chatModel = /^gpt-4o/i.test(body.model) ? body.model : 'gpt-4o-mini';
   const chatMessages: any[] = [];
@@ -83,17 +81,8 @@ async function callOpenAiWithKey(apiKey: string, body: ModelResponse): Promise<M
 
 export const createResponse: ModelClient = async body => {
   const envKey = (process.env.OPENAI_API_KEY || '').trim();
-  const keys = Array.from(new Set([fallbackApiKey, envKey].filter(Boolean)));
-  let lastError: Error | null = null;
-
-  for (const key of keys) {
-    try {
-      return await callOpenAiWithKey(key, body);
-    } catch (err: any) {
-      lastError = err;
-      console.warn(`[OpenAI Key warning] Key starting with ${key.slice(0, 7)} failed: ${err.message}`);
-    }
+  if (!envKey) {
+    throw new Error("Clé API OpenAI non configurée sur le serveur. Veuillez définir OPENAI_API_KEY dans les variables d'environnement du serveur.");
   }
-
-  throw lastError || new Error("Erreur de communication avec l'assistant IA.");
+  return await callOpenAiWithKey(envKey, body);
 };

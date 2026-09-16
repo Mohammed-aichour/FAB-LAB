@@ -37,20 +37,18 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
     });
     
     const contentType = response.headers.get('content-type') || '';
-    if (response.ok && contentType.includes('application/json')) {
+    if (contentType.includes('application/json')) {
       const data = await response.json();
-      return data;
+      if (response.ok) return data;
+      if (response.status === 401) window.dispatchEvent(new Event('gmao_session_expired'));
+      throw new Error(data.error || 'Erreur serveur.');
     }
 
-    // If server returned non-OK or non-JSON (e.g. 404 HTML on static GitHub Pages hosting when backend is unreachable)
-    if (!response.ok || !contentType.includes('application/json')) {
-      return await handleStaticFallback<T>(path, body);
-    }
-    
-    const data = await response.json().catch(() => ({ error: 'Réponse serveur invalide.' }));
-    if (response.status === 401) window.dispatchEvent(new Event('gmao_session_expired'));
-    throw new Error(data.error || 'Le serveur est indisponible.');
+    return await handleStaticFallback<T>(path, body);
   } catch (err) {
+    if (err instanceof Error && err.message && !err.message.includes('fetch') && !err.message.includes('URL') && !err.message.includes('serveur')) {
+      throw err;
+    }
     return await handleStaticFallback<T>(path, body);
   }
 }
