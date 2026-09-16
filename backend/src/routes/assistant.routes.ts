@@ -31,7 +31,11 @@ const audioUpload=multer({
 });
 router.get('/actions', (req: AuthenticatedRequest, res) => res.json(readEntity<any[]>('assistant_pending_actions').filter(a => a.userId === String(req.user!.id) && a.status === 'pending' && new Date(a.expiresAt).getTime() > Date.now())));
 
-const chatSchema = z.object({ message: z.string().trim().min(1).max(5000), conversationId: z.uuid().optional() }).strict();
+const chatSchema = z.object({
+  message: z.string().trim().min(1).max(5000),
+  conversationId: z.string().optional(),
+  history: z.array(z.any()).optional(),
+});
 router.post('/chat', async (req: AuthenticatedRequest, res) => {
   const parsed = chatSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: 'Conversation invalide.' });
