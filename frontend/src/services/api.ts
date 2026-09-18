@@ -112,7 +112,7 @@ async function handleStaticFallback<T>(path: string, body?: any): Promise<T> {
   if (path.startsWith('/db/')) {
     const entity = path.replace('/db/', '').split('?')[0];
     const keyMap: Record<string, string> = {
-      machines: 'gmao_machines_v21',
+      machines: 'gmao_machines_v25',
       stock: 'gmao_stock_v21',
       interventions: 'gmao_interventions_v2',
       dis: 'gmao_dis_v1',
