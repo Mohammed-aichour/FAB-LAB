@@ -82,9 +82,9 @@ app.use('/api', emailRoutes);
 
 app.use('/docs', express.static(path.join(__dirname, '../../Documents_GED')));
 
-if (require.main === module) {
+if (require.main === module || !process.env.VERCEL) {
   app.listen(Number(PORT), '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`[GMAO Backend] Server is running on http://localhost:${PORT}`);
   });
 }
 

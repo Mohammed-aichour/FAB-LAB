@@ -77,9 +77,9 @@ app.use(['/documents', '/api/documents'], auth_1.authenticate, (req, res, next) 
 app.use(['/orders', '/api/orders'], auth_1.authenticate, (req, res, next) => req.method === 'GET' ? next() : (0, auth_1.requireRoles)('Superviseur', 'Ingénieur', 'Technicien')(req, res, next), order_routes_1.default);
 app.use('/api', email_routes_1.default);
 app.use('/docs', express_1.default.static(path_1.default.join(__dirname, '../../Documents_GED')));
-if (require.main === module) {
+if (require.main === module || !process.env.VERCEL) {
     app.listen(Number(PORT), '0.0.0.0', () => {
-        console.log(`Server is running on port ${PORT}`);
+        console.log(`[GMAO Backend] Server is running on http://localhost:${PORT}`);
     });
 }
 exports.default = app;

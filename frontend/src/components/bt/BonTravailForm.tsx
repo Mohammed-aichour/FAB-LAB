@@ -9,6 +9,7 @@ import type {
   TechnicienAssignation, PieceRechangeLigne, OutilLigne, DocumentJoint 
 } from './types';
 import { db } from '../../services/db';
+import { getMachinePhotoCandidates } from '../../lib/machinePhotos';
 
 interface BonTravailFormProps {
   template?: BTTemplate | null;
@@ -771,6 +772,7 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
           {(() => {
             const activeM = machinesList.find(m => String(m.reference) === formData.machineId || String(m.id) === formData.machineId || m.name === formData.machineName);
             if (!activeM) return null;
+            const photoCandidates = getMachinePhotoCandidates(activeM);
             return (
               <div className="mt-3 p-3 bg-blue-50/80 dark:bg-blue-950/40 rounded-xl border border-blue-200/80 dark:border-blue-800 text-[11px] space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-200/60 dark:border-blue-800 pb-1.5 font-bold">
@@ -781,19 +783,37 @@ export const BonTravailForm: React.FC<BonTravailFormProps> = ({
                     Réf. {activeM.reference} | Criticité {activeM.criticite || 'A'}
                   </span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 text-zinc-700 dark:text-zinc-300 font-medium">
-                  <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Désignation</span><strong>{activeM.name}</strong></div>
-                  <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Marque / Modèle</span><strong>{activeM.marque || '—'} / {activeM.modele || '—'}</strong></div>
-                  <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">N° de Série</span><strong className="font-mono">{activeM.serialNumber || 'SN-FABLAB'}</strong></div>
-                  <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Localisation</span><strong>{activeM.location || activeM.atelier}</strong></div>
-                  <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">État actuel</span><strong className="text-emerald-600">{activeM.status || 'Opérationnel'}</strong></div>
-                  <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Mise en service</span><strong>{activeM.commissionDate || '2021-01-01'}</strong></div>
-                </div>
-                {activeM.caracteristiques && (
-                  <div className="text-[10px] text-zinc-500 font-mono pt-1">
-                    <strong>Spécifications :</strong> {activeM.caracteristiques} {activeM.logiciel ? `• Pilotage: ${activeM.logiciel}` : ''}
+                <div className="flex flex-col sm:flex-row gap-3 items-start">
+                  {photoCandidates.length > 0 && (
+                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-900 shrink-0 border border-blue-200 dark:border-blue-800 shadow-xs">
+                      <img 
+                        src={photoCandidates[0]} 
+                        alt={activeM.name} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          if (photoCandidates.length > 1) {
+                            (e.target as HTMLImageElement).src = photoCandidates[1];
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 space-y-2 w-full">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 text-zinc-700 dark:text-zinc-300 font-medium">
+                      <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Désignation</span><strong>{activeM.name}</strong></div>
+                      <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Marque / Modèle</span><strong>{activeM.marque || '—'} / {activeM.modele || '—'}</strong></div>
+                      <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">N° de Série</span><strong className="font-mono">{activeM.serialNumber || 'SN-FABLAB'}</strong></div>
+                      <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Localisation</span><strong>{activeM.location || activeM.atelier}</strong></div>
+                      <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">État actuel</span><strong className="text-emerald-600">{activeM.status || 'Opérationnel'}</strong></div>
+                      <div><span className="text-zinc-400 block text-[9px] uppercase font-bold">Mise en service</span><strong>{activeM.commissionDate || '2021-01-01'}</strong></div>
+                    </div>
+                    {activeM.caracteristiques && (
+                      <div className="text-[10px] text-zinc-500 font-mono pt-1">
+                        <strong>Spécifications :</strong> {activeM.caracteristiques} {activeM.logiciel ? `• Pilotage: ${activeM.logiciel}` : ''}
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             );
           })()}
