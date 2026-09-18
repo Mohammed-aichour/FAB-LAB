@@ -85,7 +85,7 @@ export const REAL_MACHINES_DATA = [
   },
   {
     "id": "fl-imp-006",
-    "reference": "FL-010",
+    "reference": "FL-006",
     "codeArborescence": "FL-IMP-03 / FL-006",
     "name": "Imprimante 3D Résine SLA (Formlabs Form 3)",
     "designation": "Imprimante 3D Résine photopolymérisation",
