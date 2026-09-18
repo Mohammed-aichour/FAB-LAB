@@ -84,6 +84,27 @@
     "imageUrl": "/images/machines/fl-imp-068.jpg"
   },
   {
+    "id": "fl-imp-069",
+    "reference": "FL-069",
+    "codeArborescence": "FL-IMP-02 / FL-069",
+    "name": "Imprimante 3D industrielle FDM/FFF (enceinte fermée)",
+    "designation": "Imprimante 3D industrielle Haute Température FDM/FFF",
+    "marque": "Universiapolis",
+    "modele": "MP3D-FDM-2024",
+    "serialNumber": "SN-IND-3D-2024-01",
+    "atelier": "Espace Impression 3D",
+    "location": "Atelier Impression 3D - Stand FDM Industriel",
+    "category": "Impression 3D FFF/IDEX",
+    "status": "Opérationnel",
+    "criticite": "A",
+    "commissionDate": "2024-01-15",
+    "caracteristiques": "Enceinte fermée thermorégulée, grand volume d'impression, buse haute température 350°C",
+    "logiciel": "Cura / Simplify3D",
+    "photo": "/images/machines/fl-imp-069.jpg",
+    "image": "/images/machines/fl-imp-069.jpg",
+    "imageUrl": "/images/machines/fl-imp-069.jpg"
+  },
+  {
     "id": "fl-imp-006",
     "reference": "FL-006",
     "codeArborescence": "FL-IMP-03 / FL-006",

@@ -2,7 +2,7 @@ import { getPublicUrl } from './utils';
 
 /**
  * STRICT & ROBUST MACHINE PHOTO RESOLVER
- * Maps each of the 5 FabLab machines directly to its authentic photo from `image machine`.
+ * Maps each of the 6 FabLab machines directly to its authentic photo from `image machine`.
  * Matches by Machine ID, Reference, Code EQ, or Name/Designation keywords to guarantee 100% correct photo rendering.
  */
 export function getMachinePhoto(m: any): string | null {
@@ -34,7 +34,12 @@ export function getMachinePhoto(m: any): string | null {
     return getPublicUrl('/images/machines/fl-imp-068.jpg');
   }
 
-  // 5. Imprimante 3D Résine SLA (Formlabs Form 3) -> fl-imp-006.jpg
+  // 5. Imprimante 3D industrielle FDM/FFF (enceinte fermée) -> fl-imp-069.jpg
+  if (id === 'fl-imp-069' || ref === 'fl-069' || (name.includes('3d') && name.includes('industrielle')) || name.includes('enceinte fermée') || name.includes('enceinte fermee')) {
+    return getPublicUrl('/images/machines/fl-imp-069.jpg');
+  }
+
+  // 6. Imprimante 3D Résine SLA (Formlabs Form 3) -> fl-imp-006.jpg
   if (id === 'fl-imp-006' || ref === 'fl-006' || name.includes('formlabs') || name.includes('form 3') || name.includes('résine') || name.includes('resine') || name.includes('sla')) {
     return getPublicUrl('/images/machines/fl-imp-006.jpg');
   }

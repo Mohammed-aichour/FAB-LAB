@@ -7,7 +7,7 @@ import { preventifData } from '../data/amdecData';
 import { initialFournisseurs } from '../data/fournisseursData';
 
 const KEYS = {
-  MACHINES: 'gmao_machines_v25',
+  MACHINES: 'gmao_machines_v30',
   STOCK: 'gmao_stock_v21',
   INTERVENTIONS: 'gmao_interventions_v2',
   DIS: 'gmao_dis_v1',
