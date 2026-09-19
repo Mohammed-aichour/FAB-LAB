@@ -61,7 +61,7 @@ const Machines = () => {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<any>(null);
   const [activeCategory, setActiveCategory] = useState<string>('TOUS');
-  const [filterMode, setFilterMode] = useState<'MAJEURES' | 'TOUTES'>('MAJEURES');
+  const [filterMode, setFilterMode] = useState<'MAJEURES' | 'TOUTES'>('TOUTES');
   const [displayMode, setDisplayMode] = useState<'GRID' | 'TABLE'>('GRID');
 
   // Photo Viewer Modal State
