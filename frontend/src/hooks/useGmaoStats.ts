@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useGmao } from "../context/GmaoContext";
+import { hasValidMachinePhoto } from "../lib/machinePhotos";
 
 export interface AtelierStat {
   atelier: string;
@@ -105,16 +106,17 @@ export const useGmaoStats = (): GmaoStats => {
     startOfWeek.setDate(now.getDate() - now.getDay());
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    // ── 1. Machines (Pure Dynamic Statistics) ─────────────────────────────────
-    const totalMachines = machines.length;
-    const machinesOp = machines.filter(isMachineOp).length;
-    const machinesHS = machines.filter(isMachineHS).length;
-    const machinesEnMaint = machines.filter(isMachineMaint).length;
+    // ── 1. Machines (Pure Dynamic Statistics - Valid Photo Machines Only) ───────
+    const validPhotoMachines = machines.filter(hasValidMachinePhoto);
+    const totalMachines = validPhotoMachines.length;
+    const machinesOp = validPhotoMachines.filter(isMachineOp).length;
+    const machinesHS = validPhotoMachines.filter(isMachineHS).length;
+    const machinesEnMaint = validPhotoMachines.filter(isMachineMaint).length;
     const disponibiliteGlobale = totalMachines > 0
       ? Number(((machinesOp / totalMachines) * 100).toFixed(1))
       : 100;
 
-    const machinesHSList = machines.filter(isMachineHS);
+    const machinesHSList = validPhotoMachines.filter(isMachineHS);
 
     // Dynamic MTBF & MTTR calculation
     const totalOperatingHours = machinesOp * 160;
@@ -215,7 +217,7 @@ export const useGmaoStats = (): GmaoStats => {
 
     // ── 5. Workshop Breakdown (Pure Dynamic Statistics) ─────────────────────
     const atelierMap: Record<string, { op: number; hs: number; critA: number; total: number }> = {};
-    machines.forEach((m) => {
+    validPhotoMachines.forEach((m) => {
       let key = m.category || m.atelier || "Équipements FabLab";
       if (key.includes("Usinage") || key.includes("CNC")) key = "Atelier Usinage CNC";
       else if (key.includes("Laser") || key.includes("Découpe")) key = "Atelier Découpe Laser";
@@ -241,7 +243,7 @@ export const useGmaoStats = (): GmaoStats => {
 
     // ── 6. Category Breakdown (Pure Dynamic Statistics) ──────────────────────
     const catMap: Record<string, number> = {};
-    machines.forEach((m) => {
+    validPhotoMachines.forEach((m) => {
       const cat = m.category || m.atelier || "Non classé";
       catMap[cat] = (catMap[cat] || 0) + 1;
     });
@@ -296,7 +298,7 @@ export const useGmaoStats = (): GmaoStats => {
 
     // ── 8. Status Breakdown (Pure Dynamic Statistics) ───────────────────────
     const statusMap: Record<string, number> = {};
-    machines.forEach((m) => {
+    validPhotoMachines.forEach((m) => {
       const s = (m.status || m.etat || "Non renseigné").toString().trim();
       statusMap[s] = (statusMap[s] || 0) + 1;
     });

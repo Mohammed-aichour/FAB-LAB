@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import Modal from '../components/shared/Modal';
 import { db } from '../services/db';
-import { getMachinePhotoCandidates } from '../lib/machinePhotos';
+import { getMachinePhotoCandidates, hasValidMachinePhoto } from '../lib/machinePhotos';
 import { 
   QrCode, Printer, CheckCircle, XCircle, Search, Server, Star, 
   Layers, Camera, ImageOff, LayoutGrid, Table as TableIcon 
@@ -104,13 +104,17 @@ const Machines = () => {
     return false;
   };
 
+  const validPhotoMachines = useMemo(() => {
+    return machines.filter(hasValidMachinePhoto);
+  }, [machines]);
+
   const categoriesList = useMemo(() => {
     const setCat = new Set<string>();
-    machines.forEach(m => {
+    validPhotoMachines.forEach(m => {
       if (m.category) setCat.add(m.category);
     });
     return Array.from(setCat).sort();
-  }, [machines]);
+  }, [validPhotoMachines]);
 
   const toggleMachineStatus = (id: string | number) => {
     const updated = machines.map(m => {
@@ -195,7 +199,7 @@ const Machines = () => {
   };
 
   const filteredMachines = useMemo(() => {
-    return machines.filter(m => {
+    return validPhotoMachines.filter(m => {
       if (filterMode === 'MAJEURES' && !isGrandMachine(m)) {
         return false;
       }
@@ -212,9 +216,9 @@ const Machines = () => {
 
       return matchSearch && matchCat;
     });
-  }, [machines, searchTerm, activeCategory, filterMode, grandMachineCodes]);
+  }, [validPhotoMachines, searchTerm, activeCategory, filterMode, grandMachineCodes]);
 
-  const countMajeures = useMemo(() => machines.filter(isGrandMachine).length, [machines]);
+  const countMajeures = useMemo(() => validPhotoMachines.filter(isGrandMachine).length, [validPhotoMachines]);
 
   return (
     <div className="space-y-6 animate-fade-in-up pb-12">
@@ -227,7 +231,7 @@ const Machines = () => {
               Parc Machines & Équipements du FabLab
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-xs">
-              Base de Données Centralisée ({machines.length} Machines)
+              Base de Données Centralisée ({validPhotoMachines.length} Machines)
             </span>
           </div>
           <p className="text-slate-500 dark:text-zinc-400 text-xs mt-1 font-medium">
@@ -284,7 +288,7 @@ const Machines = () => {
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
-              <span>Tout le Parc ({machines.length})</span>
+              <span>Tout le Parc ({validPhotoMachines.length})</span>
             </button>
           </div>
 

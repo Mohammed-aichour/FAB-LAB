@@ -38,15 +38,43 @@ export function getMachinePhoto(m: any): string | null {
     return getPublicUrl('/images/machines/fl-imp-006.jpg');
   }
 
-  // 6. Découpeuse Laser CO2 (Trotec / PIPROD / WC 3000) -> Laser CO2 photo (fl-las-007.jpg)
-  if (name.includes('laser') || name.includes('trotec') || name.includes('wc 3000') || name.includes('wc3000') || id === 'fl-las-007') {
+  // 6. Découpeuse Laser CO2 (Trotec / PIPROD) -> Laser CO2 photo (fl-las-007.jpg)
+  if ((name.includes('laser') && name.includes('co2')) || name.includes('trotec') || name.includes('piprod') || id === 'fl-las-007' || ref === 'fl-007') {
     return getPublicUrl('/images/machines/fl-las-007.jpg');
   }
 
   return null;
 }
 
+/**
+ * Centralized validator for machine photos.
+ * Ensures a machine has a non-null, non-empty, non-placeholder valid photo.
+ */
+export function hasValidMachinePhoto(m: any): boolean {
+  if (!m) return false;
+
+  const photo = getMachinePhoto(m);
+  if (!photo || typeof photo !== 'string') return false;
+
+  const trimmed = photo.trim();
+  if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined') return false;
+
+  const lower = trimmed.toLowerCase();
+  if (
+    lower.includes('placeholder') ||
+    lower.includes('default') ||
+    lower.includes('dummy') ||
+    lower.includes('no-image') ||
+    lower.includes('fictive') ||
+    lower.includes('none')
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 export function getMachinePhotoCandidates(m: any): string[] {
   const photo = getMachinePhoto(m);
-  return photo ? [photo] : [];
+  return photo && hasValidMachinePhoto(m) ? [photo] : [];
 }
