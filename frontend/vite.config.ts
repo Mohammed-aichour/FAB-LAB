@@ -1,8 +1,11 @@
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+
+const base = process.env.NETLIFY === 'true' ? '/' : (process.env.VITE_BASE_PATH || '/FAB-LAB/');
+
 export default defineConfig({
-  base: '/FAB-LAB/',
+  base,
   plugins: [react()],
   build: {
     outDir: '../docs',
