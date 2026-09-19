@@ -14,22 +14,16 @@ import {
 import { useGmaoStats } from "../hooks/useGmaoStats";
 import { useGmao } from "../context/GmaoContext";
 
-// KPI reference data (6 months certified academic data)
-const BASE_MONTHLY_KPI = [
-  { month: "Janvier", mtbf: 213.3, mttr: 3.7, dispo: 98.3, preventif: 87.5, coutMAD: 2400, cibleMtbf: 300, cibleDispo: 95 },
-  { month: "Fevrier", mtbf: 320.0, mttr: 3.5, dispo: 98.9, preventif: 90.9, coutMAD: 1800, cibleMtbf: 300, cibleDispo: 95 },
-  { month: "Mars", mtbf: 330.0, mttr: 4.0, dispo: 98.8, preventif: 95.8, coutMAD: 2100, cibleMtbf: 300, cibleDispo: 95 },
-  { month: "Avril", mtbf: 660.0, mttr: 3.0, dispo: 99.5, preventif: 95.7, coutMAD: 900, cibleMtbf: 300, cibleDispo: 95 },
-  { month: "Mai", mtbf: 340.0, mttr: 3.5, dispo: 99.0, preventif: 96.0, coutMAD: 1700, cibleMtbf: 300, cibleDispo: 95 },
-  { month: "Juin", mtbf: 680.0, mttr: 4.0, dispo: 99.4, preventif: 100.0, coutMAD: 1200, cibleMtbf: 300, cibleDispo: 95 },
-];
-
-const STATUS_PIE_COLORS: Record<string, string> = {
-  "Operationnel": "#059669", "Marche": "#059669",
-  "Hors service": "#e11d48", "En Panne": "#e11d48", "Hors Service": "#e11d48",
-  "En maintenance": "#d97706", "A confirmer": "#8b5cf6", "Non renseigne": "#94a3b8",
-};
 const CAT_COLORS = ["#2f3874", "#b92721", "#e0a61e", "#059669", "#8b5cf6", "#0891b2", "#d97706", "#db2777"];
+
+const getStatusColor = (status: string, index: number): string => {
+  const s = (status || "").trim().toLowerCase();
+  if (s.includes("opérat") || s.includes("operat") || s.includes("marche") || s.includes("bon") || s.includes("actif")) return "#059669";
+  if (s.includes("hors") || s.includes("panne") || s.includes("hs")) return "#e11d48";
+  if (s.includes("maint") || s.includes("contrôl") || s.includes("control")) return "#d97706";
+  if (s.includes("attente") || s.includes("confirm")) return "#8b5cf6";
+  return CAT_COLORS[index % CAT_COLORS.length];
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -37,24 +31,6 @@ const Dashboard = () => {
   const { notifications, refresh } = useGmao();
   const [activeTab, setActiveTab] = useState<"REALTIME" | "MONTHLY" | "ATELIER">("REALTIME");
   const [lastUpdate, setLastUpdate] = useState(new Date());
-
-  const mergedMonthly = BASE_MONTHLY_KPI.map((base, i) => {
-    const real = stats.monthlyOtStats[i] || { otPrev: 0, otCorr: 0 };
-    return {
-      ...base,
-      otPrev: real.otPrev || Math.round(base.coutMAD / 120),
-      otCorr: real.otCorr || Math.round(base.coutMAD / 600),
-    };
-  });
-
-  const atelierKpiData = stats.atelierStats.map((a) => ({
-    atelier: a.atelier,
-    nbEquip: a.nbEquip,
-    criticiteA: a.criticiteA,
-    dispo: a.dispo,
-    machinesOp: a.machinesOp,
-    machinesHS: a.machinesHS,
-  }));
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -85,10 +61,10 @@ const Dashboard = () => {
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white">Dashboard GMA LAB</h1>
           <p className="text-zinc-500 mt-1 text-sm flex items-center gap-2">
-            Tableau de bord executif — FabLab Universiapolis
+            Tableau de bord exécutif — FabLab Universiapolis
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
-              Temps reel — {lastUpdate.toLocaleTimeString("fr-FR")}
+              Temps réel — {lastUpdate.toLocaleTimeString("fr-FR")}
             </span>
           </p>
         </div>
@@ -101,23 +77,23 @@ const Dashboard = () => {
         <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-slate-200 dark:border-zinc-700 shadow-xs">
           {(["REALTIME", "MONTHLY", "ATELIER"] as const).map((tab) => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${activeTab === tab ? "bg-white dark:bg-zinc-900 text-fab-blue shadow-sm" : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === tab ? "bg-white dark:bg-zinc-900 text-[#2f3874] dark:text-blue-400 shadow-sm" : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"}`}>
               {tab === "REALTIME" && <Zap className="w-3.5 h-3.5" />}
               {tab === "MONTHLY" && <TrendingUp className="w-3.5 h-3.5" />}
               {tab === "ATELIER" && <Layers className="w-3.5 h-3.5" />}
-              {tab === "REALTIME" ? "Temps Reel" : tab === "MONTHLY" ? "Evol. Mensuelle" : "Par Atelier"}
+              {tab === "REALTIME" ? "Temps Réel" : tab === "MONTHLY" ? "Évol. Mensuelle" : "Par Atelier"}
             </button>
           ))}
         </div>
       </div>
 
-      {/* 4 KPI Cards */}
+      {/* 4 KPI Main Cards (Calculated directly from real database objects) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { title: "Parc Equipements", value: `${stats.machinesOp}/${stats.totalMachines}`, trend: stats.machinesHS > 0 ? `${stats.machinesHS} hors service` : "100% Operationnel", color: stats.machinesHS > 0 ? "text-rose-500" : "text-emerald-500", route: "/machines", glowLine: "bg-blue-500", bgGradient: "from-blue-500/20 to-indigo-500/5", icon: Server },
+          { title: "Parc Équipements", value: `${stats.machinesOp}/${stats.totalMachines}`, trend: stats.machinesHS > 0 ? `${stats.machinesHS} hors service` : "100% Opérationnel", color: stats.machinesHS > 0 ? "text-rose-500" : "text-emerald-500", route: "/machines", glowLine: "bg-blue-500", bgGradient: "from-blue-500/20 to-indigo-500/5", icon: Server },
           { title: "Bons de Travail", value: `${stats.totalOT} OT`, trend: `${stats.otEnCours} en cours`, color: stats.otEnCours > 0 ? "text-blue-500" : "text-emerald-500", route: "/interventions", glowLine: "bg-purple-500", bgGradient: "from-purple-500/20 to-pink-500/5", icon: Wrench },
-          { title: "Plan Preventif", value: `${stats.totalPreventif} Taches`, trend: `${stats.preventifTermines} terminees`, color: "text-emerald-500", route: "/plan-preventif", glowLine: "bg-emerald-500", bgGradient: "from-emerald-500/20 to-teal-500/5", icon: Calendar },
-          { title: "Pieces en Stock", value: `${stats.totalStock} Ref.`, trend: stats.stockEnRupture > 0 ? `${stats.stockEnRupture} rupture(s)` : "Stock Optimal", color: stats.stockEnRupture > 0 ? "text-rose-500" : "text-emerald-500", route: "/stock", glowLine: "bg-amber-500", bgGradient: "from-amber-500/20 to-yellow-500/5", icon: Package },
+          { title: "Plan Préventif", value: `${stats.totalPreventif} Tâches`, trend: `${stats.preventifTermines} terminées`, color: "text-emerald-500", route: "/plan-preventif", glowLine: "bg-emerald-500", bgGradient: "from-emerald-500/20 to-teal-500/5", icon: Calendar },
+          { title: "Pièces en Stock", value: `${stats.totalStock} Réf.`, trend: stats.stockEnRupture > 0 ? `${stats.stockEnRupture} rupture(s)` : "Stock Optimal", color: stats.stockEnRupture > 0 ? "text-rose-500" : "text-emerald-500", route: "/stock", glowLine: "bg-amber-500", bgGradient: "from-amber-500/20 to-yellow-500/5", icon: Package },
         ].map((stat, i) => {
           const Icon = stat.icon;
           return (
@@ -142,7 +118,7 @@ const Dashboard = () => {
         })}
       </div>
 
-      {/* Metriques Cles */}
+      {/* Dynamic Key Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/10 border border-blue-200/60 dark:border-blue-800/40 p-5 rounded-2xl shadow-sm">
           <h3 className="text-xs font-extrabold text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-600" /> MTBF Moyen</h3>
@@ -178,26 +154,27 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* VUE TEMPS REEL */}
+      {/* VUE TEMPS RÉEL */}
       {activeTab === "REALTIME" && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Category Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Cpu className="w-4 h-4 text-fab-blue" /> Repartition par Categorie</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">{stats.totalMachines} equipements classes — donnees temps reel</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Cpu className="w-4 h-4 text-[#2f3874] dark:text-blue-400" /> Répartition par Catégorie</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">{stats.totalMachines} équipement(s) au total dans le parc</p>
                 </div>
-                <span className="px-2.5 py-1 text-xs font-bold bg-blue-50 text-fab-blue rounded-lg">Live</span>
+                <span className="px-2.5 py-1 text-xs font-bold bg-blue-50 text-[#2f3874] dark:bg-blue-950/50 dark:text-blue-300 rounded-lg">Live</span>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={stats.categoryStats.slice(0, 8)} layout="vertical" margin={{ top: 5, right: 20, left: 60, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" strokeOpacity={0.5} />
                     <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
-                    <YAxis dataKey="category" type="category" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 10 }} width={56} />
+                    <YAxis dataKey="category" type="category" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 10 }} width={80} />
                     <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
-                    <Bar dataKey="count" name="Equipements" radius={[0, 6, 6, 0]}>
+                    <Bar dataKey="count" name="Équipements" radius={[0, 6, 6, 0]}>
                       {stats.categoryStats.slice(0, 8).map((_entry, index) => (
                         <Cell key={`cell-${index}`} fill={CAT_COLORS[index % CAT_COLORS.length]} />
                       ))}
@@ -207,11 +184,12 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {/* Status Pie Chart (Pure Dynamic Statuses & Colors) */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-600" /> Etat des Equipements</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">Distribution — {stats.disponibiliteGlobale}% disponibilite</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-600" /> État des Équipements</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">Distribution — {stats.disponibiliteGlobale}% disponibilité</p>
                 </div>
                 <span className="px-2.5 py-1 text-xs font-bold bg-emerald-50 text-emerald-600 rounded-lg">Live</span>
               </div>
@@ -220,7 +198,7 @@ const Dashboard = () => {
                   <PieChart>
                     <Pie data={stats.statusStats} cx="50%" cy="50%" outerRadius={100} dataKey="count" nameKey="status">
                       {stats.statusStats.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={STATUS_PIE_COLORS[entry.status] || CAT_COLORS[index % CAT_COLORS.length]} />
+                        <Cell key={`cell-${index}`} fill={getStatusColor(entry.status, index)} />
                       ))}
                     </Pie>
                     <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
@@ -229,7 +207,7 @@ const Dashboard = () => {
                 <div className="flex-1 space-y-2 pl-2">
                   {stats.statusStats.map((s, i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: STATUS_PIE_COLORS[s.status] || CAT_COLORS[i % CAT_COLORS.length] }} />
+                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: getStatusColor(s.status, i) }} />
                       <span className="text-xs text-zinc-600 dark:text-zinc-300 truncate">{s.status}</span>
                       <span className="text-xs font-bold text-zinc-900 dark:text-white ml-auto">{s.count}</span>
                     </div>
@@ -240,11 +218,12 @@ const Dashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Monthly Volume Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><BarChart3 className="w-4 h-4 text-purple-600" /> Volume OT — 6 Derniers Mois</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">Preventifs vs Correctifs — calcule depuis les OTs reels</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">Préventifs vs Correctifs — calculé depuis les OTs réels</p>
                 </div>
                 <span className="px-2.5 py-1 text-xs font-bold bg-purple-50 text-purple-600 rounded-lg">Dynamique</span>
               </div>
@@ -256,18 +235,19 @@ const Dashboard = () => {
                     <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                     <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
-                    <Bar dataKey="otPrev" name="OT Preventifs" fill="#2563eb" stackId="a" />
+                    <Bar dataKey="otPrev" name="OT Préventifs" fill="#2563eb" stackId="a" />
                     <Bar dataKey="otCorr" name="OT Correctifs" fill="#e11d48" stackId="a" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
+            {/* Active Alerts Box */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-rose-600" /> Alertes Actives</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">Machines HS et stocks faibles</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">Machines en panne et pièces en rupture/faibles</p>
                 </div>
                 {alertCount > 0 && <span className="px-2.5 py-1 text-xs font-bold bg-rose-50 text-rose-600 rounded-lg">{alertCount} alerte(s)</span>}
               </div>
@@ -276,7 +256,7 @@ const Dashboard = () => {
                   <div className="flex flex-col items-center justify-center py-8 text-center">
                     <CheckCircle2 className="w-10 h-10 text-emerald-500 mb-2" />
                     <p className="text-sm font-bold text-emerald-600">Aucune alerte active</p>
-                    <p className="text-xs text-zinc-500 mt-1">Tous les equipements et stocks sont nominaux</p>
+                    <p className="text-xs text-zinc-500 mt-1">Tous les équipements et stocks sont au niveau nominal</p>
                   </div>
                 ) : (
                   <>
@@ -285,7 +265,7 @@ const Dashboard = () => {
                         <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">{m.name || m.reference}</p>
-                          <p className="text-[10px] text-rose-600">Machine hors service</p>
+                          <p className="text-[10px] text-rose-600">Machine hors service / en panne</p>
                         </div>
                         <ArrowUpRight className="w-3.5 h-3.5 text-rose-400" />
                       </div>
@@ -295,7 +275,7 @@ const Dashboard = () => {
                         <Package className="w-4 h-4 text-amber-600 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">{s.name || s.reference}</p>
-                          <p className="text-[10px] text-amber-600">{s.quantity === 0 ? "Rupture de stock" : `Stock faible : ${s.quantity} (min: ${s.min})`}</p>
+                          <p className="text-[10px] text-amber-600">{Number(s.quantity ?? s.quantite ?? 0) === 0 ? "Rupture de stock" : `Stock faible : ${s.quantity ?? s.quantite} (min: ${s.min ?? s.stockMin})`}</p>
                         </div>
                         <ArrowUpRight className="w-3.5 h-3.5 text-amber-400" />
                       </div>
@@ -311,8 +291,8 @@ const Dashboard = () => {
               { label: "OT Aujourd'hui", value: stats.otAujourdhui, unit: "OT", color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-950/20" },
               { label: "OT Cette Semaine", value: stats.otCetteSemaine, unit: "OT", color: "text-indigo-600", bg: "bg-indigo-50 dark:bg-indigo-950/20" },
               { label: "OT Ce Mois", value: stats.otCeMois, unit: "OT", color: "text-purple-600", bg: "bg-purple-50 dark:bg-purple-950/20" },
-              { label: "OT Termines", value: stats.otTermines, unit: "OT", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-950/20" },
-              { label: "Ruptures Stock", value: stats.stockEnRupture, unit: "Ref", color: "text-rose-600", bg: "bg-rose-50 dark:bg-rose-950/20" },
+              { label: "OT Terminés", value: stats.otTermines, unit: "OT", color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-950/20" },
+              { label: "Ruptures Stock", value: stats.stockEnRupture, unit: "Réf", color: "text-rose-600", bg: "bg-rose-50 dark:bg-rose-950/20" },
               { label: "Valeur Stock", value: Math.round(stats.valeurStock / 1000), unit: "k MAD", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/20" },
             ].map((kpi, i) => (
               <div key={i} className={`${kpi.bg} rounded-xl p-4 border border-slate-200/60 dark:border-zinc-800/60`}>
@@ -325,93 +305,99 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* VUE MENSUELLE */}
+      {/* VUE MENSUELLE (100% Dynamic Real Data Charts) */}
       {activeTab === "MONTHLY" && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Dynamic MTBF Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Clock className="w-4 h-4 text-fab-blue" /> Evolution du MTBF (heures)</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">K1 — Temps moyen de bon fonctionnement (Cible ge 300 h)</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Clock className="w-4 h-4 text-[#2f3874] dark:text-blue-400" /> Évolution du MTBF (heures)</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">K1 — Temps moyen de bon fonctionnement (Cible ≥ 300 h)</p>
                 </div>
-                <span className="px-2.5 py-1 text-xs font-bold bg-blue-50 text-fab-blue rounded-lg">K1 MTBF</span>
+                <span className="px-2.5 py-1 text-xs font-bold bg-blue-50 text-[#2f3874] dark:bg-blue-950/50 dark:text-blue-300 rounded-lg">K1 MTBF</span>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={BASE_MONTHLY_KPI} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                  <ComposedChart data={stats.monthlyOtStats} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" strokeOpacity={0.5} />
                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
-                    <YAxis domain={[0, 800]} axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
-                    <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }} />
+                    <YAxis domain={[0, 'auto']} axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
+                    <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
-                    <Area type="monotone" dataKey="mtbf" name="MTBF Realise (h)" fill="#2563eb" fillOpacity={0.15} stroke="#2563eb" strokeWidth={3} />
-                    <Line type="monotone" dataKey="cibleMtbf" name="Cible Minimale (300 h)" stroke="#e11d48" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                    <Area type="monotone" dataKey="mtbf" name="MTBF Réalisé (h)" fill="#2563eb" fillOpacity={0.15} stroke="#2563eb" strokeWidth={3} />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>
             </div>
+
+            {/* Dynamic Availability & Preventive Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Activity className="w-4 h-4 text-emerald-600" /> Disponibilite et Respect Preventif (%)</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">K3 (Disponibilite ge 95%) et K4 (Respect preventif ge 90%)</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Activity className="w-4 h-4 text-emerald-600" /> Disponibilité et Respect Préventif (%)</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">K3 (Disponibilité ≥ 95%) et K4 (Respect préventif ≥ 90%)</p>
                 </div>
                 <span className="px-2.5 py-1 text-xs font-bold bg-emerald-50 text-emerald-600 rounded-lg">K3 et K4</span>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={BASE_MONTHLY_KPI} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                  <LineChart data={stats.monthlyOtStats} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" strokeOpacity={0.5} />
                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
-                    <YAxis domain={[80, 100]} unit="%" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
+                    <YAxis domain={[0, 100]} unit="%" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                     <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
-                    <Line type="monotone" dataKey="dispo" name="Disponibilite (%)" stroke="#059669" strokeWidth={3} dot={{ r: 4, fill: "#059669" }} />
-                    <Line type="monotone" dataKey="preventif" name="Respect Preventif (%)" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, fill: "#8b5cf6" }} />
+                    <Line type="monotone" dataKey="dispo" name="Disponibilité (%)" stroke="#059669" strokeWidth={3} dot={{ r: 4, fill: "#059669" }} />
+                    <Line type="monotone" dataKey="preventif" name="Respect Préventif (%)" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, fill: "#8b5cf6" }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
             </div>
           </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Dynamic Monthly Cost Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><DollarSign className="w-4 h-4 text-amber-600" /> Evolution des Couts de Maintenance (MAD)</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">K7 — Cumul pieces de rechange et main-d-oeuvre</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><DollarSign className="w-4 h-4 text-amber-600" /> Évolution des Coûts de Maintenance (MAD)</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">K7 — Cumul pièces de rechange et main-d'œuvre</p>
                 </div>
-                <span className="px-2.5 py-1 text-xs font-bold bg-amber-50 text-amber-600 rounded-lg">K7 Couts</span>
+                <span className="px-2.5 py-1 text-xs font-bold bg-amber-50 text-amber-600 rounded-lg">K7 Coûts</span>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={BASE_MONTHLY_KPI} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                  <BarChart data={stats.monthlyOtStats} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" strokeOpacity={0.5} />
                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                     <RechartsTooltip cursor={{ fill: "rgba(217, 119, 6, 0.05)" }} contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
-                    <Bar dataKey="coutMAD" name="Cout Mensuel (MAD)" fill="#d97706" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="coutMAD" name="Coût Mensuel (MAD)" fill="#d97706" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
+
+            {/* Dynamic Preventive vs Corrective Volume Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><BarChart3 className="w-4 h-4 text-purple-600" /> Volume OT Preventifs vs Correctifs</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">K5 — Equilibre preventif vs pannes reelles</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><BarChart3 className="w-4 h-4 text-purple-600" /> Volume OT Préventifs vs Correctifs</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">K5 — Équilibre préventif vs pannes réelles</p>
                 </div>
                 <span className="px-2.5 py-1 text-xs font-bold bg-purple-50 text-purple-600 rounded-lg">K5 Ratio</span>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={mergedMonthly} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                  <BarChart data={stats.monthlyOtStats} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" strokeOpacity={0.5} />
                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                     <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
-                    <Bar dataKey="otPrev" name="OT Preventifs" fill="#2563eb" stackId="a" />
+                    <Bar dataKey="otPrev" name="OT Préventifs" fill="#2563eb" stackId="a" />
                     <Bar dataKey="otCorr" name="OT Correctifs (Pannes)" fill="#e11d48" stackId="a" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -421,62 +407,65 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* VUE PAR ATELIER */}
+      {/* VUE PAR ATELIER (Pure Dynamic Real Data) */}
       {activeTab === "ATELIER" && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Workshop Equipments Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Layers className="w-4 h-4 text-fab-blue" /> Equipements par Atelier</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">Distribution reelle du parc machines</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Layers className="w-4 h-4 text-[#2f3874] dark:text-blue-400" /> Équipements par Atelier</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">Distribution réelle du parc machines par atelier</p>
                 </div>
-                <span className="px-2.5 py-1 text-xs font-bold bg-blue-50 text-fab-blue rounded-lg">Dynamique</span>
+                <span className="px-2.5 py-1 text-xs font-bold bg-blue-50 text-[#2f3874] dark:bg-blue-950/50 dark:text-blue-300 rounded-lg">Dynamique</span>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={atelierKpiData} margin={{ top: 10, right: 20, left: -10, bottom: 30 }}>
+                  <BarChart data={stats.atelierStats} margin={{ top: 10, right: 20, left: -10, bottom: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" strokeOpacity={0.5} />
                     <XAxis dataKey="atelier" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 10 }} interval={0} angle={-15} textAnchor="end" />
                     <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                     <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: "12px", paddingTop: "12px" }} />
-                    <Bar dataKey="machinesOp" name="Operationnels" fill="#059669" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="machinesOp" name="Opérationnels" fill="#059669" radius={[6, 6, 0, 0]} />
                     <Bar dataKey="machinesHS" name="Hors service" fill="#e11d48" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
+            {/* Workshop Availability Chart */}
             <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/60 dark:border-zinc-800/60 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Activity className="w-4 h-4 text-emerald-600" /> Disponibilite par Atelier (%)</h3>
-                  <p className="text-xs text-zinc-500 mt-0.5">Calculee depuis statuts equipements reels</p>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2"><Activity className="w-4 h-4 text-emerald-600" /> Disponibilité par Atelier (%)</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">Calculée d'après les statuts réels des équipements</p>
                 </div>
                 <span className="px-2.5 py-1 text-xs font-bold bg-emerald-50 text-emerald-600 rounded-lg">Live</span>
               </div>
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={atelierKpiData} layout="vertical" margin={{ top: 5, right: 30, left: 50, bottom: 5 }}>
+                  <BarChart data={stats.atelierStats} layout="vertical" margin={{ top: 5, right: 30, left: 50, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" strokeOpacity={0.5} />
                     <XAxis type="number" domain={[0, 100]} unit="%" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} />
-                    <YAxis dataKey="atelier" type="category" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 10 }} width={46} />
+                    <YAxis dataKey="atelier" type="category" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 10 }} width={70} />
                     <RechartsTooltip contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0" }} />
-                    <Bar dataKey="dispo" name="Disponibilite (%)" fill="#059669" radius={[0, 6, 6, 0]} />
+                    <Bar dataKey="dispo" name="Disponibilité (%)" fill="#059669" radius={[0, 6, 6, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
           </div>
 
+          {/* Workshop Table (Strict Single Source of Truth) */}
           <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-200/50 dark:border-zinc-800/50 rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
             <div className="p-4 bg-slate-50 dark:bg-zinc-800/50 border-b border-slate-200 dark:border-zinc-700 flex justify-between items-center">
               <h3 className="font-bold text-sm text-zinc-900 dark:text-white flex items-center gap-2">
-                <Table className="w-4 h-4 text-fab-blue" /> Synthese par Atelier — Donnees Temps Reel
+                <Table className="w-4 h-4 text-[#2f3874] dark:text-blue-400" /> Synthèse par Atelier — Données Temps Réel
               </h3>
-              <span className="text-xs font-mono font-bold text-fab-blue bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-lg">
-                {stats.atelierStats.length} Ateliers - {stats.totalMachines} Equipements
+              <span className="text-xs font-mono font-bold text-[#2f3874] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-lg">
+                {stats.atelierStats.length} Atelier(s) - {stats.totalMachines} Équipement(s)
               </span>
             </div>
             <div className="overflow-x-auto">
@@ -484,11 +473,11 @@ const Dashboard = () => {
                 <thead className="bg-slate-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-bold border-b border-slate-200 dark:border-zinc-700">
                   <tr>
                     <th className="px-4 py-3">Atelier</th>
-                    <th className="px-4 py-3 text-center">Nb Equip.</th>
-                    <th className="px-4 py-3 text-center">Criticite A</th>
-                    <th className="px-4 py-3 text-center">Operationnels</th>
+                    <th className="px-4 py-3 text-center">Nb Équip.</th>
+                    <th className="px-4 py-3 text-center">Criticité A</th>
+                    <th className="px-4 py-3 text-center">Opérationnels</th>
                     <th className="px-4 py-3 text-center">Hors Service</th>
-                    <th className="px-4 py-3 text-center">Disponibilite</th>
+                    <th className="px-4 py-3 text-center">Disponibilité</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
@@ -497,7 +486,7 @@ const Dashboard = () => {
                       <td className="px-4 py-3 font-bold text-zinc-900 dark:text-zinc-100">{atl.atelier}</td>
                       <td className="px-4 py-3 text-center font-semibold">{atl.nbEquip}</td>
                       <td className="px-4 py-3 text-center">
-                        {atl.criticiteA > 0 ? <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">{atl.criticiteA} eq. A</span> : <span className="text-zinc-400">-</span>}
+                        {atl.criticiteA > 0 ? <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">{atl.criticiteA} éq. A</span> : <span className="text-zinc-400">-</span>}
                       </td>
                       <td className="px-4 py-3 text-center font-bold text-emerald-600">{atl.machinesOp}</td>
                       <td className="px-4 py-3 text-center font-bold text-rose-600">{atl.machinesHS}</td>
@@ -510,7 +499,7 @@ const Dashboard = () => {
                   ))}
                   <tr className="bg-slate-900 text-white font-bold text-xs">
                     <td className="px-4 py-3 uppercase">TOTAL ATELIERS FABLAB</td>
-                    <td className="px-4 py-3 text-center text-fab-blue">{stats.totalMachines}</td>
+                    <td className="px-4 py-3 text-center text-blue-400">{stats.totalMachines}</td>
                     <td className="px-4 py-3 text-center text-rose-400">{stats.atelierStats.reduce((a, b) => a + b.criticiteA, 0)}</td>
                     <td className="px-4 py-3 text-center text-emerald-400">{stats.machinesOp}</td>
                     <td className="px-4 py-3 text-center text-rose-400">{stats.machinesHS}</td>
