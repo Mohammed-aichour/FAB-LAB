@@ -62,6 +62,18 @@ const syncToDisk = (entity: string, data: unknown) => {
   });
 };
 
+const DELETED_MACHINE_IDS = new Set([
+  'fl-imp-003', 'fl-imp-004', 'fl-imp-005',
+  'fl-vin-001', 'fl-ele-001', 'fl-ele-002',
+  'fl-boi-001', 'fl-boi-002', 'fl-tex-001',
+  'fl-cmp-001', 'fl-asp-001', 'fl-las-008',
+  'FL-003', 'FL-004', 'FL-005', 'FL-018',
+  'FL-038', 'FL-039', 'FL-040', 'FL-041',
+  'FL-042', 'FL-043', 'FL-044', 'FL-045',
+  'FL-046', 'FL-047', 'FL-048', 'FL-049',
+  'FL-050', 'FL-051', 'FL-052', 'FL-053'
+]);
+
 export const db = {
   // ==================== MACHINES (CRUD) ====================
   getMachines: (): any[] => {
@@ -69,7 +81,18 @@ export const db = {
       const stored = localStorage.getItem(KEYS.MACHINES);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed)) {
+          const cleaned = parsed.filter(m => {
+            const id = (m.id || m.reference || '').toString();
+            const lower = id.toLowerCase();
+            return !DELETED_MACHINE_IDS.has(id) && !DELETED_MACHINE_IDS.has(lower);
+          });
+          if (cleaned.length !== parsed.length) {
+            localStorage.setItem(KEYS.MACHINES, JSON.stringify(cleaned));
+            syncToDisk('machines', cleaned);
+          }
+          return cleaned;
+        }
       }
     } catch (e) {
       console.warn('Error reading machines from storage:', e);
