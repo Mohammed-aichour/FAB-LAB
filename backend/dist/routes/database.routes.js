@@ -54,8 +54,10 @@ router.post('/:entity', async (req, res) => {
         return res.status(400).json({ error: 'Rôle ou statut invalide.' });
     return (0, json_store_1.withWriteLock)(() => {
         const previous = (0, json_store_1.readEntity)(entity);
-        if (req.header('X-Data-Revision') !== revision(previous))
+        const clientRevision = req.header('X-Data-Revision');
+        if (clientRevision && clientRevision !== revision(previous)) {
             return res.status(409).json({ error: 'Les données ont changé. Rechargez avant de modifier.' });
+        }
         (0, json_store_1.writeEntity)(entity, req.body);
         (0, audit_service_1.appendAudit)(req.user, 'Mise à jour manuelle', entity, null, previous, req.body, crypto_1.default.randomUUID());
         return res.json({ success: true, entity, count: req.body.length, revision: revision(req.body) });

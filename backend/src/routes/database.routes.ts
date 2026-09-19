@@ -46,7 +46,10 @@ router.post('/:entity', async (req: AuthenticatedRequest, res) => {
 
   return withWriteLock(() => {
     const previous = readEntity(entity);
-    if (req.header('X-Data-Revision') !== revision(previous)) return res.status(409).json({error:'Les données ont changé. Rechargez avant de modifier.'});
+    const clientRevision = req.header('X-Data-Revision');
+    if (clientRevision && clientRevision !== revision(previous)) {
+      return res.status(409).json({error:'Les données ont changé. Rechargez avant de modifier.'});
+    }
     writeEntity(entity, req.body);
     appendAudit(req.user!, 'Mise à jour manuelle', entity, null, previous, req.body, crypto.randomUUID());
     return res.json({ success: true, entity, count: req.body.length, revision: revision(req.body) });

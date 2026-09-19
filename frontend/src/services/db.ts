@@ -1,4 +1,4 @@
-import { api, authHeaders } from './api';
+import { api, authHeaders, getApiUrl } from './api';
 import { REAL_MACHINES_DATA } from '../data/realMachinesData';
 import { realStockItems, type StockItem } from '../data/realStockData';
 import { initialOTs, initialDIs, type WorkOrder, type InterventionRequest } from '../data/otData';
@@ -28,37 +28,53 @@ const entityKeys: Record<string,string> = { machines: KEYS.MACHINES, stock: KEYS
 const revisions: Record<string,string> = {};
 let syncQueue: Promise<void> = Promise.resolve();
 export const flushSync = () => syncQueue;
+
 export async function refreshFromServer() {
   await flushSync();
-  const token = sessionStorage.getItem('gmao_token');
-  if (token?.startsWith('static_session_token')) {
-    notifyUpdate();
-    return;
-  }
   try {
-    const results = await Promise.all(Object.entries(entityKeys).map(async ([entity,key]) => {
-      const data = await api<any[]>('/db/' + entity);
-      if (Array.isArray(data)) return { entity, key, data, revision: '' };
+    const results = await Promise.all(Object.entries(entityKeys).map(async ([entity, key]) => {
+      try {
+        const data = await api<any[]>('/db/' + entity);
+        if (Array.isArray(data) && data.length > 0) return { entity, key, data, revision: '' };
+      } catch {
+        return null;
+      }
       return null;
     }));
-    for (const item of results) if (item) { localStorage.setItem(item.key, JSON.stringify(item.data)); revisions[item.entity] = item.revision; }
+    for (const item of results) {
+      if (item && item.data) {
+        localStorage.setItem(item.key, JSON.stringify(item.data));
+        revisions[item.entity] = item.revision;
+      }
+    }
     notifyUpdate();
   } catch (e) {
     console.warn('[GMAO Sync] Running in static mode or server unavailable:', e);
     notifyUpdate();
   }
 }
+
 const syncToDisk = (entity: string, data: unknown) => {
-  const token = sessionStorage.getItem('gmao_token');
-  if (!token || token.startsWith('static_session_token')) return;
   syncQueue = syncQueue.then(async () => {
-    const response = await fetch('/api/db/'+entity, { method:'POST', headers:{'Content-Type':'application/json',...authHeaders(),'X-Data-Revision':revisions[entity] || ''}, body:JSON.stringify(data) });
-    if (response.ok) {
-      const result = await response.json();
-      revisions[entity] = result.revision || '';
+    try {
+      const response = await fetch(getApiUrl('/db/' + entity), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...authHeaders(),
+          ...(revisions[entity] ? { 'X-Data-Revision': revisions[entity] } : {})
+        },
+        body: JSON.stringify(data)
+      });
+      if (response.ok) {
+        const result = await response.json();
+        revisions[entity] = result.revision || '';
+      }
+    } catch (error) {
+      console.warn('[GMAO Sync] Server sync error:', error);
     }
   }).catch(error => {
-    console.warn('[GMAO Sync] Server sync error:', error);
+    console.warn('[GMAO Sync] Queue error:', error);
   });
 };
 
