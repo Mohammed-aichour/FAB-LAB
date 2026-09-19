@@ -34,7 +34,7 @@ const CAT_COLORS = ["#2f3874", "#b92721", "#e0a61e", "#059669", "#8b5cf6", "#089
 const Dashboard = () => {
   const navigate = useNavigate();
   const stats = useGmaoStats();
-  const { notifications } = useGmao();
+  const { notifications, refresh } = useGmao();
   const [activeTab, setActiveTab] = useState<"REALTIME" | "MONTHLY" | "ATELIER">("REALTIME");
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
@@ -57,10 +57,22 @@ const Dashboard = () => {
   }));
 
   useEffect(() => {
-    const onUpdate = () => setLastUpdate(new Date());
-    window.addEventListener("gmao_data_updated", onUpdate);
-    return () => window.removeEventListener("gmao_data_updated", onUpdate);
-  }, []);
+    const handleUpdate = () => {
+      refresh();
+      setLastUpdate(new Date());
+    };
+    handleUpdate();
+    const interval = setInterval(handleUpdate, 3000);
+    window.addEventListener("gmao_data_updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    window.addEventListener("focus", handleUpdate);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("gmao_data_updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+      window.removeEventListener("focus", handleUpdate);
+    };
+  }, [refresh]);
 
   const alertCount = stats.machinesHS + stats.stockEnRupture + stats.stockFaible;
   const dispoColor = stats.disponibiliteGlobale >= 95 ? "text-emerald-600" : stats.disponibiliteGlobale >= 80 ? "text-amber-600" : "text-rose-600";
