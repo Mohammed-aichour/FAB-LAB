@@ -77,15 +77,25 @@ export function isEntityName(value: string): value is EntityName {
   return Object.prototype.hasOwnProperty.call(ENTITY_FILES, value);
 }
 
+const globalCache: Record<string, any> = (global as any).__GMAO_CACHE__ || ((global as any).__GMAO_CACHE__ = {});
+
 export function readEntity<T = unknown[]>(entity: EntityName): T {
   if (transaction?.has(entity)) return structuredClone(transaction.get(entity)) as T;
+
+  if (globalCache[entity] && Array.isArray(globalCache[entity])) {
+    return structuredClone(globalCache[entity]) as T;
+  }
+
   const fileName = ENTITY_FILES[entity];
   const targetPath = path.join(DATA_DIR, fileName);
 
   if (fs.existsSync(targetPath)) {
     try {
       const data = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
-      if (Array.isArray(data) || (data && typeof data === 'object')) return data as T;
+      if (Array.isArray(data) || (data && typeof data === 'object')) {
+        globalCache[entity] = data;
+        return data as T;
+      }
     } catch { /* fallthrough */ }
   }
 
@@ -107,6 +117,7 @@ export function readEntity<T = unknown[]>(entity: EntityName): T {
           if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
           fs.writeFileSync(targetPath, content, 'utf8');
         } catch { /* ignore seed copy warning */ }
+        globalCache[entity] = parsed;
         return parsed;
       } catch { /* try next candidate */ }
     }
@@ -125,12 +136,19 @@ export function readEntity<T = unknown[]>(entity: EntityName): T {
 
 export function writeEntity(entity: EntityName, value: unknown): void {
   if (transaction) { transaction.set(entity, structuredClone(value)); return; }
+  globalCache[entity] = structuredClone(value);
   try {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
     const filePath = path.join(DATA_DIR, ENTITY_FILES[entity]);
     const tempPath = `${filePath}.${process.pid}.${crypto.randomUUID()}.tmp`;
     fs.writeFileSync(tempPath, JSON.stringify(value, null, 2), 'utf8');
-    fs.renameSync(tempPath, filePath);
+    if (fs.existsSync(tempPath)) {
+      try {
+        fs.renameSync(tempPath, filePath);
+      } catch {
+        fs.writeFileSync(filePath, JSON.stringify(value, null, 2), 'utf8');
+      }
+    }
   } catch (e) {
     console.warn(`[GMAO Store] Warning writing entity ${entity}:`, e);
   }

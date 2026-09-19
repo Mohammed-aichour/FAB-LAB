@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import Modal from '../components/shared/Modal';
+import { db } from '../services/db';
 
 const Users = () => {
   const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('gmao_users');
-    if (stored) {
-      setUsers(JSON.parse(stored));
-    }
+    setUsers(db.getUsers());
+    const onUpdate = () => setUsers(db.getUsers());
+    window.addEventListener('gmao_data_updated', onUpdate);
+    return () => window.removeEventListener('gmao_data_updated', onUpdate);
   }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -31,7 +32,7 @@ const Users = () => {
     }
     
     setUsers(updatedUsers);
-    localStorage.setItem('gmao_users', JSON.stringify(updatedUsers));
+    db.saveUsers(updatedUsers);
     
     setIsModalOpen(false);
     setEditingId(null);
@@ -87,7 +88,7 @@ const Users = () => {
                     onClick={() => {
                       const updated = users.filter(u => u.id !== user.id);
                       setUsers(updated);
-                      localStorage.setItem('gmao_users', JSON.stringify(updated));
+                      db.saveUsers(updated);
                     }} 
                     className="btn-neu btn-neu-danger px-3 py-1.5 rounded-lg text-xs"
                   >

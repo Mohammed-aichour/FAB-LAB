@@ -29,6 +29,46 @@ const revisions: Record<string,string> = {};
 let syncQueue: Promise<void> = Promise.resolve();
 export const flushSync = () => syncQueue;
 
+function reconcileEntityData(entity: string, serverData: any[], localData: any[]): any[] {
+  if (!Array.isArray(localData) || localData.length === 0) return serverData;
+  if (!Array.isArray(serverData) || serverData.length === 0) return localData;
+
+  const getKey = (item: any) => String(item.id ?? item.reference ?? item.code ?? '');
+  const serverMap = new Map<string, any>();
+  serverData.forEach(item => {
+    const k = getKey(item);
+    if (k) serverMap.set(k, item);
+  });
+
+  const localMap = new Map<string, any>();
+  localData.forEach(item => {
+    const k = getKey(item);
+    if (k) localMap.set(k, item);
+  });
+
+  const merged = new Map<string, any>();
+
+  for (const [key, sItem] of serverMap.entries()) {
+    const lItem = localMap.get(key);
+    if (lItem) {
+      merged.set(key, { ...sItem, ...lItem });
+    } else {
+      merged.set(key, sItem);
+    }
+  }
+
+  for (const [key, lItem] of localMap.entries()) {
+    if (!merged.has(key)) {
+      if (entity === 'machines' && (DELETED_MACHINE_IDS.has(key) || DELETED_MACHINE_IDS.has(key.toLowerCase()))) {
+        continue;
+      }
+      merged.set(key, lItem);
+    }
+  }
+
+  return Array.from(merged.values());
+}
+
 export async function refreshFromServer() {
   await flushSync();
   try {
@@ -42,14 +82,25 @@ export async function refreshFromServer() {
       return null;
     }));
     for (const item of results) {
-      if (item && item.data) {
-        localStorage.setItem(item.key, JSON.stringify(item.data));
+      if (item && item.data && Array.isArray(item.data)) {
+        let localData: any[] = [];
+        try {
+          const raw = localStorage.getItem(item.key);
+          if (raw) localData = JSON.parse(raw);
+        } catch { /* ignore */ }
+
+        const reconciled = reconcileEntityData(item.entity, item.data, localData);
+        localStorage.setItem(item.key, JSON.stringify(reconciled));
         revisions[item.entity] = item.revision;
+
+        if (reconciled.length !== item.data.length) {
+          syncToDisk(item.entity, reconciled);
+        }
       }
     }
     notifyUpdate();
   } catch (e) {
-    console.warn('[GMAO Sync] Running in static mode or server unavailable:', e);
+    console.warn('[GMAO Sync] Server unavailable, preserving local state:', e);
     notifyUpdate();
   }
 }

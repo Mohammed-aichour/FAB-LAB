@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Modal from '../components/shared/Modal';
 import { realStockItems } from '../data/realStockData';
-import { initialFournisseurs } from '../data/fournisseursData';
 import type { Supplier } from '../data/fournisseursData';
+import { db } from '../services/db';
 import { Truck, ShoppingBag, Plus, Search, CheckCircle2, FileText, Trash2, AlertCircle, DollarSign, Clock, ShieldCheck, Printer } from 'lucide-react';
 
 export interface OrderItem {
@@ -60,13 +60,10 @@ const Fournisseurs = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('gmao_fournisseurs_v6');
-    if (stored) {
-      setFournisseurs(JSON.parse(stored));
-    } else {
-      localStorage.setItem('gmao_fournisseurs_v6', JSON.stringify(initialFournisseurs));
-      setFournisseurs(initialFournisseurs);
-    }
+    setFournisseurs(db.getFournisseurs());
+    const onUpdate = () => setFournisseurs(db.getFournisseurs());
+    window.addEventListener('gmao_data_updated', onUpdate);
+    return () => window.removeEventListener('gmao_data_updated', onUpdate);
   }, []);
 
   // Detect redirection from Stock page
@@ -149,7 +146,7 @@ const Fournisseurs = () => {
     }
 
     setFournisseurs(updated);
-    localStorage.setItem('gmao_fournisseurs_v6', JSON.stringify(updated));
+    db.saveFournisseurs(updated);
     setIsModalOpen(false);
   };
 
@@ -157,7 +154,7 @@ const Fournisseurs = () => {
   const handleDeleteSupplier = (id: number) => {
     const updated = fournisseurs.filter(f => f.id !== id);
     setFournisseurs(updated);
-    localStorage.setItem('gmao_fournisseurs_v6', JSON.stringify(updated));
+    db.saveFournisseurs(updated);
   };
 
   // Open Re-order Form Modal
