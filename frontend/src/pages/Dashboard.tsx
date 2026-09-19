@@ -134,33 +134,33 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/10 border border-blue-200/60 dark:border-blue-800/40 p-5 rounded-2xl shadow-sm">
           <h3 className="text-xs font-extrabold text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-600" /> MTBF Moyen</h3>
-          <p className="text-xs text-zinc-500 mb-2">Cible : ge 300 h</p>
+          <p className="text-xs text-zinc-500 mb-2">Cible : ≥ 300 h</p>
           <div className="flex items-end gap-2">
-            <span className="text-3xl font-black text-zinc-900 dark:text-white">{stats.machinesHS === 0 ? "423" : "312"} h</span>
-            <span className="text-xs font-bold text-emerald-600 pb-1">Conforme</span>
+            <span className="text-3xl font-black text-zinc-900 dark:text-white">{stats.mtbfHours} h</span>
+            <span className={`text-xs font-bold pb-1 ${stats.mtbfHours >= 300 ? "text-emerald-600" : "text-amber-500"}`}>{stats.mtbfHours >= 300 ? "Conforme" : "À surveiller"}</span>
           </div>
         </div>
         <div className="bg-gradient-to-br from-emerald-50 to-teal-50/50 dark:from-emerald-950/20 dark:to-teal-950/10 border border-emerald-200/60 dark:border-emerald-800/40 p-5 rounded-2xl shadow-sm">
           <h3 className="text-xs font-extrabold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><Wrench className="w-4 h-4 text-emerald-600" /> MTTR Moyen</h3>
-          <p className="text-xs text-zinc-500 mb-2">Cible : le 4.0 h</p>
+          <p className="text-xs text-zinc-500 mb-2">Cible : ≤ 4,0 h</p>
           <div className="flex items-end gap-2">
-            <span className="text-3xl font-black text-zinc-900 dark:text-white">{stats.machinesHS === 0 ? "3.6" : "4.2"} h</span>
-            <span className={`text-xs font-bold pb-1 ${stats.machinesHS === 0 ? "text-emerald-600" : "text-amber-500"}`}>{stats.machinesHS === 0 ? "Conforme" : "A surveiller"}</span>
+            <span className="text-3xl font-black text-zinc-900 dark:text-white">{stats.mttrHours} h</span>
+            <span className={`text-xs font-bold pb-1 ${stats.mttrHours <= 4.0 ? "text-emerald-600" : "text-amber-500"}`}>{stats.mttrHours <= 4.0 ? "Conforme" : "À surveiller"}</span>
           </div>
         </div>
         <div className="bg-gradient-to-br from-purple-50 to-indigo-50/50 dark:from-purple-950/20 dark:to-indigo-950/10 border border-purple-200/60 dark:border-purple-800/40 p-5 rounded-2xl shadow-sm">
-          <h3 className="text-xs font-extrabold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><Activity className="w-4 h-4 text-purple-600" /> Disponibilite Globale</h3>
-          <p className="text-xs text-zinc-500 mb-2">Cible : ge 95 %</p>
+          <h3 className="text-xs font-extrabold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><Activity className="w-4 h-4 text-purple-600" /> Disponibilité Globale</h3>
+          <p className="text-xs text-zinc-500 mb-2">Cible : ≥ 95 %</p>
           <div className="flex items-end gap-2">
             <span className={`text-3xl font-black ${dispoColor}`}>{stats.disponibiliteGlobale} %</span>
-            <span className="text-xs font-bold text-emerald-600 pb-1">Temps reel</span>
+            <span className="text-xs font-bold text-emerald-600 pb-1">Temps réel</span>
           </div>
         </div>
         <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 border border-amber-200/60 dark:border-amber-800/40 p-5 rounded-2xl shadow-sm">
-          <h3 className="text-xs font-extrabold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-amber-600" /> Cout Cumule Total</h3>
-          <p className="text-xs text-zinc-500 mb-2">Pieces et Main-d-oeuvre OT</p>
+          <h3 className="text-xs font-extrabold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><DollarSign className="w-4 h-4 text-amber-600" /> Coût Cumulé Total</h3>
+          <p className="text-xs text-zinc-500 mb-2">Pièces et Main-d'œuvre OT</p>
           <div className="flex items-end gap-2">
-            <span className="text-3xl font-black text-zinc-900 dark:text-white">{(stats.coutTotalMAD || 10100).toLocaleString("fr-FR")}</span>
+            <span className="text-3xl font-black text-zinc-900 dark:text-white">{stats.coutTotalMAD.toLocaleString("fr-FR")}</span>
             <span className="text-xs font-bold text-zinc-500 pb-1">MAD</span>
           </div>
         </div>
