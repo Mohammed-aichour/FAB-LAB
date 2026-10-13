@@ -30,3 +30,10 @@ Thumbs.db
 data_db/assistant_pending_actions_db.json
 data_db/*.tmp
 data_db/.transaction.json
+
+# Office temporary lock files & scratch
+~$*
+*.tmp
+mon_super_test.txt
+testfile.txt
+
