@@ -107,6 +107,27 @@ FAB-LAB/
 
 ---
 
+## 🏛️ Schéma d'Architecture Système
+
+```mermaid
+flowchart TD
+    Client["Client Web (React 19 + TypeScript)<br>Tailwind CSS & Recharts Dashboard"]
+    PDF["Générateur PDF (pdf-lib)<br>Bons d'Intervention Officiels"]
+    Server["API REST Express (Node.js)<br>Contrôleurs Métiers & Sécurité"]
+    Prisma["Prisma ORM<br>Schéma Typé & Requêtes"]
+    DB[("Base de Données SQLite<br>dev.db (11 Tables Relationnelles)")]
+    AI["Assistant IA OpenAI API<br>Function Calling & Validation 2 Étapes"]
+
+    Client <--> Server
+    Client --> PDF
+    Server <--> Prisma
+    Prisma <--> DB
+    Server <--> AI
+    AI -. "Confirmation Technicien Requise" .-> Client
+```
+
+---
+
 ## 🚀 Installation & Lancement Local
 
 ### Prérequis
